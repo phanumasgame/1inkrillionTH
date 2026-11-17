@@ -1,6 +1,7 @@
 import { ANSWER_MS, PREVIEW_MS, TIME_ZONE, TIERS, TIER_ORDER, dayKey, selectDaily, selectEndless,
-  createSession, tickSession, submitAnswer, confirmCorrection, skipRound, nextRound, shareText, validateBank } from './game.js';
+  createSession, tickSession, submitAnswer, confirmCorrection, skipRound, nextRound, shareText } from './game.js';
 import { readSave, writeSave, validSession, dailySlot, prepareSaveForBank, currentSavedSession, savedSessions } from './storage.js';
+import { isSurveySession, prepareSurveyBank, surveyTier } from './survey.js';
 import { DiveAudio } from './audio.js';
 import { OceanScene } from './scene.js';
 import { descentDuration, PIXELS_PER_METER, METERS_PER_POINT } from './descent.js';
@@ -8,12 +9,13 @@ import { focusAnswer } from './input.js';
 
 const app = document.getElementById('app');
 const modalRoot = document.getElementById('modal-root');
-let bank, evidence, audio, scene;
+let bank, audio, scene;
 let save = readSave(), mode = location.pathname.startsWith('/unlimited') ? 'endless' : 'daily';
 let session = null, view = 'home', composing = false, lastTick = -1, lastTierLine = null, landed = false, inputSaveTimer, toastTimer;
 let modalRestoreFocus = null, modalKind = null;
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 const number = n => Number(n).toLocaleString('en-US');
+const surveySession = value => validSession(value) && isSurveySession(value);
 const sprite = name => '/assets/art/' + name.replace(/-gold$/, '') + '.png';
 const goldSprite = name => name.endsWith('-gold') ? ' class="gold-variant"' : '';
 const safeUrl = url => /^https?:\/\//i.test(String(url)) ? esc(url) : '#';
@@ -33,19 +35,14 @@ function icon(name) {
 async function load() {
   try {
     const results = await Promise.allSettled([
-      fetch('/data/questions.json').then(r => { if (!r.ok) throw new Error('คลังคำถามโหลดไม่สำเร็จ'); return r.json(); }),
-      fetch('/assets/audio-cues.json').then(r => { if (!r.ok) throw new Error('ชุดเสียงโหลดไม่สำเร็จ'); return r.json(); }),
-      fetch('/data/evidence.json').then(r => r.ok ? r.json() : null)
+      fetch('/data/survey-bank.json').then(r => { if (!r.ok) throw new Error('คลังผลสำรวจโหลดไม่สำเร็จ'); return r.json(); }),
+      fetch('/assets/audio-cues.json').then(r => { if (!r.ok) throw new Error('ชุดเสียงโหลดไม่สำเร็จ'); return r.json(); })
     ]);
     if (results[0].status !== 'fulfilled') throw results[0].reason;
     if (results[1].status !== 'fulfilled') throw results[1].reason;
-    bank = results[0].value;
-    const errors = validateBank(bank);
-    if (errors.length) throw new Error('คลังคำถามไม่ผ่านการตรวจ: ' + errors[0]);
+    bank = prepareSurveyBank(results[0].value);
     save=prepareSaveForBank(save,bank);
     writeSave(save);
-    const loadedEvidence = results[2].status === 'fulfilled' ? results[2].value : null;
-    evidence = loadedEvidence?.bankVersion === bank.version ? loadedEvidence : null;
     audio = new DiveAudio(results[1].value, save.settings.muted);
     scene = new OceanScene((depth, frame) => {
       document.querySelectorAll('[data-live-depth]').forEach(el => { el.textContent = number(depth) + 'm'; });
@@ -70,12 +67,13 @@ function applySettings() {
   audio?.setMuted(save.settings.muted);
 }
 function getSaved() {
-  return currentSavedSession(save,mode,dayKey(),bank.version);
+  const candidate = currentSavedSession(save,mode,dayKey(),bank.version);
+  return surveySession(candidate) ? candidate : null;
 }
 function restoreCurrent() {
-  const requested=savedSessions(save).find(s=>s.id===save.resumeSessionId&&s.phase!=='complete');
+  const requested=savedSessions(save).find(s=>s.id===save.resumeSessionId&&s.phase!=='complete'&&surveySession(s));
   const saved = requested?.mode===mode ? requested : getSaved();
-  session = validSession(saved) ? saved : null;
+  session = surveySession(saved) ? saved : null;
   view = session ? session.phase === 'complete' ? 'results' : 'play' : 'home';
   if (session) {
     session = tickSession(session);
@@ -95,14 +93,16 @@ function persist() {
       if(session.bankVersion===bank.version)save.endless=session;
     }
     if (session.phase === 'complete' && !save.history.some(item => item.id === session.id)) {
-      save.history.unshift(structuredClone(session)); save.history = save.history.slice(0, 40);
+      save.history.unshift(structuredClone(session));
+      let surveyCount = 0;
+      save.history = save.history.filter(item => !surveySession(item) || ++surveyCount <= 40);
     }
   }
   for (const [date, stored] of Object.entries(save.daily)) {
-    if (stored?.date !== dayKey() && stored?.phase === 'complete' && save.history.some(item => item.id === stored.id))
+    if (surveySession(stored) && stored?.date !== dayKey() && stored?.phase === 'complete' && save.history.some(item => item.id === stored.id))
       delete save.daily[date];
   }
-  const dates = Object.keys(save.daily).sort();
+  const dates = Object.keys(save.daily).filter(key => surveySession(save.daily[key])).sort();
   for (const date of dates.slice(0, Math.max(0, dates.length - 35))) delete save.daily[date];
   if (!writeSave(save)) toast('บันทึกในเบราว์เซอร์ไม่ได้ กรุณาตรวจพื้นที่จัดเก็บหรือโหมดส่วนตัว');
 }
@@ -131,9 +131,9 @@ function landing() {
     friend() + '<section class="landing-bottom">' +
     '<details class="howto"><summary>how to play</summary><ol>' +
     '<li>SEVEN PROMPTS. A SHARED DAILY CHALLENGE.</li><li>25 SECONDS. TYPE ONE ANSWER THAT FITS.</li>' +
-    '<li>A LESS FAMILIAR ANSWER TAKES YOU DEEPER.</li><li>THE OBVIOUS OBSCURE PICK CAN BE TOO CLEVER.</li>' +
+    '<li>LOWER SURVEY RANKS CAN SINK DEEPER.</li><li>ONLY PUBLISHED SURVEY ANSWERS CAN SCORE.</li>' +
     '<li>ONE POINT = 10 METRES. AIM FOR 7,000M.</li><li>ONE DAILY ATTEMPT. ENDLESS DIVES ANYTIME.</li></ol></details>' +
-    '<div class="landing-credits"><button class="small-link" data-action="about">About this dive</button><span>THAI KNOWLEDGE · WORLD CURIOSITY</span></div>' +
+    '<div class="landing-credits"><button class="small-link" data-action="about">About this dive</button><span>นำร่อง ' + bank.questions.length + ' โจทย์จากผลสำรวจ · เล่นซ้ำได้</span></div>' +
     (mode === 'daily' ? '<button class="discovery-card" data-action="endless"><span class="discovery-tag">DIVE AFTER DIVE</span><img src="' +
       sprite('schooler') + '" alt=""><span>ENDLESS DIVE</span><small>∞</small></button>' : '') +
     '<button class="begin" data-action="begin">▼ ' + label + ' ▼</button>' +
@@ -168,7 +168,7 @@ function answerDock() {
   return '<section class="answer-dock" aria-label="Answer this prompt">' +
     '<div class="timer-row"><span>MAKE IT COUNT.</span><span class="timer-number" id="timer" role="timer" aria-label="Seconds remaining">25</span></div>' +
     '<div class="timer-track" id="timer-track"><span id="timer-fill"></span></div>' + correction +
-    (session.rejected ? '<div class="reject-text" role="status">ยังไม่พบคำตอบนี้ในคลัง ลองคำอื่นก่อนหมดเวลา</div>' : '') +
+    (session.rejected ? '<div class="reject-text" role="status">ยังไม่พบคำตอบนี้ในผลสำรวจที่เผยแพร่ ลองคำอื่นก่อนหมดเวลา</div>' : '') +
     '<form class="answer-form" id="answer-form"><input id="answer" name="answer" aria-label="Your answer" maxlength="256" placeholder="type one answer…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" value="' +
     esc(session.input || '') + '"' + (session.phase === 'correction' ? ' disabled' : '') + '><button class="dive-button" type="submit"' +
     (!session.input?.trim() || session.phase === 'correction' ? ' disabled' : '') + '>DIVE</button></form>' +
@@ -233,7 +233,7 @@ function resultsView() {
       '"><div class="result-prompt">' + esc(r.prompt) + '</div><div class="result-answer">' + esc(r.label || (r.reason === 'timeout' ? 'หมดเวลา' : 'ข้ามข้อ')) +
       '</div></button><div class="result-score" style="color:' + (r.tier ? tierColor(r.tier) : '#7890a5') + '">' + r.points +
       '<div style="font-size:12px;letter-spacing:1px">' + (r.tier ? esc(TIERS[r.tier].name.toUpperCase()) : 'MISS') + '</div></div></article>').join('') +
-    '</section><p class="results-footnote">ระดับคะแนนประเมินจากความคุ้นเคยและการตรวจทาน · ไม่ใช่เปอร์เซ็นต์ผู้ตอบ<br>บันทึกผลไว้ในเบราว์เซอร์นี้ · ' +
+    '</section><p class="results-footnote">คะแนนจัดอันดับจากร้อยละของคำตอบที่โพลเผยแพร่ในแต่ละข้อ · ไม่ใช่ร้อยละของผู้เล่น<br>บันทึกผลไว้ในเบราว์เซอร์นี้ · ' +
     esc(session.bankVersion) + '</p></main>';
 }
 function render(answerSelection = null) {
@@ -369,7 +369,7 @@ function startDive(forceNew = false) {
   save.resumeSessionId=null;
   if (!forceNew) {
     const saved = getSaved();
-    if (validSession(saved) && (mode === 'daily' || saved.phase !== 'complete')) {
+    if (surveySession(saved) && (mode === 'daily' || saved.phase !== 'complete')) {
       session = tickSession(saved); view = session.phase === 'complete' ? 'results' : 'play'; persist(); render(); return;
     }
   }
@@ -391,7 +391,7 @@ function changeMode(nextMode) {
   mode = nextMode; closeModal();
   history.pushState({}, '', mode === 'daily' ? '/' : '/unlimited/classic');
   const saved = getSaved();
-  session = validSession(saved) ? saved : null;
+  session = surveySession(saved) ? saved : null;
   view = 'home';
   render(); window.scrollTo({top:0,behavior:'instant'});
 }
@@ -439,18 +439,16 @@ function menuDialog() {
     '<div class="drawer-bottom">one in a krillion.<br><span style="font-size:13px;letter-spacing:1px">A THAI KNOWLEDGE DIVE.</span></div>', true);
 }
 function aboutDialog() {
-  const articles = Object.values(evidence?.articles || {}), count = articles.filter(a => a.status === 'ok').length;
-  const windowText = evidence?.window ? esc(evidence.window.start + ' — ' + evidence.window.end) : 'ยังไม่มีชุดข้อมูลยอดอ่าน';
   openModal('about','About this dive','<div class="body-copy"><p>เกมคำตอบหายากฉบับไทยที่สร้างตามประสบการณ์การเล่นของ ' +
     '<a href="https://krillion.io/" target="_blank" rel="noopener noreferrer">Krillion.io</a> สำหรับเล่นในเครื่อง</p>' +
-    '<p>มี ' + bank.questions.length + ' โจทย์: เรื่องไทย ' + bank.questions.filter(q => q.scope === 'thai').length +
-    ' ข้อ และความรู้ทั่วไป ' + bank.questions.filter(q => q.scope === 'world').length + ' ข้อ แต่ละรอบสุ่มไทย 5 ข้อกับทั่วไป 2 ข้อ</p>' +
-    '<p><strong>คะแนนหมายถึงความคุ้นเคยที่ประเมินไว้</strong> ใช้ข้อมูลอ้างอิง ยอดอ่านบทความภาษาไทยเมื่อมีข้อมูล และการตรวจทานร่วมกัน ไม่ใช่เปอร์เซ็นต์คนไทยที่รู้คำตอบหรือจำนวนผู้เล่นที่ตอบคำนี้</p>' +
-    '<p>คำตอบ 100 คะแนนคือคำตอบพิเศษที่คัดเลือกไว้ ไม่จำเป็นต้องเป็นคำที่มีคนอ่านน้อยที่สุด ส่วน Too Clever คือคำตอบที่ดูหายากแต่เป็นตัวเลือกที่มักนึกถึงกัน</p>' +
-    '<p>อ่านแนวทางจาก <a href="https://krillion.io/faq" target="_blank" rel="noopener noreferrer">FAQ ของผู้สร้างต้นแบบ</a> และดูแหล่งอ้างอิงของแต่ละข้อหลังเฉลย</p>' +
-    '<div class="method-info">คลัง ' + esc(bank.version) + ' · ตรวจเนื้อหา ' + esc(bank.reviewedAt) +
-    '<br>ข้อมูลยอดอ่าน: ' + windowText + '<br>บทความที่มีข้อมูลครบ 12 เดือน: ' + count +
-    ' รายการ<br>ปฏิทินด่าน: America/New_York ตามต้นแบบ · ความคืบหน้าบันทึกในเบราว์เซอร์นี้</div>' +
+    '<p>นำร่อง ' + bank.questions.length + ' โจทย์จากผลสำรวจ: เรื่องไทย ' + bank.questions.filter(q => q.scope === 'thai').length +
+    ' ข้อ และเรื่องทั่วไป ' + bank.questions.filter(q => q.scope === 'world').length +
+    ' ข้อ แต่ละรอบใช้ไทย 5 ข้อกับทั่วไป 2 ข้อ คลังยังเล็กจึงมีโจทย์วนซ้ำ</p>' +
+    '<p>โจทย์เดิม 100 ข้อยังรอตรวจผลสำรวจ จึงยังไม่นำมาใช้คิดคะแนน</p>' +
+    '<p><strong>คะแนนมาจากร้อยละที่รายงานในผลสำรวจ</strong> จัดอันดับเฉพาะตัวเลือกที่ผู้สำรวจเผยแพร่ ร้อยละน้อยกว่าจะได้คะแนนเท่าเดิมหรือมากกว่า คะแนนเป็นแต้มเกม ไม่ใช่ร้อยละของผู้เล่นหรือคนไทยทั้งหมด</p>' +
+    '<p>หากผลสำรวจเผยแพร่เพียงบางคำตอบ เกมจะรับเฉพาะรายการเหล่านั้น คำตอบที่ไม่ปรากฏไม่ได้แปลว่าไม่มีผู้ตอบ ดูกลุ่มตัวอย่าง ช่วงเวลา และแหล่งข้อมูลได้หลังเฉลย</p>' +
+    '<div class="method-info">คลัง ' + esc(bank.version) +
+    '<br>ปฏิทินด่าน: America/New_York ตามต้นแบบ · ความคืบหน้าบันทึกในเบราว์เซอร์นี้</div>' +
     '<p style="font-size:11px;color:#7c9bb6">ภาพฉากและตัวละครสร้างใหม่สำหรับโปรเจกต์นี้ ที่มาและสิทธิ์ของฟอนต์อยู่ใน assets/README.md เกมนี้เป็นโปรเจกต์แยกจาก Krillion.io</p></div>');
 }
 function wardrobeDialog() {
@@ -470,41 +468,42 @@ function wardrobeDialog() {
     '</div><p class="method-info">ตัวละครปลดล็อกจากประวัติการเล่นในเครื่องนี้</p>');
 }
 function historyDialog() {
-  const best = Math.max(0, ...save.history.map(s=>s.score)), gems = save.history.reduce((n,s)=>n+s.results.filter(r=>r.tier==='krillion').length,0);
-  const unfinished=savedSessions(save).filter(s=>s.phase!=='complete').sort((a,b)=>b.startedAt-a.startedAt);
-  openModal('history','Dive log','<div class="history-stats"><div><strong>' + save.history.length +
+  const history=save.history.map((s,i)=>({s,i})).filter(item=>surveySession(item.s));
+  const legacyCount=save.history.length-history.length;
+  const best = Math.max(0, ...history.map(({s})=>s.score)), gems = history.reduce((n,{s})=>n+s.results.filter(r=>r.tier==='krillion').length,0);
+  const unfinished=savedSessions(save).filter(s=>s.phase!=='complete'&&surveySession(s)).sort((a,b)=>b.startedAt-a.startedAt);
+  openModal('history','Dive log','<div class="history-stats"><div><strong>' + history.length +
     '</strong><small>DIVES</small></div><div><strong>' + best + '</strong><small>BEST SCORE</small></div><div><strong>' +
     gems + '</strong><small>KRILLIONS</small></div></div>' +
     (unfinished.length ? '<p class="nav-caption">DIVES IN PROGRESS</p>'+unfinished.map(s=>
       '<button class="history-item" data-resume="'+esc(s.id)+'"><span>'+(s.mode==='daily'?'Daily · '+esc(s.date):'Endless #'+s.run)+
       '<small>เล่นต่อ · ข้อ '+(s.index+1)+'/7'+(s.bankVersion!==bank.version?' · ชุดก่อนหน้า':'')+
       '</small></span><strong>RESUME →</strong></button>').join(''):'') +
-    (save.history.length ? save.history.map((s,i) =>
+    (history.length ? history.map(({s,i}) =>
     '<button class="history-item" data-history="' + i + '"><span>' + (s.mode === 'daily' ? 'Daily · ' + esc(s.date) : 'Endless #' + s.run) +
     '<small>' + s.results.map(r => r.tier ? TIERS[r.tier].emoji : '⬛').join('') + '</small></span><strong>' +
-    number(s.depth) + 'm</strong></button>').join('') : '<p class="empty-history">ยังไม่มีประวัติการดำน้ำ<br>เล่นให้ครบ 7 ข้อ แล้วกลับมาดูผลงานได้ที่นี่</p>'));
+    number(s.depth) + 'm</strong></button>').join('') : '<p class="empty-history">ยังไม่มีประวัติการดำน้ำจากผลสำรวจ<br>เล่นให้ครบ 7 ข้อ แล้วกลับมาดูผลงานได้ที่นี่</p>') +
+    (legacyCount ? '<p class="method-info">ประวัติรุ่นก่อน ' + legacyCount + ' รอบยังเก็บไว้ในเครื่อง แต่คะแนนรุ่นนั้นไม่ได้ใช้ผลสำรวจจึงไม่แสดงรวม</p>' : ''));
 }
 function explainDialog(index) {
   const q = session?.questions[index], result = session?.results[index];
   if (!q || !result) return;
   const answer = q.answers.find(a=>a.id===result.answerId);
-  const item = answer?.wikiTitle ? evidence?.articles?.[answer.wikiTitle] : null;
-  const metric = item?.status === 'ok'
-    ? '<div class="method-info">บทความ: ' + esc(answer.wikiTitle) + '<br>ยอดอ่านรวม 12 เดือน: ' +
-      number(item.totalViews) + ' ครั้ง<br>ค่ามัธยฐานรายเดือน: ' + number(item.medianMonthlyViews) +
-      ' ครั้ง<br>ช่วงข้อมูล: ' + esc(evidence.window.start + ' — ' + evidence.window.end) +
-      '<br><a href="' + safeUrl(item.url) + '" target="_blank" rel="noopener noreferrer">ดูข้อมูลต้นทาง ↗</a></div>' : '';
+  const survey=q.survey;
   openModal('explain','Field notes · ' + (index+1),'<div class="body-copy"><p><strong>' + esc(q.prompt) + '</strong></p><p>' +
-    esc(q.explanation) + '</p>' + (answer ? '<p>คำตอบของคุณ: <strong>' + esc(answer.label) + '</strong></p><p>' +
-    esc(answer.reason) + '</p>' + metric : '') +
-    '<details class="evidence-details"><summary>แหล่งอ้างอิงของโจทย์</summary><ul>' + q.sources.map(s =>
-      '<li><a href="' + safeUrl(s.url) + '" target="_blank" rel="noopener noreferrer">' + esc(s.title) + '</a></li>').join('') + '</ul></details>' +
-    '<div class="method-info">' + (metric
-      ? 'ยอดอ่านเป็นข้อมูลความสนใจต่อบทความ ไม่ใช่สัดส่วนผู้เล่นที่เลือกคำตอบ คะแนนเป็นการประเมินของผู้จัดทำ'
-      : 'คำตอบนี้ยังไม่มีข้อมูลยอดอ่านที่ผูกไว้ คะแนนเป็นการประเมินของผู้จัดทำ ไม่ใช่สถิติผู้เล่น') + '</div>' +
-    '<details class="evidence-details"><summary>ดูคำตอบที่ยอมรับทั้งหมด (' + q.answers.length + ')</summary><div class="answer-bank">' +
-    [...q.answers].sort((a,b)=>TIERS[b.tier].score-TIERS[a.tier].score).map(a => '<div class="bank-row"><span>' + esc(a.label) +
-    '</span><small style="--tier:' + tierColor(a.tier) + '">' + TIERS[a.tier].name + ' · ' + TIERS[a.tier].score + '</small></div>').join('') +
+    esc(survey.sourceQuestion) + '</p>' + (answer ? '<p>คำตอบของคุณ: <strong>' + esc(answer.label) +
+    '</strong> · ร้อยละ ' + esc(answer.percent) + ' ตามผลสำรวจ</p>' : '') +
+    '<div class="method-info">ผู้สำรวจ: ' + esc(survey.publisher) + '<br>ช่วงเก็บข้อมูล: ' + esc(survey.fieldwork) +
+    '<br>กลุ่มตัวอย่าง: ' + esc(survey.population) + '<br>จำนวนตัวอย่างรวม: ' + esc(survey.sampleSizeQualifier || '') + number(survey.sampleSize) +
+    ' คน<br>' + esc(survey.sampleNote) + '<br>' + esc(survey.metric) + '<br>' + esc(survey.coverage) +
+    '<br><a href="' + safeUrl(survey.url) + '" target="_blank" rel="noopener noreferrer">ดูผลสำรวจต้นทาง ↗</a></div>' +
+    '<p>แต้มจัดตามอันดับร้อยละจากมากไปน้อยเฉพาะคำตอบที่เผยแพร่ ค่าเท่ากันได้แต้มเท่ากัน</p>' +
+    '<details class="evidence-details"><summary>ดูคำตอบที่โพลเผยแพร่ (' + q.answers.length + ')</summary><div class="answer-bank">' +
+    [...q.answers].sort((a,b)=>a.percent-b.percent).map(a => {
+      const tier=surveyTier(q,a.id);
+      return '<div class="bank-row"><span>' + esc(a.label) + '</span><small style="--tier:' + tierColor(tier) +
+        '"> ' + esc(a.percent) + '% · ' + TIERS[tier].score + ' PTS</small></div>';
+    }).join('') +
     '</div></details></div>');
 }
 async function copyResult() {
@@ -519,12 +518,14 @@ document.addEventListener('click', async event => {
   }
   const historyItem = event.target.closest('[data-history]');
   if (historyItem) {
-    session = structuredClone(save.history[Number(historyItem.dataset.history)]);
+    const selected=save.history[Number(historyItem.dataset.history)];
+    if (!surveySession(selected)) return;
+    session = structuredClone(selected);
     closeModal(); view = 'history-result'; render(); window.scrollTo({top:0,behavior:'instant'}); return;
   }
   const resumeItem=event.target.closest('[data-resume]');
   if(resumeItem) {
-    const old=savedSessions(save).find(s=>s.id===resumeItem.dataset.resume);
+    const old=savedSessions(save).find(s=>s.id===resumeItem.dataset.resume&&surveySession(s));
     if(!old)return;
     session=tickSession(structuredClone(old));mode=session.mode;view='play';save.resumeSessionId=session.id;
     history.pushState({},'',mode==='daily'?'/':'/unlimited/classic');

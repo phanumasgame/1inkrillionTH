@@ -5,8 +5,10 @@ import { dayKey, TIME_ZONE, TIERS, PREVIEW_MS, ANSWER_MS, selectDaily, selectEnd
   createSession, tickSession, submitAnswer, confirmCorrection, skipRound, nextRound, shareText, validateBank } from '../src/game.js';
 import { readSave, writeSave, emptySave, validSession, dailySlot, prepareSaveForBank,
   currentSavedSession, savedSessions } from '../src/storage.js';
+import { prepareSurveyBank } from '../src/survey.js';
 
-const bank = JSON.parse(await readFile(new URL('../data/questions.json',import.meta.url),'utf8'));
+const catalog = JSON.parse(await readFile(new URL('../data/questions.json',import.meta.url),'utf8'));
+const bank = prepareSurveyBank(JSON.parse(await readFile(new URL('../data/survey-bank.json',import.meta.url),'utf8')));
 const date = '2026-11-17';
 const now = 1794888000000;
 const make = mode => createSession({mode:mode || 'daily',bank,questions:selectDaily(bank,date),date,now});
@@ -19,12 +21,12 @@ const q = {id:'matching-fixture',prompt:'ชื่อจังหวัด',answ
   {id:'trat',label:'ตราด',aliases:['Trat'],tier:'krillion'}
 ]};
 
-test('bank has the promised coverage, tiers and unambiguous canonical names',()=>{
-  assert.deepEqual(validateBank(bank),[]);
-  assert.equal(bank.questions.length,100);
-  assert.equal(bank.questions.filter(q=>q.scope==='thai').length,70);
-  assert.equal(bank.questions.filter(q=>q.scope==='world').length,30);
-  for(const question of bank.questions) for(const answer of question.answers)
+test('the retained draft catalog has the promised coverage and unambiguous canonical names',()=>{
+  assert.deepEqual(validateBank(catalog),[]);
+  assert.equal(catalog.questions.length,100);
+  assert.equal(catalog.questions.filter(q=>q.scope==='thai').length,70);
+  assert.equal(catalog.questions.filter(q=>q.scope==='world').length,30);
+  for(const question of catalog.questions) for(const answer of question.answers)
     assert.equal(matchAnswer(question,answer.label).answer.id,answer.id);
 });
 test('daily is deterministic, independent of input order mutation, with 5 Thai and 2 world prompts',()=>{
@@ -46,14 +48,14 @@ test('daily date uses New York calendar and handles daylight saving',()=>{
 test('endless cycles the 70 Thai and 30 world questions independently',()=>{
   let seen=[],ids=[];
   for(let i=0;i<15;i++){
-    const draw=selectEndless(bank,seen,()=>.42);
+    const draw=selectEndless(catalog,seen,()=>.42);
     seen=draw.seen;ids.push(...draw.questions.map(q=>q.id));
     assert.equal(draw.questions.filter(q=>q.scope==='thai').length,5);
     assert.equal(new Set(draw.questions.map(q=>q.id)).size,7);
     if(i===13) assert.equal(new Set(ids).size,98);
   }
   assert.equal(new Set(ids).size,100);
-  assert.equal(selectEndless(bank,seen,()=>.42).questions.length,7);
+  assert.equal(selectEndless(catalog,seen,()=>.42).questions.length,7);
 });
 test('reviewed aliases and English capitalization match without destroying Thai marks',()=>{
   assert.equal(matchAnswer(q,'  KORAT  ').answer.label,'นครราชสีมา');
@@ -103,7 +105,8 @@ test('unknown entries preserve the deadline, support retries, and obey clear set
 });
 test('correction must be confirmed before deadline and toggle can accept directly',()=>{
   const original=answering();
-  const s={...original,questions:[q,...original.questions.slice(1)]};
+  const fixture={...original.questions[0],...q,answers:q.answers.map((a,i)=>({...a,percent:5-i}))};
+  const s={...original,questions:[fixture,...original.questions.slice(1)]};
   const corrected=submitAnswer(s,'Nakhon Ratchasimx',{corrections:true},now+4000);
   assert.equal(corrected.phase,'correction');assert.equal(corrected.results.length,0);
   assert.equal(confirmCorrection(corrected,now+4100).results[0].label,'นครราชสีมา');
@@ -128,7 +131,7 @@ test('seven gem answers complete at 700 points and 7000m; completed results stay
   }
   assert.equal(s.phase,'complete');assert.equal(s.score,700);assert.equal(s.depth,7000);
   assert.equal(s.results.length,7);assert.equal(nextRound(s,clock+100),s);
-  const saved=JSON.stringify(s);bank.questions[0].answers[0].reason+='';assert.equal(JSON.stringify(s),saved);
+  const saved=JSON.stringify(s);const clone=structuredClone(bank);clone.questions[0].answers[0].percent=1;assert.equal(JSON.stringify(s),saved);
 });
 test('skip records zero and sharing never leaks answers or prompts',()=>{
   const s=skipRound(answering(),now+4000);

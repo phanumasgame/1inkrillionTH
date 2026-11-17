@@ -33,7 +33,7 @@ async function regularFiles(folder, base = '') {
 
 async function main() {
   const sourceFiles = [
-    'index.html', 'styles.css', 'data/questions.json', 'data/evidence.json',
+    'index.html', 'styles.css', 'data/survey-bank.json',
     ...(await regularFiles(join(root, 'src'))).filter(name => name.endsWith('.js')).map(name => 'src/' + name),
     ...(await regularFiles(join(root, 'assets'))).map(name => 'assets/' + name),
   ].sort();

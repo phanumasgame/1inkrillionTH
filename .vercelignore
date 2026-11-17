@@ -9,4 +9,6 @@ docs/
 tests/
 data/archive/
 data/CONTENT-NOTES.md
+data/questions.json
+data/evidence.json
 *.log

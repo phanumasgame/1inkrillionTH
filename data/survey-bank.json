@@ -1,0 +1,781 @@
+{
+  "version": "2026.11.17-survey.1",
+  "language": "th",
+  "scoringMethod": "published-survey-relative-rank-v1",
+  "questions": [
+    {
+      "id": "survey-th-food-2020",
+      "scope": "thai",
+      "theme": "food",
+      "category": "กินอะไรดี",
+      "questionVersion": 1,
+      "prompt": "นึกถึงเมนูยอดฮิตจากโพลอาหารไทยปี 2020",
+      "hint": "สวนดุสิตโพลเผยแพร่ 5 กลุ่มคำตอบในรายงาน",
+      "survey": {
+        "publisher": "สวนดุสิตโพล มหาวิทยาลัยสวนดุสิต",
+        "fieldwork": "1–3 ธันวาคม 2563",
+        "population": "ประชาชนทั่วประเทศที่ตอบแบบสำรวจออนไลน์",
+        "sampleSize": 1144,
+        "sampleNote": "จำนวนตัวอย่างรวมของโพล รายงานระบุว่าตอบได้มากกว่าหนึ่งเรื่อง",
+        "sourceQuestion": "หัวข้อในรายงาน: 5 เมนูยอดฮิตของคนไทยในปี 2020",
+        "metric": "ร้อยละที่รายงานสำหรับแต่ละกลุ่มคำตอบ",
+        "coverage": "เผยแพร่เฉพาะ 5 อันดับ; คำตอบอื่นไม่ได้หมายถึงศูนย์",
+        "url": "https://dusitpoll.dusit.ac.th/UPLOAD_FILES/POLL/2563/PS-2563-1607216235.pdf"
+      },
+      "answers": [
+        {
+          "id": "basil-rice",
+          "label": "ข้าวกะเพรา",
+          "aliases": [
+            "ข้าวกระเพรา",
+            "ข้าวผัดกะเพรา"
+          ],
+          "percent": 57.31
+        },
+        {
+          "id": "noodles",
+          "label": "ก๋วยเตี๋ยว",
+          "aliases": [],
+          "percent": 51.09
+        },
+        {
+          "id": "papaya-salad",
+          "label": "ส้มตำ",
+          "aliases": [
+            "som tam"
+          ],
+          "percent": 42.61
+        },
+        {
+          "id": "chili-vegetables",
+          "label": "น้ำพริก/ผัก",
+          "aliases": [
+            "น้ำพริกผัก",
+            "น้ำพริกกับผัก"
+          ],
+          "percent": 39.37
+        },
+        {
+          "id": "pork-rice",
+          "label": "ข้าวเหนียวหมูปิ้ง",
+          "aliases": [
+            "หมูปิ้งข้าวเหนียว"
+          ],
+          "percent": 38.32
+        }
+      ]
+    },
+    {
+      "id": "survey-th-fruit-regular-2026",
+      "scope": "thai",
+      "theme": "fruit",
+      "category": "ผลไม้ติดบ้าน",
+      "questionVersion": 1,
+      "prompt": "ผลไม้ที่โพลกระทรวงพาณิชย์พบว่าคนนิยมกินเป็นประจำ ปี 2569",
+      "hint": "เลือกผลไม้จากกลุ่มที่หาซื้อได้ตลอดปี",
+      "survey": {
+        "publisher": "สำนักงานนโยบายและยุทธศาสตร์การค้า กระทรวงพาณิชย์",
+        "fieldwork": "พฤษภาคม 2569",
+        "population": "ผู้ตอบแบบสำรวจความคิดเห็นทั่วประเทศ",
+        "sampleSize": 5433,
+        "sampleNote": "จำนวนตัวอย่างรวมของการสำรวจ; รายงานไม่ได้ระบุฐานย่อยของคำถามผลไม้",
+        "sourceQuestion": "หัวข้อในรายงาน: ผลไม้ที่ประชาชนนิยมบริโภคเป็นประจำและหาซื้อได้ตลอดทั้งปี",
+        "metric": "ร้อยละที่รายงานสำหรับผลไม้แต่ละชนิด",
+        "coverage": "แสดงชนิดที่รายงานระบุตัวเลข; ผลไม้อื่นไม่ได้หมายถึงศูนย์",
+        "url": "https://www.tpso.go.th/news/2607-0000000001"
+      },
+      "answers": [
+        {
+          "id": "orange",
+          "label": "ส้ม",
+          "aliases": [],
+          "percent": 31.66
+        },
+        {
+          "id": "watermelon",
+          "label": "แตงโม",
+          "aliases": [],
+          "percent": 28.14
+        },
+        {
+          "id": "banana",
+          "label": "กล้วย",
+          "aliases": [],
+          "percent": 21.39
+        },
+        {
+          "id": "mango",
+          "label": "มะม่วง",
+          "aliases": [],
+          "percent": 19.69
+        },
+        {
+          "id": "guava",
+          "label": "ฝรั่ง",
+          "aliases": [],
+          "percent": 15.26
+        },
+        {
+          "id": "pineapple",
+          "label": "สับปะรด",
+          "aliases": [],
+          "percent": 15.07
+        },
+        {
+          "id": "apple",
+          "label": "แอปเปิล",
+          "aliases": [
+            "แอปเปิ้ล"
+          ],
+          "percent": 14.14
+        },
+        {
+          "id": "grape",
+          "label": "องุ่น",
+          "aliases": [],
+          "percent": 13.51
+        },
+        {
+          "id": "papaya",
+          "label": "มะละกอสุก",
+          "aliases": [],
+          "percent": 11.15
+        }
+      ]
+    },
+    {
+      "id": "survey-th-fruit-seasonal-2026",
+      "scope": "thai",
+      "theme": "fruit",
+      "category": "ผลไม้ตามฤดู",
+      "questionVersion": 1,
+      "prompt": "ผลไม้ตามฤดูกาลที่คนในโพลปี 2569 นิยมกิน",
+      "hint": "โพลกระทรวงพาณิชย์เผยแพร่ตัวเลข 5 ชนิด",
+      "survey": {
+        "publisher": "สำนักงานนโยบายและยุทธศาสตร์การค้า กระทรวงพาณิชย์",
+        "fieldwork": "พฤษภาคม 2569",
+        "population": "ผู้ตอบแบบสำรวจความคิดเห็นทั่วประเทศ",
+        "sampleSize": 5433,
+        "sampleNote": "จำนวนตัวอย่างรวมของการสำรวจ; รายงานไม่ได้ระบุฐานย่อยของคำถามผลไม้ตามฤดูกาล",
+        "sourceQuestion": "หัวข้อในรายงาน: ผลไม้ตามฤดูกาลที่ได้รับความนิยม",
+        "metric": "ร้อยละที่รายงานสำหรับผลไม้แต่ละชนิด",
+        "coverage": "แสดงชนิดที่รายงานระบุตัวเลข; ผลไม้อื่นไม่ได้หมายถึงศูนย์",
+        "url": "https://www.tpso.go.th/news/2607-0000000001"
+      },
+      "answers": [
+        {
+          "id": "durian",
+          "label": "ทุเรียน",
+          "aliases": [],
+          "percent": 45.43
+        },
+        {
+          "id": "rambutan",
+          "label": "เงาะ",
+          "aliases": [],
+          "percent": 32.62
+        },
+        {
+          "id": "mangosteen",
+          "label": "มังคุด",
+          "aliases": [],
+          "percent": 28.4
+        },
+        {
+          "id": "longan",
+          "label": "ลำไย",
+          "aliases": [],
+          "percent": 12.2
+        },
+        {
+          "id": "longkong",
+          "label": "ลองกอง",
+          "aliases": [],
+          "percent": 7.97
+        }
+      ]
+    },
+    {
+      "id": "survey-th-pop-singers-2025",
+      "scope": "thai",
+      "theme": "music",
+      "category": "เปิดเพลงกัน",
+      "questionVersion": 1,
+      "prompt": "นึกถึงนักร้องไทยสากลจากโพลที่สุดแห่งปี 2568",
+      "hint": "ผลสำรวจเผยแพร่ 5 อันดับของปีนั้น",
+      "survey": {
+        "publisher": "สวนดุสิตโพล มหาวิทยาลัยสวนดุสิต",
+        "fieldwork": "15–26 ธันวาคม 2568",
+        "population": "ผู้ตอบทั่วประเทศ ผ่านออนไลน์และภาคสนาม",
+        "sampleSize": 10218,
+        "sampleNote": "จำนวนตัวอย่างรวมของโพล; รายงานไม่ได้ระบุฐานย่อยของแต่ละคำถาม",
+        "sourceQuestion": "หัวข้อในรายงาน: นักร้องเพลงไทยสากลที่สุดแห่งปี 2568",
+        "metric": "ร้อยละของแต่ละอันดับที่รายงาน",
+        "coverage": "เผยแพร่เฉพาะ 5 อันดับ; ผู้ที่ไม่อยู่ในรายการไม่ได้หมายถึงศูนย์",
+        "url": "https://dusitpoll.dusit.ac.th/UPLOAD_FILES/POLL/2568/PS-2568-1767143200.pdf"
+      },
+      "answers": [
+        {
+          "id": "jeff",
+          "label": "เจฟ ซาเตอร์",
+          "aliases": [
+            "เจฟ",
+            "Jeff Satur"
+          ],
+          "percent": 40.5
+        },
+        {
+          "id": "ink",
+          "label": "อิ๊งค์ วรันธร",
+          "aliases": [
+            "อิ๊งค์",
+            "Ink Waruntorn"
+          ],
+          "percent": 19.23
+        },
+        {
+          "id": "nont",
+          "label": "นนท์ ธนนท์",
+          "aliases": [
+            "นนท์",
+            "Nont Tanont"
+          ],
+          "percent": 14.25
+        },
+        {
+          "id": "pp",
+          "label": "พีพี กฤษฏ์",
+          "aliases": [
+            "พีพี",
+            "PP Krit"
+          ],
+          "percent": 14.11
+        },
+        {
+          "id": "nunew",
+          "label": "นุนิว ชวรินทร์",
+          "aliases": [
+            "นุนิว",
+            "NuNew"
+          ],
+          "percent": 11.91
+        }
+      ]
+    },
+    {
+      "id": "survey-th-lukthung-2025",
+      "scope": "thai",
+      "theme": "music",
+      "category": "เปิดเพลงกัน",
+      "questionVersion": 1,
+      "prompt": "นึกถึงนักร้องลูกทุ่งจากโพลที่สุดแห่งปี 2568",
+      "hint": "ผลสำรวจเผยแพร่ 5 อันดับของปีนั้น",
+      "survey": {
+        "publisher": "สวนดุสิตโพล มหาวิทยาลัยสวนดุสิต",
+        "fieldwork": "15–26 ธันวาคม 2568",
+        "population": "ผู้ตอบทั่วประเทศ ผ่านออนไลน์และภาคสนาม",
+        "sampleSize": 10218,
+        "sampleNote": "จำนวนตัวอย่างรวมของโพล; รายงานไม่ได้ระบุฐานย่อยของแต่ละคำถาม",
+        "sourceQuestion": "หัวข้อในรายงาน: นักร้องลูกทุ่งที่สุดแห่งปี 2568",
+        "metric": "ร้อยละของแต่ละอันดับที่รายงาน",
+        "coverage": "เผยแพร่เฉพาะ 5 อันดับ; ผู้ที่ไม่อยู่ในรายการไม่ได้หมายถึงศูนย์",
+        "url": "https://dusitpoll.dusit.ac.th/UPLOAD_FILES/POLL/2568/PS-2568-1767143200.pdf"
+      },
+      "answers": [
+        {
+          "id": "kantong",
+          "label": "ก้านตอง ทุ่งเงิน",
+          "aliases": [
+            "ก้านตอง"
+          ],
+          "percent": 35.66
+        },
+        {
+          "id": "tai",
+          "label": "ต่าย อรทัย",
+          "aliases": [
+            "ต่าย"
+          ],
+          "percent": 20.57
+        },
+        {
+          "id": "kong",
+          "label": "ก้อง ห้วยไร่",
+          "aliases": [
+            "ก้อง"
+          ],
+          "percent": 17.47
+        },
+        {
+          "id": "ja",
+          "label": "จ๊ะ นงผณี",
+          "aliases": [
+            "จ๊ะ"
+          ],
+          "percent": 15.01
+        },
+        {
+          "id": "lamiya",
+          "label": "ลำไย ไหทองคำ",
+          "aliases": [
+            "ลำไย"
+          ],
+          "percent": 11.29
+        }
+      ]
+    },
+    {
+      "id": "survey-th-actors-2025",
+      "scope": "thai",
+      "theme": "screen",
+      "category": "หน้าจอวันหยุด",
+      "questionVersion": 1,
+      "prompt": "ดาราจากโพลที่สุดแห่งปี 2568 สักคน",
+      "hint": "ผลสำรวจเผยแพร่ 5 อันดับของปีนั้น",
+      "survey": {
+        "publisher": "สวนดุสิตโพล มหาวิทยาลัยสวนดุสิต",
+        "fieldwork": "15–26 ธันวาคม 2568",
+        "population": "ผู้ตอบทั่วประเทศ ผ่านออนไลน์และภาคสนาม",
+        "sampleSize": 10218,
+        "sampleNote": "จำนวนตัวอย่างรวมของโพล; รายงานไม่ได้ระบุฐานย่อยของแต่ละคำถาม",
+        "sourceQuestion": "หัวข้อในรายงาน: ดาราที่สุดแห่งปี 2568",
+        "metric": "ร้อยละของแต่ละอันดับที่รายงาน",
+        "coverage": "เผยแพร่เฉพาะ 5 อันดับ; ผู้ที่ไม่อยู่ในรายการไม่ได้หมายถึงศูนย์",
+        "url": "https://dusitpoll.dusit.ac.th/UPLOAD_FILES/POLL/2568/PS-2568-1767143200.pdf"
+      },
+      "answers": [
+        {
+          "id": "lingling",
+          "label": "หลิง หลิง คอง",
+          "aliases": [
+            "หลิงหลิง",
+            "Lingling Kwong"
+          ],
+          "percent": 37.37
+        },
+        {
+          "id": "orm",
+          "label": "ออม กรณ์นภัส",
+          "aliases": [
+            "ออม",
+            "Orm Kornnaphat"
+          ],
+          "percent": 32.58
+        },
+        {
+          "id": "nadech",
+          "label": "ณเดชน์ คูกิมิยะ",
+          "aliases": [
+            "ณเดชน์",
+            "Nadech"
+          ],
+          "percent": 15
+        },
+        {
+          "id": "bella",
+          "label": "เบลล่า ราณี",
+          "aliases": [
+            "เบลล่า",
+            "Bella Ranee"
+          ],
+          "percent": 8.42
+        },
+        {
+          "id": "bow",
+          "label": "โบว์ เมลดา",
+          "aliases": [
+            "โบว์",
+            "Bow Maylada"
+          ],
+          "percent": 6.63
+        }
+      ]
+    },
+    {
+      "id": "survey-th-athletes-2025",
+      "scope": "thai",
+      "theme": "sport",
+      "category": "ขยับร่างกาย",
+      "questionVersion": 1,
+      "prompt": "นักกีฬาไทยจากโพลที่สุดแห่งปี 2568 สักคน",
+      "hint": "ผลสำรวจเผยแพร่ 5 อันดับของปีนั้น",
+      "survey": {
+        "publisher": "สวนดุสิตโพล มหาวิทยาลัยสวนดุสิต",
+        "fieldwork": "15–26 ธันวาคม 2568",
+        "population": "ผู้ตอบทั่วประเทศ ผ่านออนไลน์และภาคสนาม",
+        "sampleSize": 10218,
+        "sampleNote": "จำนวนตัวอย่างรวมของโพล; รายงานไม่ได้ระบุฐานย่อยของแต่ละคำถาม",
+        "sourceQuestion": "หัวข้อในรายงาน: นักกีฬาที่สุดแห่งปี 2568",
+        "metric": "ร้อยละของแต่ละอันดับที่รายงาน",
+        "coverage": "เผยแพร่เฉพาะ 5 อันดับ; ผู้ที่ไม่อยู่ในรายการไม่ได้หมายถึงศูนย์",
+        "url": "https://dusitpoll.dusit.ac.th/UPLOAD_FILES/POLL/2568/PS-2568-1767143200.pdf"
+      },
+      "answers": [
+        {
+          "id": "ratchanok",
+          "label": "เมย์ รัชนก",
+          "aliases": [
+            "รัชนก อินทนนท์",
+            "เมย์"
+          ],
+          "percent": 29.56
+        },
+        {
+          "id": "kunlavut",
+          "label": "วิว กุลวุฒิ",
+          "aliases": [
+            "กุลวุฒิ วิทิตศานต์",
+            "วิว"
+          ],
+          "percent": 27.68
+        },
+        {
+          "id": "puripol",
+          "label": "บิว ภูริพล",
+          "aliases": [
+            "ภูริพล บุญสอน",
+            "บิว"
+          ],
+          "percent": 15.98
+        },
+        {
+          "id": "buakaw",
+          "label": "บัวขาว บัญชาเมฆ",
+          "aliases": [
+            "บัวขาว"
+          ],
+          "percent": 13.62
+        },
+        {
+          "id": "chatchu-on",
+          "label": "ชัชชุอร โมกศรี",
+          "aliases": [
+            "ชัชชุอร",
+            "บุ๋มบิ๋ม"
+          ],
+          "percent": 13.16
+        }
+      ]
+    },
+    {
+      "id": "survey-th-food-identity-2022",
+      "scope": "thai",
+      "theme": "food",
+      "category": "สำรับไทย",
+      "questionVersion": 1,
+      "prompt": "โพลปี 2565 ยกเมนูไหนว่าเป็นเอกลักษณ์อาหารไทย?",
+      "hint": "เลือกจาก 5 อันดับที่โพลเผยแพร่",
+      "survey": {
+        "publisher": "สวนดุสิตโพล มหาวิทยาลัยสวนดุสิต",
+        "fieldwork": "19–24 พฤศจิกายน 2565",
+        "population": "ประชาชนทั่วประเทศที่ตอบแบบสำรวจออนไลน์",
+        "sampleSize": 1044,
+        "sampleNote": "จำนวนตัวอย่างรวมของโพล; รายงานไม่ได้ระบุฐานย่อยของคำถาม",
+        "sourceQuestion": "หัวข้อในรายงาน: 5 อันดับเมนูอาหารไทยที่เป็นเอกลักษณ์ไทย",
+        "metric": "ร้อยละที่รายงานสำหรับแต่ละเมนู",
+        "coverage": "เผยแพร่เฉพาะ 5 อันดับ; เมนูอื่นไม่ได้หมายถึงศูนย์",
+        "url": "https://dusitpoll.dusit.ac.th/UPLOAD_FILES/POLL/2565/PS-2565-1669519887.pdf"
+      },
+      "answers": [
+        {
+          "id": "tom-yum",
+          "label": "ต้มยำกุ้ง",
+          "aliases": [],
+          "percent": 57.65
+        },
+        {
+          "id": "pad-thai",
+          "label": "ผัดไทย",
+          "aliases": [],
+          "percent": 33.17
+        },
+        {
+          "id": "som-tam",
+          "label": "ส้มตำ",
+          "aliases": [],
+          "percent": 23.89
+        },
+        {
+          "id": "green-curry",
+          "label": "แกงเขียวหวาน",
+          "aliases": [],
+          "percent": 22.11
+        },
+        {
+          "id": "massaman",
+          "label": "แกงมัสมั่น",
+          "aliases": [
+            "มัสมั่น"
+          ],
+          "percent": 13.23
+        }
+      ]
+    },
+    {
+      "id": "survey-th-travel-2020",
+      "scope": "thai",
+      "theme": "travel",
+      "category": "เที่ยวไทย",
+      "questionVersion": 1,
+      "prompt": "จังหวัดไหนติดโพลคนไทยอยากไปเที่ยวส่งท้ายปี 2020?",
+      "hint": "สวนดุสิตโพลเผยแพร่ 5 จังหวัด",
+      "survey": {
+        "publisher": "สวนดุสิตโพล มหาวิทยาลัยสวนดุสิต",
+        "fieldwork": "4–10 ธันวาคม 2563",
+        "population": "ประชาชนทั่วประเทศที่ตอบแบบสำรวจออนไลน์",
+        "sampleSize": 1277,
+        "sampleNote": "จำนวนตัวอย่างรวมของโพล รายงานระบุว่าตอบได้มากกว่าหนึ่งเรื่อง",
+        "sourceQuestion": "หัวข้อในรายงาน: 5 จังหวัดยอดฮิตที่คนไทยอยากไปท่องเที่ยวมากที่สุด",
+        "metric": "ร้อยละที่รายงานสำหรับแต่ละจังหวัด",
+        "coverage": "เผยแพร่เฉพาะ 5 อันดับ; จังหวัดอื่นไม่ได้หมายถึงศูนย์",
+        "url": "https://dusitpoll.dusit.ac.th/UPLOAD_FILES/POLL/2563/PS-2563-1607921450.pdf"
+      },
+      "answers": [
+        {
+          "id": "chiang-mai",
+          "label": "เชียงใหม่",
+          "aliases": [],
+          "percent": 31.67
+        },
+        {
+          "id": "bangkok",
+          "label": "กรุงเทพมหานคร",
+          "aliases": [
+            "กรุงเทพ",
+            "กรุงเทพฯ",
+            "กทม"
+          ],
+          "percent": 22.77
+        },
+        {
+          "id": "chonburi",
+          "label": "ชลบุรี",
+          "aliases": [],
+          "percent": 20.42
+        },
+        {
+          "id": "nan",
+          "label": "น่าน",
+          "aliases": [],
+          "percent": 12.83
+        },
+        {
+          "id": "chiang-rai",
+          "label": "เชียงราย",
+          "aliases": [],
+          "percent": 12.31
+        }
+      ]
+    },
+    {
+      "id": "survey-media-influence-th-2024",
+      "scope": "world",
+      "theme": "media",
+      "category": "กิน เที่ยว ช็อป",
+      "questionVersion": 1,
+      "prompt": "โพลปี 2567 อะไรมีผลต่อการเลือกแหล่งกิน เที่ยว หรือช็อป?",
+      "hint": "ตอบเป็นประเภทสื่อหรือแหล่งคำแนะนำ",
+      "survey": {
+        "publisher": "สำนักงานนโยบายและยุทธศาสตร์การค้า กระทรวงพาณิชย์",
+        "fieldwork": "กุมภาพันธ์ 2567",
+        "population": "ผู้ตอบแบบสำรวจความคิดเห็นจากทุกอำเภอทั่วประเทศ",
+        "sampleSize": 5446,
+        "sampleNote": "จำนวนตัวอย่างรวม; ผู้ตอบเลือกได้ 3 ข้อต่อคำถาม",
+        "sourceQuestion": "หัวข้อในรายงาน: ปัจจัยที่ทำให้ผู้บริโภคตัดสินใจเลือกแหล่งสำหรับกิน เที่ยว และช็อปปิง",
+        "metric": "ร้อยละของผู้ตอบทั้งหมดที่เลือกรายการนั้น",
+        "coverage": "เผยแพร่ 5 อันดับแรก; คำตอบอื่นไม่ได้หมายถึงศูนย์",
+        "url": "https://tpso.go.th/news/2403-0000000018"
+      },
+      "answers": [
+        {
+          "id": "reviews",
+          "label": "รีวิวผู้ใช้จริง",
+          "aliases": [
+            "รีวิวจากผู้ใช้จริง",
+            "รีวิวลูกค้า"
+          ],
+          "percent": 40.89
+        },
+        {
+          "id": "advertising",
+          "label": "โฆษณา",
+          "aliases": [
+            "โฆษณาผ่านสื่อ"
+          ],
+          "percent": 40.89
+        },
+        {
+          "id": "word-of-mouth",
+          "label": "คำบอกต่อจากคนใกล้ชิด",
+          "aliases": [
+            "บอกต่อจากคนใกล้ชิด",
+            "คนใกล้ชิดบอกต่อ"
+          ],
+          "percent": 39.81
+        },
+        {
+          "id": "influencer",
+          "label": "รีวิวอินฟลูเอนเซอร์",
+          "aliases": [
+            "รีวิวจากอินฟลูเอนเซอร์",
+            "อินฟลูเอนเซอร์"
+          ],
+          "percent": 39.02
+        },
+        {
+          "id": "media-show",
+          "label": "รายการแนะนำผ่านสื่อ",
+          "aliases": [
+            "รายการแนะนำ"
+          ],
+          "percent": 25.69
+        }
+      ]
+    },
+    {
+      "id": "survey-cooking-learning-2020",
+      "scope": "world",
+      "theme": "learning",
+      "category": "เข้าครัว",
+      "questionVersion": 1,
+      "prompt": "โพลปี 2020 สนใจเรียนทำอาหารจากช่องทางไหน?",
+      "hint": "รายงานเผยแพร่ 5 กลุ่มช่องทาง",
+      "survey": {
+        "publisher": "สวนดุสิตโพล มหาวิทยาลัยสวนดุสิต",
+        "fieldwork": "1–3 ธันวาคม 2563",
+        "population": "ประชาชนทั่วประเทศที่ตอบแบบสำรวจออนไลน์",
+        "sampleSize": 1144,
+        "sampleNote": "จำนวนตัวอย่างรวมของโพล รายงานระบุว่าตอบได้มากกว่าหนึ่งเรื่อง",
+        "sourceQuestion": "หัวข้อในรายงาน: แหล่งเรียนรู้เกี่ยวกับอาหารที่สนใจมากที่สุด",
+        "metric": "ร้อยละที่รายงานสำหรับแต่ละกลุ่มช่องทาง",
+        "coverage": "เผยแพร่ 5 อันดับ; ช่องทางอื่นไม่ได้หมายถึงศูนย์",
+        "url": "https://dusitpoll.dusit.ac.th/UPLOAD_FILES/POLL/2563/PS-2563-1607216235.pdf"
+      },
+      "answers": [
+        {
+          "id": "youtube",
+          "label": "ยูทูบหรือคลิปสอนทำอาหาร",
+          "aliases": [
+            "ยูทูบ",
+            "youtube",
+            "คลิปสอนทำอาหาร"
+          ],
+          "percent": 67.68
+        },
+        {
+          "id": "family",
+          "label": "ครอบครัว ญาติ หรือเพื่อน",
+          "aliases": [
+            "ครอบครัว",
+            "ญาติ",
+            "เพื่อน"
+          ],
+          "percent": 36.07
+        },
+        {
+          "id": "books",
+          "label": "ตำราอาหาร",
+          "aliases": [
+            "ตำรา",
+            "หนังสือทำอาหาร"
+          ],
+          "percent": 29.64
+        },
+        {
+          "id": "chef",
+          "label": "เรียนจากพ่อครัวหรือแม่ครัวโดยตรง",
+          "aliases": [
+            "พ่อครัว",
+            "แม่ครัว",
+            "เชฟ"
+          ],
+          "percent": 24.73
+        },
+        {
+          "id": "school",
+          "label": "สถานฝึกอบรม",
+          "aliases": [
+            "ฝึกอบรม",
+            "โรงเรียนสอนทำอาหาร"
+          ],
+          "percent": 17.14
+        }
+      ]
+    },
+    {
+      "id": "survey-daily-us-2025",
+      "scope": "world",
+      "theme": "everyday",
+      "category": "รอบโลก",
+      "questionVersion": 1,
+      "prompt": "สำรวจสหรัฐฯ ปี 2025 คนทำกิจกรรมอะไรในแต่ละวัน?",
+      "hint": "เลือกกิจกรรมจากตารางการใช้เวลา อายุ 15 ปีขึ้นไป",
+      "survey": {
+        "publisher": "U.S. Bureau of Labor Statistics, American Time Use Survey",
+        "fieldwork": "ปี 2025",
+        "population": "ประชากรพลเรือนสหรัฐอเมริกา อายุ 15 ปีขึ้นไป",
+        "sampleSize": 6100,
+        "sampleSizeQualifier": "ประมาณ ",
+        "sampleNote": "สัมภาษณ์ประมาณ 6,100 คน; ไม่เก็บข้อมูลช่วง 30 ก.ย.–11 พ.ย. และถ่วงน้ำหนักข้อมูลไตรมาส 4 จากช่วงที่เก็บได้",
+        "sourceQuestion": "ตาราง 1: กิจกรรมหลักและร้อยละเฉลี่ยของประชากรที่ทำกิจกรรมนั้นต่อวัน",
+        "metric": "ประมาณการถ่วงน้ำหนักร้อยละของประชากรสหรัฐฯ ที่ทำกิจกรรมในวันเฉลี่ย ไม่ใช่ผลสำรวจคนไทย",
+        "coverage": "คัดบางกลุ่มกิจกรรมจากตาราง; กิจกรรมอื่นไม่ได้หมายถึงศูนย์",
+        "url": "https://www.bls.gov/news.release/atus.t01.htm"
+      },
+      "answers": [
+        {
+          "id": "tv",
+          "label": "ดูโทรทัศน์",
+          "aliases": [
+            "ดูทีวี",
+            "ทีวี"
+          ],
+          "percent": 74.3
+        },
+        {
+          "id": "cook",
+          "label": "เตรียมอาหารและเก็บล้าง",
+          "aliases": [
+            "ทำอาหารและเก็บล้าง"
+          ],
+          "percent": 65.2
+        },
+        {
+          "id": "work",
+          "label": "ทำงาน",
+          "aliases": [],
+          "percent": 39.6
+        },
+        {
+          "id": "housework",
+          "label": "ทำงานบ้าน",
+          "aliases": [],
+          "percent": 36.1
+        },
+        {
+          "id": "shopping",
+          "label": "ซื้อสินค้า",
+          "aliases": [],
+          "percent": 34.8
+        },
+        {
+          "id": "socialize",
+          "label": "เข้าสังคมและสื่อสาร",
+          "aliases": [
+            "เข้าสังคม"
+          ],
+          "percent": 30.4
+        },
+        {
+          "id": "exercise",
+          "label": "เล่นกีฬาและออกกำลังกาย",
+          "aliases": [
+            "ออกกำลังกาย",
+            "เล่นกีฬา"
+          ],
+          "percent": 23.4
+        }
+      ]
+    }
+  ]
+}

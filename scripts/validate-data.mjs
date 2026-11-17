@@ -1,8 +1,11 @@
 import { readFile } from 'node:fs/promises';
 import { validateBank, matchAnswer, TIERS } from '../src/game.js';
+import { validateSurveyBank } from '../src/survey.js';
 const root = new URL('../', import.meta.url);
 const bank = JSON.parse(await readFile(new URL('data/questions.json', root), 'utf8'));
 const errors = validateBank(bank);
+const active = JSON.parse(await readFile(new URL('data/survey-bank.json', root), 'utf8'));
+errors.push(...validateSurveyBank(active));
 if (bank.questions.length !== 100) errors.push('Bank must have 100 questions');
 if (bank.questions.filter(q => q.scope === 'thai').length !== 70) errors.push('Bank must have 70 Thai questions');
 if (bank.questions.filter(q => q.scope === 'world').length !== 30) errors.push('Bank must have 30 world questions');
@@ -35,14 +38,14 @@ try {
     }
   }
 } catch (error) {
-  if (error.code === 'ENOENT') process.stdout.write('Evidence snapshot is not present yet; scoring remains editorial.\n');
+  if (error.code === 'ENOENT') process.stdout.write('Legacy Wikipedia evidence snapshot is not present; it is not used for scoring.\n');
   else errors.push('Cannot validate evidence: ' + error.message);
 }
 if (errors.length) {
   for (const error of errors) process.stderr.write('FAIL: ' + error + '\n');
   process.exitCode = 1;
 } else {
-  process.stdout.write('Validated ' + bank.questions.length + ' questions, ' +
-    bank.questions.reduce((sum,q)=>sum+q.answers.length,0) + ' answers, ' + Object.keys(TIERS).length + ' tiers and ' +
+  process.stdout.write('Validated ' + active.questions.length + ' survey questions and ' + bank.questions.length + ' retained draft questions, ' +
+    bank.questions.reduce((sum,q)=>sum+q.answers.length,0) + ' draft answers, ' + Object.keys(TIERS).length + ' historical tier definitions and ' +
     Object.keys(audio.events).length + ' audio cues.\n');
 }

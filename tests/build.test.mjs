@@ -29,7 +29,7 @@ async function fixture(t) {
     'src/app.js': 'export const game = true;', 'src/old.js': 'export const old = true;',
     'src/notes.md': 'not runtime', 'assets/audio-cues.json': '{}',
     'assets/tiers/krillion.png': 'sprite', 'data/questions.json': '{"version":"test"}',
-    'data/evidence.json': '{"articles":{}}', 'data/archive/old.json': 'archive',
+    'data/evidence.json': '{"articles":{}}', 'data/survey-bank.json': '{"version":"survey"}', 'data/archive/old.json': 'archive',
     'docs/research.md': 'research'
   })) await writeFile(join(temporary, file), contents);
   return temporary;
@@ -39,7 +39,9 @@ test('the static build contains runtime files only and removes obsolete generate
   const work = await fixture(t), run = () => exec(process.execPath, [join(work, 'scripts/build.mjs')]);
   await run();
   assert.equal(await readFile(join(work, 'dist/index.html'), 'utf8'), '<html>game</html>');
-  assert.equal(await readFile(join(work, 'dist/data/questions.json'), 'utf8'), '{"version":"test"}');
+  assert.equal(await readFile(join(work, 'dist/data/survey-bank.json'), 'utf8'), '{"version":"survey"}');
+  await assert.rejects(readFile(join(work, 'dist/data/questions.json')), { code:'ENOENT' });
+  await assert.rejects(readFile(join(work, 'dist/data/evidence.json')), { code:'ENOENT' });
   await assert.rejects(readFile(join(work, 'dist/data/archive/old.json')), { code:'ENOENT' });
   await assert.rejects(readFile(join(work, 'dist/docs/research.md')), { code:'ENOENT' });
   await assert.rejects(readFile(join(work, 'dist/src/notes.md')), { code:'ENOENT' });

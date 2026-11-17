@@ -1,17 +1,20 @@
 import { descentDuration } from './descent.js';
+import { normalize, answerForms } from './answers.js';
+import { SURVEY_SCORING, SURVEY_TIERS, isSurveySession, surveyTier, validateSurveyBank, validateSurveyQuestion } from './survey.js';
+export { normalize, answerForms } from './answers.js';
 
 export const ANSWER_MS = 25_000;
 export const PREVIEW_MS = 3_000;
 export const TIME_ZONE = 'America/New_York';
 export const TIERS = Object.freeze({
-  plankton: { name: 'Plankton', score: 10, emoji: '🫧', color: '#88b0c5', blurb: 'The answer everyone blurts out.' },
+  plankton: { name: 'Plankton', score: 10, emoji: '🫧', color: '#88b0c5', blurb: 'Near the top of the published survey results.' },
   tooclever: { name: 'Too Clever', score: 15, emoji: '🤡', color: '#dc8fe5', blurb: 'The famously obscure pick.' },
-  schooler: { name: 'Schooler', score: 30, emoji: '🐟', color: '#4cdbf1', blurb: 'Solid. Swims with the school.' },
-  rare: { name: 'Rare', score: 60, emoji: '🦑', color: '#72e6b0', blurb: 'Genuinely uncommon. Nice pull.' },
-  deepcut: { name: 'Deep Cut', score: 85, emoji: '🏮', color: '#c8a1f1', blurb: 'True obscurity. Few go this deep.' },
-  krillion: { name: 'One in a Krillion', score: 100, emoji: '🌟', color: '#ffe387', blurb: 'The designated gem. Trench floor.' }
+  schooler: { name: 'Schooler', score: 30, emoji: '🐟', color: '#4cdbf1', blurb: 'Ranked from the published survey choices.' },
+  rare: { name: 'Rare', score: 60, emoji: '🦑', color: '#72e6b0', blurb: 'A lower-ranked published survey choice.' },
+  deepcut: { name: 'Deep Cut', score: 85, emoji: '🏮', color: '#c8a1f1', blurb: 'Near the bottom of the published list.' },
+  krillion: { name: 'One in a Krillion', score: 100, emoji: '🌟', color: '#ffe387', blurb: 'The lowest percentage in the published list.' }
 });
-export const TIER_ORDER = Object.keys(TIERS);
+export const TIER_ORDER = SURVEY_TIERS;
 
 export function dayKey(now = Date.now(), zone = TIME_ZONE) {
   return new Intl.DateTimeFormat('en-CA', { timeZone: zone, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(now));
@@ -136,14 +139,6 @@ export function selectEndless(bank, seen = [], rng = Math.random) {
   nextSeen.push(...picked.map(q => q.id));
   return { questions: picked, seen: [...new Set(nextSeen)] };
 }
-export function normalize(text) {
-  return String(text).normalize('NFC').trim().toLocaleLowerCase('th-TH')
-    .replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/[“”"‘’]/g, '').replace(/\s+/g, ' ');
-}
-export function answerForms(text) {
-  const value = normalize(text);
-  return [...new Set([value, value.replace(/[.\s]/g, '')])];
-}
 function distance(a, b) {
   const segmenter = new Intl.Segmenter('th', { granularity: 'grapheme' });
   const left = [...segmenter.segment(a)].map(s => s.segment);
@@ -179,21 +174,26 @@ export function matchAnswer(question, raw) {
 }
 export function createSession({ mode, bank, questions, date = dayKey(), now = Date.now(), run = 1 }) {
   if (questions.length !== 7) throw new Error('A dive needs exactly seven questions.');
+  if (validateSurveyBank(bank).length || questions.some(q => validateSurveyQuestion(q).length || !bank.questions.some(item => item.id === q.id)))
+    throw new Error('A dive requires survey-backed questions.');
   return {
     schemaVersion: 1, id: mode + ':' + date + ':' + run + ':' + now, mode, date, run,
-    bankVersion: bank.version, startedAt: now, phase: 'preview', index: 0,
+    bankVersion: bank.version, scoringMethod: SURVEY_SCORING, startedAt: now, phase: 'preview', index: 0,
     phaseUntil: now + PREVIEW_MS, deadline: now + PREVIEW_MS + ANSWER_MS,
     questions: structuredClone(questions), results: [], score: 0, depth: 0,
     correction: null, rejected: '', input: '', completedAt: null
   };
 }
 export function settleRound(session, answer, raw, reason, now = Date.now()) {
-  if (!['answer', 'correction'].includes(session.phase)) return session;
-  const tier = answer ? answer.tier : null;
+  if (!isSurveySession(session) || !['answer', 'correction'].includes(session.phase)) return session;
+  const question = session.questions[session.index];
+  const recorded = answer ? question.answers.find(item => item.id === answer.id) : null;
+  const tier = answer ? surveyTier(question, recorded?.id) : null;
+  if (answer && !tier) return session;
   const points = tier ? TIERS[tier].score : 0;
-  const result = { questionId: session.questions[session.index].id,
-    prompt: session.questions[session.index].prompt, raw: String(raw).slice(0, 256),
-    answerId: answer?.id ?? null, label: answer?.label ?? null, tier, points, reason,
+  const result = { questionId: question.id,
+    prompt: question.prompt, raw: String(raw).slice(0, 256),
+    answerId: recorded?.id ?? null, label: recorded?.label ?? null, tier, points, reason,
     answeredAt: now, elapsedMs: Math.min(ANSWER_MS, Math.max(0, now - (session.deadline - ANSWER_MS))) };
   return {
     ...session, phase: 'sinking', phaseUntil: now + descentDuration(points),
