@@ -1,0 +1,10 @@
+node_modules/
+.playwright-mcp/
+outputs/
+dist/
+.vercel/
+*.log
+.DS_Store
+
+.vercel
+.env*

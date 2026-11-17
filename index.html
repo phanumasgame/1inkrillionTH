@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#071322">
+  <meta name="description" content="7 คำถาม คำตอบที่คาดไม่ถึง และทะเลแห่งความรู้ — เกมคำตอบหายากฉบับไทย">
+  <title>Krillion TH · the daily dive</title>
+  <link rel="icon" href="/assets/art/krillion.png" type="image/png">
+  <link rel="preload" href="/assets/fonts/VT323-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="/assets/fonts/Sarabun-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div id="world" aria-hidden="true">
+    <div id="sky"></div>
+    <div id="ocean"><div class="water-texture"></div><div class="water-rays"></div></div>
+    <canvas id="life"></canvas>
+    <div id="boat"><i class="mast"></i><i class="flag"></i><i class="cabin"></i><i class="hull"></i></div>
+    <div id="depth-ruler"></div>
+    <div id="world-notes"></div>
+    <div id="seafloor"></div>
+  </div>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div id="app">
+    <div id="loading" role="status">descending<span class="loading-dots">…</span></div>
+  </div>
+  <div id="modal-root"></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <noscript><p class="noscript">เกมนี้ต้องเปิด JavaScript เพื่อเล่น</p></noscript>
+  <script type="module" src="/src/app.js"></script>
+</body>
+</html>

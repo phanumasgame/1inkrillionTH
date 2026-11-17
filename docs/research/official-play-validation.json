@@ -1,0 +1,55 @@
+{
+  "observedAt": "2026-11-17T07:13:25.154Z",
+  "officialUrl": "https://krillion.io/",
+  "officialMetadataUrl": "https://krillion.io/api/today",
+  "date": "2026-11-17",
+  "dayNumber": 125,
+  "actuallyPlayedQuestions": 7,
+  "playedMode": "Daily",
+  "finalScore": 110,
+  "finalDepth": 1100,
+  "enteredAnswers": [
+    "The Lion King",
+    "espresso",
+    "elephant",
+    "Michael Jordan",
+    "Pittsburgh",
+    "apple",
+    "Jett"
+  ],
+  "archiveComparison": [
+    {
+      "sha256": "e22f9ce017a3e70f326c6702f204799d865631b5634a1956dc0b92725a92ccb1",
+      "matched": true
+    },
+    {
+      "sha256": "80a25fc8ed03a07607ed6b36eb572e692908857833f95e7ef7fa0a9e8a17e078",
+      "matched": true
+    },
+    {
+      "sha256": "001ad11cbb59d20ea13c8aa84cb30ef7dc6d69698761b446f53e57104620b450",
+      "matched": true
+    },
+    {
+      "sha256": "0c6627840e0c4c99f168b1052959f3ae9adb1b2f46a468ba7e2876874361428a",
+      "matched": true
+    },
+    {
+      "sha256": "1dd9a52eed3954d6bd23daaae7f14151b7583c561f1e2ef378212628692d9439",
+      "matched": true
+    },
+    {
+      "sha256": "5eba85d7643cddda1b56334fb766e3a1dd10e90d0726d45ffee61456ccd6f175",
+      "matched": true
+    },
+    {
+      "sha256": "4f882003ca5f1f6c9a306405f58e4b9ad582e2db00d02f6674f03dedb8c1e4f1",
+      "matched": true
+    }
+  ],
+  "access": {
+    "archive": "HTTP402 in anonymous browser",
+    "unlimited": "HTTP402 after free first dive"
+  },
+  "bulkStudy": "500 distinct public-archive prompts; not500 games played"
+}

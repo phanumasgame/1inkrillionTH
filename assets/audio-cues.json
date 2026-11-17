@@ -1,0 +1,411 @@
+{
+  "version": 1,
+  "sourceUrl": "https://krillion.io/_next/static/chunks/3w3ki9nykrkuz.js",
+  "observedAt": "2026-11-17",
+  "referencePage": "https://krillion.io/",
+  "scope": "Functional numeric event schedules from the publicly served DescentAudio sound module. Original class/source implementation is not included.",
+  "masterGain": 0.75,
+  "toneDefaults": {
+    "type": "sine",
+    "dur": 0.2,
+    "a": 0.005,
+    "peak": 0.3,
+    "delay": 0
+  },
+  "noiseDefaults": {
+    "dur": 0.3,
+    "lp": 1200,
+    "peak": 0.25,
+    "a": 0.003,
+    "delay": 0
+  },
+  "units": {
+    "frequency": "Hz",
+    "time": "seconds",
+    "gain": "linear amplitude"
+  },
+  "envelope": {
+    "initialGain": 0,
+    "attackRamp": "linear",
+    "decayRamp": "exponential",
+    "endGain": 0.0001,
+    "decayEndOffset": "attack + duration"
+  },
+  "behavior": {
+    "toneFrequencySweep": "exponential from f0 at cue delay to max(f1,1) at cue delay + duration; omitted f1 keeps constant frequency",
+    "toneStopPadding": 0.05,
+    "noiseDistribution": "independent uniform white noise samples in [-1, 1)",
+    "noiseBufferPadding": 0.1,
+    "noiseStopPadding": 0.1,
+    "noiseLowpassSweep": "exponential from lp to sweepTo during duration; omitted sweepTo keeps constant lowpass",
+    "toneLowpass": "optional lowpass after oscillator",
+    "noiseFilterOrder": [
+      "lowpass",
+      "optional highpass"
+    ],
+    "arpeggios": "expanded into individual tone events with absolute delays from the same cue start"
+  },
+  "continuousMusic": {
+    "foundInInspectedModule": false,
+    "audioFileReferencesFound": false,
+    "notes": "The inspected sound module emits one-shot tone/noise cues. This is a bounded observation, not an assertion about every route or future version of Krillion.io."
+  },
+  "randomization": {
+    "blubPitch": {
+      "distribution": "uniform",
+      "range": [
+        0.85,
+        1.3
+      ],
+      "maxExclusive": true,
+      "scope": "sample once per blub cue; apply the same multiplier to f0 and f1"
+    }
+  },
+  "events": {
+    "submit": [
+      {
+        "kind": "tone",
+        "f0": 1150,
+        "dur": 0.16,
+        "a": 0.003,
+        "peak": 0.16
+      }
+    ],
+    "submit_soft": [
+      {
+        "kind": "tone",
+        "f0": 1150,
+        "dur": 0.16,
+        "a": 0.003,
+        "peak": 0.04
+      }
+    ],
+    "reject": [
+      {
+        "kind": "noise",
+        "dur": 0.22,
+        "lp": 420,
+        "peak": 0.2
+      },
+      {
+        "kind": "tone",
+        "f0": 150,
+        "f1": 62,
+        "dur": 0.36,
+        "peak": 0.22,
+        "lp": 700
+      }
+    ],
+    "tierline": [
+      {
+        "kind": "tone",
+        "type": "triangle",
+        "f0": 780,
+        "f1": 1560,
+        "dur": 0.07,
+        "peak": 0.13,
+        "lp": 2500
+      }
+    ],
+    "sink": [
+      {
+        "kind": "tone",
+        "f0": 1150,
+        "dur": 0.7,
+        "a": 0.01,
+        "peak": 0.1
+      },
+      {
+        "kind": "noise",
+        "dur": 1.3,
+        "lp": 1400,
+        "sweepTo": 180,
+        "peak": 0.16
+      },
+      {
+        "kind": "tone",
+        "f0": 300,
+        "f1": 60,
+        "dur": 1.3,
+        "peak": 0.1
+      }
+    ],
+    "land_small": [
+      {
+        "kind": "tone",
+        "f0": 140,
+        "f1": 70,
+        "dur": 0.25,
+        "peak": 0.28,
+        "lp": 600
+      },
+      {
+        "kind": "noise",
+        "dur": 0.14,
+        "lp": 500,
+        "peak": 0.1
+      }
+    ],
+    "land_big": [
+      {
+        "kind": "tone",
+        "f0": 80,
+        "f1": 45,
+        "dur": 0.6,
+        "peak": 0.38
+      },
+      {
+        "kind": "noise",
+        "dur": 0.7,
+        "lp": 900,
+        "sweepTo": 200,
+        "peak": 0.18,
+        "delay": 0.02
+      },
+      {
+        "kind": "tone",
+        "type": "triangle",
+        "f0": 523,
+        "dur": 0.4,
+        "peak": 0.09,
+        "delay": 0.15
+      }
+    ],
+    "spare": [
+      {
+        "kind": "tone",
+        "type": "sine",
+        "f0": 523.25,
+        "dur": 0.22,
+        "peak": 0.1,
+        "delay": 0
+      },
+      {
+        "kind": "tone",
+        "type": "sine",
+        "f0": 783.99,
+        "dur": 0.22,
+        "peak": 0.1,
+        "delay": 0.09
+      }
+    ],
+    "category": [
+      {
+        "kind": "noise",
+        "dur": 0.35,
+        "lp": 900,
+        "sweepTo": 4200,
+        "hp": 400,
+        "peak": 0.07
+      },
+      {
+        "kind": "tone",
+        "type": "triangle",
+        "f0": 988,
+        "dur": 0.32,
+        "a": 0.004,
+        "peak": 0.13,
+        "lp": 4000,
+        "delay": 0.12
+      },
+      {
+        "kind": "tone",
+        "type": "triangle",
+        "f0": 1319,
+        "dur": 0.55,
+        "a": 0.004,
+        "peak": 0.13,
+        "lp": 4000,
+        "delay": 0.24
+      }
+    ],
+    "krillion": [
+      {
+        "kind": "tone",
+        "f0": 60,
+        "f1": 40,
+        "dur": 1.2,
+        "peak": 0.34
+      },
+      {
+        "kind": "tone",
+        "type": "triangle",
+        "f0": 784,
+        "dur": 0.7,
+        "peak": 0.15,
+        "lp": 3000,
+        "delay": 0
+      },
+      {
+        "kind": "tone",
+        "type": "triangle",
+        "f0": 988,
+        "dur": 0.7,
+        "peak": 0.15,
+        "lp": 3000,
+        "delay": 0.13
+      },
+      {
+        "kind": "tone",
+        "type": "triangle",
+        "f0": 1175,
+        "dur": 0.7,
+        "peak": 0.15,
+        "lp": 3000,
+        "delay": 0.26
+      },
+      {
+        "kind": "tone",
+        "type": "triangle",
+        "f0": 1568,
+        "dur": 0.7,
+        "peak": 0.15,
+        "lp": 3000,
+        "delay": 0.39
+      },
+      {
+        "kind": "noise",
+        "dur": 1.4,
+        "lp": 2500,
+        "hp": 1200,
+        "peak": 0.05,
+        "delay": 0.3
+      }
+    ],
+    "miss": [
+      {
+        "kind": "tone",
+        "f0": 220,
+        "f1": 52,
+        "dur": 0.7,
+        "peak": 0.24
+      },
+      {
+        "kind": "noise",
+        "dur": 0.5,
+        "lp": 400,
+        "peak": 0.14,
+        "delay": 0.05
+      }
+    ],
+    "tick": [
+      {
+        "kind": "tone",
+        "f0": 880,
+        "dur": 0.07,
+        "peak": 0.16
+      },
+      {
+        "kind": "tone",
+        "f0": 880,
+        "dur": 0.05,
+        "peak": 0.06,
+        "delay": 0.12
+      }
+    ],
+    "surface": [
+      {
+        "kind": "noise",
+        "dur": 1.6,
+        "lp": 300,
+        "sweepTo": 3000,
+        "peak": 0.16
+      },
+      {
+        "kind": "tone",
+        "f0": 80,
+        "f1": 600,
+        "dur": 1.5,
+        "peak": 0.08
+      }
+    ],
+    "blub": [
+      {
+        "kind": "tone",
+        "f0": 260,
+        "f1": 720,
+        "dur": 0.13,
+        "peak": 0.22,
+        "lp": 2200,
+        "frequencyMultiplierRange": [
+          0.85,
+          1.3
+        ],
+        "sharedRandom": "blubPitch"
+      },
+      {
+        "kind": "noise",
+        "dur": 0.05,
+        "lp": 1800,
+        "hp": 700,
+        "peak": 0.05
+      }
+    ],
+    "descend": [
+      {
+        "kind": "noise",
+        "dur": 1.1,
+        "lp": 2000,
+        "sweepTo": 240,
+        "peak": 0.15
+      },
+      {
+        "kind": "tone",
+        "f0": 110,
+        "f1": 48,
+        "dur": 1.2,
+        "peak": 0.32
+      },
+      {
+        "kind": "tone",
+        "type": "triangle",
+        "f0": 784,
+        "dur": 0.5,
+        "peak": 0.12,
+        "lp": 3000
+      },
+      {
+        "kind": "tone",
+        "type": "triangle",
+        "f0": 523,
+        "dur": 0.75,
+        "peak": 0.12,
+        "lp": 3000,
+        "delay": 0.22
+      }
+    ],
+    "begin": [
+      {
+        "kind": "noise",
+        "dur": 1.1,
+        "lp": 2000,
+        "sweepTo": 240,
+        "peak": 0.15
+      },
+      {
+        "kind": "tone",
+        "f0": 110,
+        "f1": 48,
+        "dur": 1.2,
+        "peak": 0.32
+      },
+      {
+        "kind": "tone",
+        "type": "triangle",
+        "f0": 784,
+        "dur": 0.5,
+        "peak": 0.12,
+        "lp": 3000
+      },
+      {
+        "kind": "tone",
+        "type": "triangle",
+        "f0": 523,
+        "dur": 0.75,
+        "peak": 0.12,
+        "lp": 3000,
+        "delay": 0.22
+      }
+    ]
+  }
+}

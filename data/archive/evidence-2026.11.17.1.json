@@ -1,0 +1,7082 @@
+{
+  "version": 1,
+  "bankVersion": "2026.11.17.1",
+  "methodVersion": "wiki-th-monthly-v1",
+  "generatedAt": "2026-11-17T05:03:33.010Z",
+  "window": {
+    "start": "2025-11-01",
+    "end": "2026-10-31",
+    "months": 12
+  },
+  "source": "Wikimedia Analytics API",
+  "articles": {
+    "กลุ่มป่าแก่งกระจาน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%81%E0%B8%A5%E0%B8%B8%E0%B9%88%E0%B8%A1%E0%B8%9B%E0%B9%88%E0%B8%B2%E0%B9%81%E0%B8%81%E0%B9%88%E0%B8%87%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B8%88%E0%B8%B2%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "กลุ่มป่าแก่งกระจาน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 125
+        },
+        {
+          "month": "2025-12",
+          "views": 107
+        },
+        {
+          "month": "2026-01",
+          "views": 132
+        },
+        {
+          "month": "2026-02",
+          "views": 210
+        },
+        {
+          "month": "2026-03",
+          "views": 115
+        },
+        {
+          "month": "2026-04",
+          "views": 74
+        },
+        {
+          "month": "2026-05",
+          "views": 74
+        },
+        {
+          "month": "2026-06",
+          "views": 134
+        },
+        {
+          "month": "2026-07",
+          "views": 159
+        },
+        {
+          "month": "2026-08",
+          "views": 214
+        },
+        {
+          "month": "2026-09",
+          "views": 184
+        },
+        {
+          "month": "2026-10",
+          "views": 90
+        }
+      ],
+      "totalViews": 1618,
+      "medianMonthlyViews": 128.5
+    },
+    "กลุ่มป่าดงพญาเย็น-เขาใหญ่": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%81%E0%B8%A5%E0%B8%B8%E0%B9%88%E0%B8%A1%E0%B8%9B%E0%B9%88%E0%B8%B2%E0%B8%94%E0%B8%87%E0%B8%9E%E0%B8%8D%E0%B8%B2%E0%B9%80%E0%B8%A2%E0%B9%87%E0%B8%99-%E0%B9%80%E0%B8%82%E0%B8%B2%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88/monthly/2025110100/2026103100",
+      "pageTitle": "กลุ่มป่าดงพญาเย็น-เขาใหญ่",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 465
+        },
+        {
+          "month": "2025-12",
+          "views": 483
+        },
+        {
+          "month": "2026-01",
+          "views": 579
+        },
+        {
+          "month": "2026-02",
+          "views": 640
+        },
+        {
+          "month": "2026-03",
+          "views": 275
+        },
+        {
+          "month": "2026-04",
+          "views": 245
+        },
+        {
+          "month": "2026-05",
+          "views": 494
+        },
+        {
+          "month": "2026-06",
+          "views": 378
+        },
+        {
+          "month": "2026-07",
+          "views": 457
+        },
+        {
+          "month": "2026-08",
+          "views": 371
+        },
+        {
+          "month": "2026-09",
+          "views": 399
+        },
+        {
+          "month": "2026-10",
+          "views": 260
+        }
+      ],
+      "totalViews": 5046,
+      "medianMonthlyViews": 428
+    },
+    "การนวดแผนไทย": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%99%E0%B8%A7%E0%B8%94%E0%B9%81%E0%B8%9C%E0%B8%99%E0%B9%84%E0%B8%97%E0%B8%A2/monthly/2025110100/2026103100",
+      "pageTitle": "การนวดแผนไทย",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 710
+        },
+        {
+          "month": "2025-12",
+          "views": 720
+        },
+        {
+          "month": "2026-01",
+          "views": 750
+        },
+        {
+          "month": "2026-02",
+          "views": 743
+        },
+        {
+          "month": "2026-03",
+          "views": 528
+        },
+        {
+          "month": "2026-04",
+          "views": 466
+        },
+        {
+          "month": "2026-05",
+          "views": 857
+        },
+        {
+          "month": "2026-06",
+          "views": 621
+        },
+        {
+          "month": "2026-07",
+          "views": 502
+        },
+        {
+          "month": "2026-08",
+          "views": 509
+        },
+        {
+          "month": "2026-09",
+          "views": 544
+        },
+        {
+          "month": "2026-10",
+          "views": 311
+        }
+      ],
+      "totalViews": 7261,
+      "medianMonthlyViews": 582.5
+    },
+    "กำมะถัน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%81%E0%B8%B3%E0%B8%A1%E0%B8%B0%E0%B8%96%E0%B8%B1%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "กำมะถัน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 1042
+        },
+        {
+          "month": "2025-12",
+          "views": 856
+        },
+        {
+          "month": "2026-01",
+          "views": 814
+        },
+        {
+          "month": "2026-02",
+          "views": 604
+        },
+        {
+          "month": "2026-03",
+          "views": 547
+        },
+        {
+          "month": "2026-04",
+          "views": 427
+        },
+        {
+          "month": "2026-05",
+          "views": 597
+        },
+        {
+          "month": "2026-06",
+          "views": 729
+        },
+        {
+          "month": "2026-07",
+          "views": 695
+        },
+        {
+          "month": "2026-08",
+          "views": 607
+        },
+        {
+          "month": "2026-09",
+          "views": 601
+        },
+        {
+          "month": "2026-10",
+          "views": 352
+        }
+      ],
+      "totalViews": 7871,
+      "medianMonthlyViews": 605.5
+    },
+    "กิโลกรัม": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%81%E0%B8%B4%E0%B9%82%E0%B8%A5%E0%B8%81%E0%B8%A3%E0%B8%B1%E0%B8%A1/monthly/2025110100/2026103100",
+      "pageTitle": "กิโลกรัม",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 333
+        },
+        {
+          "month": "2025-12",
+          "views": 308
+        },
+        {
+          "month": "2026-01",
+          "views": 354
+        },
+        {
+          "month": "2026-02",
+          "views": 293
+        },
+        {
+          "month": "2026-03",
+          "views": 281
+        },
+        {
+          "month": "2026-04",
+          "views": 329
+        },
+        {
+          "month": "2026-05",
+          "views": 352
+        },
+        {
+          "month": "2026-06",
+          "views": 278
+        },
+        {
+          "month": "2026-07",
+          "views": 262
+        },
+        {
+          "month": "2026-08",
+          "views": 268
+        },
+        {
+          "month": "2026-09",
+          "views": 382
+        },
+        {
+          "month": "2026-10",
+          "views": 228
+        }
+      ],
+      "totalViews": 3668,
+      "medianMonthlyViews": 300.5
+    },
+    "กุน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%81%E0%B8%B8%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "กุน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 116
+        },
+        {
+          "month": "2025-12",
+          "views": 160
+        },
+        {
+          "month": "2026-01",
+          "views": 176
+        },
+        {
+          "month": "2026-02",
+          "views": 151
+        },
+        {
+          "month": "2026-03",
+          "views": 105
+        },
+        {
+          "month": "2026-04",
+          "views": 96
+        },
+        {
+          "month": "2026-05",
+          "views": 133
+        },
+        {
+          "month": "2026-06",
+          "views": 136
+        },
+        {
+          "month": "2026-07",
+          "views": 125
+        },
+        {
+          "month": "2026-08",
+          "views": 157
+        },
+        {
+          "month": "2026-09",
+          "views": 135
+        },
+        {
+          "month": "2026-10",
+          "views": 106
+        }
+      ],
+      "totalViews": 1596,
+      "medianMonthlyViews": 134
+    },
+    "เกอบายา": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%80%E0%B8%81%E0%B8%AD%E0%B8%9A%E0%B8%B2%E0%B8%A2%E0%B8%B2/monthly/2025110100/2026103100",
+      "pageTitle": "เกอบายา",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 108
+        },
+        {
+          "month": "2025-12",
+          "views": 81
+        },
+        {
+          "month": "2026-01",
+          "views": 66
+        },
+        {
+          "month": "2026-02",
+          "views": 81
+        },
+        {
+          "month": "2026-03",
+          "views": 75
+        },
+        {
+          "month": "2026-04",
+          "views": 68
+        },
+        {
+          "month": "2026-05",
+          "views": 51
+        },
+        {
+          "month": "2026-06",
+          "views": 61
+        },
+        {
+          "month": "2026-07",
+          "views": 56
+        },
+        {
+          "month": "2026-08",
+          "views": 126
+        },
+        {
+          "month": "2026-09",
+          "views": 106
+        },
+        {
+          "month": "2026-10",
+          "views": 97
+        }
+      ],
+      "totalViews": 976,
+      "medianMonthlyViews": 78
+    },
+    "ขาล": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%82%E0%B8%B2%E0%B8%A5/monthly/2025110100/2026103100",
+      "pageTitle": "ขาล",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 120
+        },
+        {
+          "month": "2025-12",
+          "views": 166
+        },
+        {
+          "month": "2026-01",
+          "views": 216
+        },
+        {
+          "month": "2026-02",
+          "views": 176
+        },
+        {
+          "month": "2026-03",
+          "views": 152
+        },
+        {
+          "month": "2026-04",
+          "views": 150
+        },
+        {
+          "month": "2026-05",
+          "views": 178
+        },
+        {
+          "month": "2026-06",
+          "views": 131
+        },
+        {
+          "month": "2026-07",
+          "views": 165
+        },
+        {
+          "month": "2026-08",
+          "views": 135
+        },
+        {
+          "month": "2026-09",
+          "views": 161
+        },
+        {
+          "month": "2026-10",
+          "views": 110
+        }
+      ],
+      "totalViews": 1860,
+      "medianMonthlyViews": 156.5
+    },
+    "เขตรักษาพันธุ์สัตว์ป่าทุ่งใหญ่-ห้วยขาแข้ง": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%80%E0%B8%82%E0%B8%95%E0%B8%A3%E0%B8%B1%E0%B8%81%E0%B8%A9%E0%B8%B2%E0%B8%9E%E0%B8%B1%E0%B8%99%E0%B8%98%E0%B8%B8%E0%B9%8C%E0%B8%AA%E0%B8%B1%E0%B8%95%E0%B8%A7%E0%B9%8C%E0%B8%9B%E0%B9%88%E0%B8%B2%E0%B8%97%E0%B8%B8%E0%B9%88%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88-%E0%B8%AB%E0%B9%89%E0%B8%A7%E0%B8%A2%E0%B8%82%E0%B8%B2%E0%B9%81%E0%B8%82%E0%B9%89%E0%B8%87/monthly/2025110100/2026103100",
+      "pageTitle": "เขตรักษาพันธุ์สัตว์ป่าทุ่งใหญ่-ห้วยขาแข้ง",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 258
+        },
+        {
+          "month": "2025-12",
+          "views": 190
+        },
+        {
+          "month": "2026-01",
+          "views": 291
+        },
+        {
+          "month": "2026-02",
+          "views": 325
+        },
+        {
+          "month": "2026-03",
+          "views": 172
+        },
+        {
+          "month": "2026-04",
+          "views": 125
+        },
+        {
+          "month": "2026-05",
+          "views": 149
+        },
+        {
+          "month": "2026-06",
+          "views": 193
+        },
+        {
+          "month": "2026-07",
+          "views": 284
+        },
+        {
+          "month": "2026-08",
+          "views": 387
+        },
+        {
+          "month": "2026-09",
+          "views": 328
+        },
+        {
+          "month": "2026-10",
+          "views": 121
+        }
+      ],
+      "totalViews": 2823,
+      "medianMonthlyViews": 225.5
+    },
+    "โขน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%82%E0%B8%82%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "โขน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 6311
+        },
+        {
+          "month": "2025-12",
+          "views": 3082
+        },
+        {
+          "month": "2026-01",
+          "views": 2850
+        },
+        {
+          "month": "2026-02",
+          "views": 2686
+        },
+        {
+          "month": "2026-03",
+          "views": 1770
+        },
+        {
+          "month": "2026-04",
+          "views": 671
+        },
+        {
+          "month": "2026-05",
+          "views": 2082
+        },
+        {
+          "month": "2026-06",
+          "views": 1811
+        },
+        {
+          "month": "2026-07",
+          "views": 1672
+        },
+        {
+          "month": "2026-08",
+          "views": 1612
+        },
+        {
+          "month": "2026-09",
+          "views": 1656
+        },
+        {
+          "month": "2026-10",
+          "views": 767
+        }
+      ],
+      "totalViews": 26970,
+      "medianMonthlyViews": 1790.5
+    },
+    "คริปทอน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%84%E0%B8%A3%E0%B8%B4%E0%B8%9B%E0%B8%97%E0%B8%AD%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "คริปทอน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 124
+        },
+        {
+          "month": "2025-12",
+          "views": 71
+        },
+        {
+          "month": "2026-01",
+          "views": 53
+        },
+        {
+          "month": "2026-02",
+          "views": 74
+        },
+        {
+          "month": "2026-03",
+          "views": 55
+        },
+        {
+          "month": "2026-04",
+          "views": 117
+        },
+        {
+          "month": "2026-05",
+          "views": 125
+        },
+        {
+          "month": "2026-06",
+          "views": 124
+        },
+        {
+          "month": "2026-07",
+          "views": 106
+        },
+        {
+          "month": "2026-08",
+          "views": 116
+        },
+        {
+          "month": "2026-09",
+          "views": 45
+        },
+        {
+          "month": "2026-10",
+          "views": 43
+        }
+      ],
+      "totalViews": 1053,
+      "medianMonthlyViews": 90
+    },
+    "คาร์บอน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%84%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B8%9A%E0%B8%AD%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "คาร์บอน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 505
+        },
+        {
+          "month": "2025-12",
+          "views": 471
+        },
+        {
+          "month": "2026-01",
+          "views": 490
+        },
+        {
+          "month": "2026-02",
+          "views": 453
+        },
+        {
+          "month": "2026-03",
+          "views": 389
+        },
+        {
+          "month": "2026-04",
+          "views": 337
+        },
+        {
+          "month": "2026-05",
+          "views": 664
+        },
+        {
+          "month": "2026-06",
+          "views": 572
+        },
+        {
+          "month": "2026-07",
+          "views": 588
+        },
+        {
+          "month": "2026-08",
+          "views": 469
+        },
+        {
+          "month": "2026-09",
+          "views": 516
+        },
+        {
+          "month": "2026-10",
+          "views": 338
+        }
+      ],
+      "totalViews": 5792,
+      "medianMonthlyViews": 480.5
+    },
+    "เคลวิน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%80%E0%B8%84%E0%B8%A5%E0%B8%A7%E0%B8%B4%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "เคลวิน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 303
+        },
+        {
+          "month": "2025-12",
+          "views": 207
+        },
+        {
+          "month": "2026-01",
+          "views": 290
+        },
+        {
+          "month": "2026-02",
+          "views": 176
+        },
+        {
+          "month": "2026-03",
+          "views": 224
+        },
+        {
+          "month": "2026-04",
+          "views": 172
+        },
+        {
+          "month": "2026-05",
+          "views": 197
+        },
+        {
+          "month": "2026-06",
+          "views": 173
+        },
+        {
+          "month": "2026-07",
+          "views": 176
+        },
+        {
+          "month": "2026-08",
+          "views": 175
+        },
+        {
+          "month": "2026-09",
+          "views": 217
+        },
+        {
+          "month": "2026-10",
+          "views": 189
+        }
+      ],
+      "totalViews": 2499,
+      "medianMonthlyViews": 193
+    },
+    "แคนเดลา": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%81%E0%B8%84%E0%B8%99%E0%B9%80%E0%B8%94%E0%B8%A5%E0%B8%B2/monthly/2025110100/2026103100",
+      "pageTitle": "แคนเดลา",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 66
+        },
+        {
+          "month": "2025-12",
+          "views": 53
+        },
+        {
+          "month": "2026-01",
+          "views": 48
+        },
+        {
+          "month": "2026-02",
+          "views": 39
+        },
+        {
+          "month": "2026-03",
+          "views": 31
+        },
+        {
+          "month": "2026-04",
+          "views": 38
+        },
+        {
+          "month": "2026-05",
+          "views": 53
+        },
+        {
+          "month": "2026-06",
+          "views": 61
+        },
+        {
+          "month": "2026-07",
+          "views": 30
+        },
+        {
+          "month": "2026-08",
+          "views": 32
+        },
+        {
+          "month": "2026-09",
+          "views": 28
+        },
+        {
+          "month": "2026-10",
+          "views": 47
+        }
+      ],
+      "totalViews": 526,
+      "medianMonthlyViews": 43
+    },
+    "จอ": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%AD/monthly/2025110100/2026103100",
+      "pageTitle": "จอ",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 128
+        },
+        {
+          "month": "2025-12",
+          "views": 122
+        },
+        {
+          "month": "2026-01",
+          "views": 192
+        },
+        {
+          "month": "2026-02",
+          "views": 134
+        },
+        {
+          "month": "2026-03",
+          "views": 88
+        },
+        {
+          "month": "2026-04",
+          "views": 160
+        },
+        {
+          "month": "2026-05",
+          "views": 186
+        },
+        {
+          "month": "2026-06",
+          "views": 137
+        },
+        {
+          "month": "2026-07",
+          "views": 122
+        },
+        {
+          "month": "2026-08",
+          "views": 161
+        },
+        {
+          "month": "2026-09",
+          "views": 131
+        },
+        {
+          "month": "2026-10",
+          "views": 85
+        }
+      ],
+      "totalViews": 1646,
+      "medianMonthlyViews": 132.5
+    },
+    "จังหวัดกระบี่": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B8%9A%E0%B8%B5%E0%B9%88/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดกระบี่",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3497
+        },
+        {
+          "month": "2025-12",
+          "views": 3169
+        },
+        {
+          "month": "2026-01",
+          "views": 3497
+        },
+        {
+          "month": "2026-02",
+          "views": 3014
+        },
+        {
+          "month": "2026-03",
+          "views": 2706
+        },
+        {
+          "month": "2026-04",
+          "views": 2719
+        },
+        {
+          "month": "2026-05",
+          "views": 2789
+        },
+        {
+          "month": "2026-06",
+          "views": 2325
+        },
+        {
+          "month": "2026-07",
+          "views": 2297
+        },
+        {
+          "month": "2026-08",
+          "views": 2565
+        },
+        {
+          "month": "2026-09",
+          "views": 2075
+        },
+        {
+          "month": "2026-10",
+          "views": 1903
+        }
+      ],
+      "totalViews": 32556,
+      "medianMonthlyViews": 2712.5
+    },
+    "จังหวัดกาญจนบุรี": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%81%E0%B8%B2%E0%B8%8D%E0%B8%88%E0%B8%99%E0%B8%9A%E0%B8%B8%E0%B8%A3%E0%B8%B5/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดกาญจนบุรี",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 5052
+        },
+        {
+          "month": "2025-12",
+          "views": 4884
+        },
+        {
+          "month": "2026-01",
+          "views": 5340
+        },
+        {
+          "month": "2026-02",
+          "views": 4433
+        },
+        {
+          "month": "2026-03",
+          "views": 3827
+        },
+        {
+          "month": "2026-04",
+          "views": 3594
+        },
+        {
+          "month": "2026-05",
+          "views": 3515
+        },
+        {
+          "month": "2026-06",
+          "views": 3808
+        },
+        {
+          "month": "2026-07",
+          "views": 3924
+        },
+        {
+          "month": "2026-08",
+          "views": 3586
+        },
+        {
+          "month": "2026-09",
+          "views": 3518
+        },
+        {
+          "month": "2026-10",
+          "views": 3175
+        }
+      ],
+      "totalViews": 48656,
+      "medianMonthlyViews": 3817.5
+    },
+    "จังหวัดจันทบุรี": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%88%E0%B8%B1%E0%B8%99%E0%B8%97%E0%B8%9A%E0%B8%B8%E0%B8%A3%E0%B8%B5/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดจันทบุรี",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 2951
+        },
+        {
+          "month": "2025-12",
+          "views": 3207
+        },
+        {
+          "month": "2026-01",
+          "views": 3076
+        },
+        {
+          "month": "2026-02",
+          "views": 2584
+        },
+        {
+          "month": "2026-03",
+          "views": 2610
+        },
+        {
+          "month": "2026-04",
+          "views": 2628
+        },
+        {
+          "month": "2026-05",
+          "views": 2731
+        },
+        {
+          "month": "2026-06",
+          "views": 2630
+        },
+        {
+          "month": "2026-07",
+          "views": 2596
+        },
+        {
+          "month": "2026-08",
+          "views": 2349
+        },
+        {
+          "month": "2026-09",
+          "views": 2310
+        },
+        {
+          "month": "2026-10",
+          "views": 2138
+        }
+      ],
+      "totalViews": 31810,
+      "medianMonthlyViews": 2619
+    },
+    "จังหวัดชลบุรี": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%8A%E0%B8%A5%E0%B8%9A%E0%B8%B8%E0%B8%A3%E0%B8%B5/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดชลบุรี",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 6725
+        },
+        {
+          "month": "2025-12",
+          "views": 6615
+        },
+        {
+          "month": "2026-01",
+          "views": 6384
+        },
+        {
+          "month": "2026-02",
+          "views": 5965
+        },
+        {
+          "month": "2026-03",
+          "views": 5847
+        },
+        {
+          "month": "2026-04",
+          "views": 5462
+        },
+        {
+          "month": "2026-05",
+          "views": 5711
+        },
+        {
+          "month": "2026-06",
+          "views": 5314
+        },
+        {
+          "month": "2026-07",
+          "views": 5016
+        },
+        {
+          "month": "2026-08",
+          "views": 5570
+        },
+        {
+          "month": "2026-09",
+          "views": 5335
+        },
+        {
+          "month": "2026-10",
+          "views": 4451
+        }
+      ],
+      "totalViews": 68395,
+      "medianMonthlyViews": 5640.5
+    },
+    "จังหวัดชัยนาท": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%8A%E0%B8%B1%E0%B8%A2%E0%B8%99%E0%B8%B2%E0%B8%97/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดชัยนาท",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3500
+        },
+        {
+          "month": "2025-12",
+          "views": 2355
+        },
+        {
+          "month": "2026-01",
+          "views": 2404
+        },
+        {
+          "month": "2026-02",
+          "views": 2037
+        },
+        {
+          "month": "2026-03",
+          "views": 2193
+        },
+        {
+          "month": "2026-04",
+          "views": 1883
+        },
+        {
+          "month": "2026-05",
+          "views": 2034
+        },
+        {
+          "month": "2026-06",
+          "views": 1711
+        },
+        {
+          "month": "2026-07",
+          "views": 1562
+        },
+        {
+          "month": "2026-08",
+          "views": 1816
+        },
+        {
+          "month": "2026-09",
+          "views": 1864
+        },
+        {
+          "month": "2026-10",
+          "views": 1624
+        }
+      ],
+      "totalViews": 24983,
+      "medianMonthlyViews": 1958.5
+    },
+    "จังหวัดชัยภูมิ": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%8A%E0%B8%B1%E0%B8%A2%E0%B8%A0%E0%B8%B9%E0%B8%A1%E0%B8%B4/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดชัยภูมิ",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3776
+        },
+        {
+          "month": "2025-12",
+          "views": 4044
+        },
+        {
+          "month": "2026-01",
+          "views": 3896
+        },
+        {
+          "month": "2026-02",
+          "views": 3441
+        },
+        {
+          "month": "2026-03",
+          "views": 3402
+        },
+        {
+          "month": "2026-04",
+          "views": 3378
+        },
+        {
+          "month": "2026-05",
+          "views": 3714
+        },
+        {
+          "month": "2026-06",
+          "views": 3195
+        },
+        {
+          "month": "2026-07",
+          "views": 3546
+        },
+        {
+          "month": "2026-08",
+          "views": 3229
+        },
+        {
+          "month": "2026-09",
+          "views": 3051
+        },
+        {
+          "month": "2026-10",
+          "views": 3228
+        }
+      ],
+      "totalViews": 41900,
+      "medianMonthlyViews": 3421.5
+    },
+    "จังหวัดชุมพร": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%8A%E0%B8%B8%E0%B8%A1%E0%B8%9E%E0%B8%A3/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดชุมพร",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3001
+        },
+        {
+          "month": "2025-12",
+          "views": 2619
+        },
+        {
+          "month": "2026-01",
+          "views": 2836
+        },
+        {
+          "month": "2026-02",
+          "views": 2624
+        },
+        {
+          "month": "2026-03",
+          "views": 2373
+        },
+        {
+          "month": "2026-04",
+          "views": 2565
+        },
+        {
+          "month": "2026-05",
+          "views": 2486
+        },
+        {
+          "month": "2026-06",
+          "views": 2138
+        },
+        {
+          "month": "2026-07",
+          "views": 2017
+        },
+        {
+          "month": "2026-08",
+          "views": 2082
+        },
+        {
+          "month": "2026-09",
+          "views": 1771
+        },
+        {
+          "month": "2026-10",
+          "views": 1850
+        }
+      ],
+      "totalViews": 28362,
+      "medianMonthlyViews": 2429.5
+    },
+    "จังหวัดเชียงราย": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B8%A3%E0%B8%B2%E0%B8%A2/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดเชียงราย",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 5523
+        },
+        {
+          "month": "2025-12",
+          "views": 5492
+        },
+        {
+          "month": "2026-01",
+          "views": 5740
+        },
+        {
+          "month": "2026-02",
+          "views": 4368
+        },
+        {
+          "month": "2026-03",
+          "views": 3781
+        },
+        {
+          "month": "2026-04",
+          "views": 3501
+        },
+        {
+          "month": "2026-05",
+          "views": 4242
+        },
+        {
+          "month": "2026-06",
+          "views": 3464
+        },
+        {
+          "month": "2026-07",
+          "views": 3852
+        },
+        {
+          "month": "2026-08",
+          "views": 3743
+        },
+        {
+          "month": "2026-09",
+          "views": 3199
+        },
+        {
+          "month": "2026-10",
+          "views": 3221
+        }
+      ],
+      "totalViews": 50126,
+      "medianMonthlyViews": 3816.5
+    },
+    "จังหวัดเชียงใหม่": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%A1%E0%B9%88/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดเชียงใหม่",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 9120
+        },
+        {
+          "month": "2025-12",
+          "views": 8771
+        },
+        {
+          "month": "2026-01",
+          "views": 8767
+        },
+        {
+          "month": "2026-02",
+          "views": 7772
+        },
+        {
+          "month": "2026-03",
+          "views": 6594
+        },
+        {
+          "month": "2026-04",
+          "views": 5620
+        },
+        {
+          "month": "2026-05",
+          "views": 5485
+        },
+        {
+          "month": "2026-06",
+          "views": 6075
+        },
+        {
+          "month": "2026-07",
+          "views": 6137
+        },
+        {
+          "month": "2026-08",
+          "views": 6165
+        },
+        {
+          "month": "2026-09",
+          "views": 6115
+        },
+        {
+          "month": "2026-10",
+          "views": 5508
+        }
+      ],
+      "totalViews": 82129,
+      "medianMonthlyViews": 6151
+    },
+    "จังหวัดตรัง": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%95%E0%B8%A3%E0%B8%B1%E0%B8%87/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดตรัง",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 2787
+        },
+        {
+          "month": "2025-12",
+          "views": 2467
+        },
+        {
+          "month": "2026-01",
+          "views": 2916
+        },
+        {
+          "month": "2026-02",
+          "views": 2342
+        },
+        {
+          "month": "2026-03",
+          "views": 2135
+        },
+        {
+          "month": "2026-04",
+          "views": 2308
+        },
+        {
+          "month": "2026-05",
+          "views": 2304
+        },
+        {
+          "month": "2026-06",
+          "views": 1905
+        },
+        {
+          "month": "2026-07",
+          "views": 1916
+        },
+        {
+          "month": "2026-08",
+          "views": 1976
+        },
+        {
+          "month": "2026-09",
+          "views": 1802
+        },
+        {
+          "month": "2026-10",
+          "views": 1551
+        }
+      ],
+      "totalViews": 26409,
+      "medianMonthlyViews": 2219.5
+    },
+    "จังหวัดตาก": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%95%E0%B8%B2%E0%B8%81/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดตาก",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3770
+        },
+        {
+          "month": "2025-12",
+          "views": 3636
+        },
+        {
+          "month": "2026-01",
+          "views": 3554
+        },
+        {
+          "month": "2026-02",
+          "views": 3122
+        },
+        {
+          "month": "2026-03",
+          "views": 3005
+        },
+        {
+          "month": "2026-04",
+          "views": 2793
+        },
+        {
+          "month": "2026-05",
+          "views": 2669
+        },
+        {
+          "month": "2026-06",
+          "views": 2724
+        },
+        {
+          "month": "2026-07",
+          "views": 2595
+        },
+        {
+          "month": "2026-08",
+          "views": 2779
+        },
+        {
+          "month": "2026-09",
+          "views": 2906
+        },
+        {
+          "month": "2026-10",
+          "views": 3049
+        }
+      ],
+      "totalViews": 36602,
+      "medianMonthlyViews": 2955.5
+    },
+    "จังหวัดนครนายก": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B8%84%E0%B8%A3%E0%B8%99%E0%B8%B2%E0%B8%A2%E0%B8%81/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดนครนายก",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 2452
+        },
+        {
+          "month": "2025-12",
+          "views": 2373
+        },
+        {
+          "month": "2026-01",
+          "views": 2411
+        },
+        {
+          "month": "2026-02",
+          "views": 2202
+        },
+        {
+          "month": "2026-03",
+          "views": 2220
+        },
+        {
+          "month": "2026-04",
+          "views": 2306
+        },
+        {
+          "month": "2026-05",
+          "views": 2464
+        },
+        {
+          "month": "2026-06",
+          "views": 2237
+        },
+        {
+          "month": "2026-07",
+          "views": 2348
+        },
+        {
+          "month": "2026-08",
+          "views": 2235
+        },
+        {
+          "month": "2026-09",
+          "views": 2291
+        },
+        {
+          "month": "2026-10",
+          "views": 2257
+        }
+      ],
+      "totalViews": 27796,
+      "medianMonthlyViews": 2298.5
+    },
+    "จังหวัดนครปฐม": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B8%84%E0%B8%A3%E0%B8%9B%E0%B8%90%E0%B8%A1/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดนครปฐม",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3763
+        },
+        {
+          "month": "2025-12",
+          "views": 3342
+        },
+        {
+          "month": "2026-01",
+          "views": 3601
+        },
+        {
+          "month": "2026-02",
+          "views": 3322
+        },
+        {
+          "month": "2026-03",
+          "views": 2880
+        },
+        {
+          "month": "2026-04",
+          "views": 2641
+        },
+        {
+          "month": "2026-05",
+          "views": 2852
+        },
+        {
+          "month": "2026-06",
+          "views": 2761
+        },
+        {
+          "month": "2026-07",
+          "views": 5822
+        },
+        {
+          "month": "2026-08",
+          "views": 2952
+        },
+        {
+          "month": "2026-09",
+          "views": 2888
+        },
+        {
+          "month": "2026-10",
+          "views": 2557
+        }
+      ],
+      "totalViews": 39381,
+      "medianMonthlyViews": 2920
+    },
+    "จังหวัดนครพนม": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B8%84%E0%B8%A3%E0%B8%9E%E0%B8%99%E0%B8%A1/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดนครพนม",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3507
+        },
+        {
+          "month": "2025-12",
+          "views": 3906
+        },
+        {
+          "month": "2026-01",
+          "views": 3819
+        },
+        {
+          "month": "2026-02",
+          "views": 3168
+        },
+        {
+          "month": "2026-03",
+          "views": 2999
+        },
+        {
+          "month": "2026-04",
+          "views": 2791
+        },
+        {
+          "month": "2026-05",
+          "views": 2994
+        },
+        {
+          "month": "2026-06",
+          "views": 2789
+        },
+        {
+          "month": "2026-07",
+          "views": 3448
+        },
+        {
+          "month": "2026-08",
+          "views": 3203
+        },
+        {
+          "month": "2026-09",
+          "views": 2888
+        },
+        {
+          "month": "2026-10",
+          "views": 5965
+        }
+      ],
+      "totalViews": 41477,
+      "medianMonthlyViews": 3185.5
+    },
+    "จังหวัดนครราชสีมา": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B8%84%E0%B8%A3%E0%B8%A3%E0%B8%B2%E0%B8%8A%E0%B8%AA%E0%B8%B5%E0%B8%A1%E0%B8%B2/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดนครราชสีมา",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 10092
+        },
+        {
+          "month": "2025-12",
+          "views": 9795
+        },
+        {
+          "month": "2026-01",
+          "views": 9944
+        },
+        {
+          "month": "2026-02",
+          "views": 8504
+        },
+        {
+          "month": "2026-03",
+          "views": 9244
+        },
+        {
+          "month": "2026-04",
+          "views": 7879
+        },
+        {
+          "month": "2026-05",
+          "views": 7520
+        },
+        {
+          "month": "2026-06",
+          "views": 7225
+        },
+        {
+          "month": "2026-07",
+          "views": 7595
+        },
+        {
+          "month": "2026-08",
+          "views": 7481
+        },
+        {
+          "month": "2026-09",
+          "views": 7017
+        },
+        {
+          "month": "2026-10",
+          "views": 7429
+        }
+      ],
+      "totalViews": 99725,
+      "medianMonthlyViews": 7737
+    },
+    "จังหวัดนครศรีธรรมราช": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B8%84%E0%B8%A3%E0%B8%A8%E0%B8%A3%E0%B8%B5%E0%B8%98%E0%B8%A3%E0%B8%A3%E0%B8%A1%E0%B8%A3%E0%B8%B2%E0%B8%8A/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดนครศรีธรรมราช",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 6000
+        },
+        {
+          "month": "2025-12",
+          "views": 5123
+        },
+        {
+          "month": "2026-01",
+          "views": 5193
+        },
+        {
+          "month": "2026-02",
+          "views": 4616
+        },
+        {
+          "month": "2026-03",
+          "views": 4311
+        },
+        {
+          "month": "2026-04",
+          "views": 4118
+        },
+        {
+          "month": "2026-05",
+          "views": 4296
+        },
+        {
+          "month": "2026-06",
+          "views": 3975
+        },
+        {
+          "month": "2026-07",
+          "views": 6978
+        },
+        {
+          "month": "2026-08",
+          "views": 5241
+        },
+        {
+          "month": "2026-09",
+          "views": 4012
+        },
+        {
+          "month": "2026-10",
+          "views": 3951
+        }
+      ],
+      "totalViews": 57814,
+      "medianMonthlyViews": 4463.5
+    },
+    "จังหวัดนครสวรรค์": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B8%84%E0%B8%A3%E0%B8%AA%E0%B8%A7%E0%B8%A3%E0%B8%A3%E0%B8%84%E0%B9%8C/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดนครสวรรค์",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 5067
+        },
+        {
+          "month": "2025-12",
+          "views": 4628
+        },
+        {
+          "month": "2026-01",
+          "views": 4738
+        },
+        {
+          "month": "2026-02",
+          "views": 3983
+        },
+        {
+          "month": "2026-03",
+          "views": 3877
+        },
+        {
+          "month": "2026-04",
+          "views": 3673
+        },
+        {
+          "month": "2026-05",
+          "views": 4767
+        },
+        {
+          "month": "2026-06",
+          "views": 3438
+        },
+        {
+          "month": "2026-07",
+          "views": 3548
+        },
+        {
+          "month": "2026-08",
+          "views": 3392
+        },
+        {
+          "month": "2026-09",
+          "views": 3206
+        },
+        {
+          "month": "2026-10",
+          "views": 3799
+        }
+      ],
+      "totalViews": 48116,
+      "medianMonthlyViews": 3838
+    },
+    "จังหวัดนนทบุรี": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B8%99%E0%B8%97%E0%B8%9A%E0%B8%B8%E0%B8%A3%E0%B8%B5/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดนนทบุรี",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 5316
+        },
+        {
+          "month": "2025-12",
+          "views": 4822
+        },
+        {
+          "month": "2026-01",
+          "views": 4421
+        },
+        {
+          "month": "2026-02",
+          "views": 4067
+        },
+        {
+          "month": "2026-03",
+          "views": 3964
+        },
+        {
+          "month": "2026-04",
+          "views": 3559
+        },
+        {
+          "month": "2026-05",
+          "views": 3830
+        },
+        {
+          "month": "2026-06",
+          "views": 3571
+        },
+        {
+          "month": "2026-07",
+          "views": 3622
+        },
+        {
+          "month": "2026-08",
+          "views": 5535
+        },
+        {
+          "month": "2026-09",
+          "views": 6265
+        },
+        {
+          "month": "2026-10",
+          "views": 4015
+        }
+      ],
+      "totalViews": 52987,
+      "medianMonthlyViews": 4041
+    },
+    "จังหวัดนราธิวาส": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B8%A3%E0%B8%B2%E0%B8%98%E0%B8%B4%E0%B8%A7%E0%B8%B2%E0%B8%AA/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดนราธิวาส",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 2494
+        },
+        {
+          "month": "2025-12",
+          "views": 2282
+        },
+        {
+          "month": "2026-01",
+          "views": 2487
+        },
+        {
+          "month": "2026-02",
+          "views": 2123
+        },
+        {
+          "month": "2026-03",
+          "views": 1890
+        },
+        {
+          "month": "2026-04",
+          "views": 2187
+        },
+        {
+          "month": "2026-05",
+          "views": 2123
+        },
+        {
+          "month": "2026-06",
+          "views": 1813
+        },
+        {
+          "month": "2026-07",
+          "views": 2325
+        },
+        {
+          "month": "2026-08",
+          "views": 2265
+        },
+        {
+          "month": "2026-09",
+          "views": 1856
+        },
+        {
+          "month": "2026-10",
+          "views": 1646
+        }
+      ],
+      "totalViews": 25491,
+      "medianMonthlyViews": 2155
+    },
+    "จังหวัดน่าน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%99%E0%B9%88%E0%B8%B2%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดน่าน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 4448
+        },
+        {
+          "month": "2025-12",
+          "views": 4521
+        },
+        {
+          "month": "2026-01",
+          "views": 4470
+        },
+        {
+          "month": "2026-02",
+          "views": 3283
+        },
+        {
+          "month": "2026-03",
+          "views": 3085
+        },
+        {
+          "month": "2026-04",
+          "views": 2807
+        },
+        {
+          "month": "2026-05",
+          "views": 3071
+        },
+        {
+          "month": "2026-06",
+          "views": 3215
+        },
+        {
+          "month": "2026-07",
+          "views": 3567
+        },
+        {
+          "month": "2026-08",
+          "views": 6316
+        },
+        {
+          "month": "2026-09",
+          "views": 3144
+        },
+        {
+          "month": "2026-10",
+          "views": 2902
+        }
+      ],
+      "totalViews": 44829,
+      "medianMonthlyViews": 3249
+    },
+    "จังหวัดบึงกาฬ": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9A%E0%B8%B6%E0%B8%87%E0%B8%81%E0%B8%B2%E0%B8%AC/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดบึงกาฬ",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3821
+        },
+        {
+          "month": "2025-12",
+          "views": 3902
+        },
+        {
+          "month": "2026-01",
+          "views": 3431
+        },
+        {
+          "month": "2026-02",
+          "views": 3225
+        },
+        {
+          "month": "2026-03",
+          "views": 2982
+        },
+        {
+          "month": "2026-04",
+          "views": 2715
+        },
+        {
+          "month": "2026-05",
+          "views": 2745
+        },
+        {
+          "month": "2026-06",
+          "views": 2850
+        },
+        {
+          "month": "2026-07",
+          "views": 3038
+        },
+        {
+          "month": "2026-08",
+          "views": 3237
+        },
+        {
+          "month": "2026-09",
+          "views": 2797
+        },
+        {
+          "month": "2026-10",
+          "views": 2848
+        }
+      ],
+      "totalViews": 37591,
+      "medianMonthlyViews": 3010
+    },
+    "จังหวัดประจวบคีรีขันธ์": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%88%E0%B8%A7%E0%B8%9A%E0%B8%84%E0%B8%B5%E0%B8%A3%E0%B8%B5%E0%B8%82%E0%B8%B1%E0%B8%99%E0%B8%98%E0%B9%8C/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดประจวบคีรีขันธ์",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3902
+        },
+        {
+          "month": "2025-12",
+          "views": 3546
+        },
+        {
+          "month": "2026-01",
+          "views": 4077
+        },
+        {
+          "month": "2026-02",
+          "views": 4003
+        },
+        {
+          "month": "2026-03",
+          "views": 3628
+        },
+        {
+          "month": "2026-04",
+          "views": 4351
+        },
+        {
+          "month": "2026-05",
+          "views": 3918
+        },
+        {
+          "month": "2026-06",
+          "views": 3026
+        },
+        {
+          "month": "2026-07",
+          "views": 3091
+        },
+        {
+          "month": "2026-08",
+          "views": 2934
+        },
+        {
+          "month": "2026-09",
+          "views": 2639
+        },
+        {
+          "month": "2026-10",
+          "views": 2972
+        }
+      ],
+      "totalViews": 42087,
+      "medianMonthlyViews": 3587
+    },
+    "จังหวัดปราจีนบุรี": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%88%E0%B8%B5%E0%B8%99%E0%B8%9A%E0%B8%B8%E0%B8%A3%E0%B8%B5/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดปราจีนบุรี",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3274
+        },
+        {
+          "month": "2025-12",
+          "views": 3433
+        },
+        {
+          "month": "2026-01",
+          "views": 3358
+        },
+        {
+          "month": "2026-02",
+          "views": 2923
+        },
+        {
+          "month": "2026-03",
+          "views": 2772
+        },
+        {
+          "month": "2026-04",
+          "views": 2703
+        },
+        {
+          "month": "2026-05",
+          "views": 2767
+        },
+        {
+          "month": "2026-06",
+          "views": 2596
+        },
+        {
+          "month": "2026-07",
+          "views": 2606
+        },
+        {
+          "month": "2026-08",
+          "views": 2579
+        },
+        {
+          "month": "2026-09",
+          "views": 2653
+        },
+        {
+          "month": "2026-10",
+          "views": 4057
+        }
+      ],
+      "totalViews": 35721,
+      "medianMonthlyViews": 2769.5
+    },
+    "จังหวัดพระนครศรีอยุธยา": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%99%E0%B8%84%E0%B8%A3%E0%B8%A8%E0%B8%A3%E0%B8%B5%E0%B8%AD%E0%B8%A2%E0%B8%B8%E0%B8%98%E0%B8%A2%E0%B8%B2/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดพระนครศรีอยุธยา",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 7222
+        },
+        {
+          "month": "2025-12",
+          "views": 7903
+        },
+        {
+          "month": "2026-01",
+          "views": 7287
+        },
+        {
+          "month": "2026-02",
+          "views": 6910
+        },
+        {
+          "month": "2026-03",
+          "views": 4943
+        },
+        {
+          "month": "2026-04",
+          "views": 4582
+        },
+        {
+          "month": "2026-05",
+          "views": 4718
+        },
+        {
+          "month": "2026-06",
+          "views": 5077
+        },
+        {
+          "month": "2026-07",
+          "views": 5135
+        },
+        {
+          "month": "2026-08",
+          "views": 5063
+        },
+        {
+          "month": "2026-09",
+          "views": 5173
+        },
+        {
+          "month": "2026-10",
+          "views": 4028
+        }
+      ],
+      "totalViews": 68041,
+      "medianMonthlyViews": 5106
+    },
+    "จังหวัดพะเยา": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9E%E0%B8%B0%E0%B9%80%E0%B8%A2%E0%B8%B2/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดพะเยา",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3169
+        },
+        {
+          "month": "2025-12",
+          "views": 3277
+        },
+        {
+          "month": "2026-01",
+          "views": 3380
+        },
+        {
+          "month": "2026-02",
+          "views": 3664
+        },
+        {
+          "month": "2026-03",
+          "views": 2703
+        },
+        {
+          "month": "2026-04",
+          "views": 2738
+        },
+        {
+          "month": "2026-05",
+          "views": 2297
+        },
+        {
+          "month": "2026-06",
+          "views": 6043
+        },
+        {
+          "month": "2026-07",
+          "views": 2384
+        },
+        {
+          "month": "2026-08",
+          "views": 2171
+        },
+        {
+          "month": "2026-09",
+          "views": 1975
+        },
+        {
+          "month": "2026-10",
+          "views": 2031
+        }
+      ],
+      "totalViews": 35832,
+      "medianMonthlyViews": 2720.5
+    },
+    "จังหวัดพังงา": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9E%E0%B8%B1%E0%B8%87%E0%B8%87%E0%B8%B2/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดพังงา",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 2240
+        },
+        {
+          "month": "2025-12",
+          "views": 2101
+        },
+        {
+          "month": "2026-01",
+          "views": 2208
+        },
+        {
+          "month": "2026-02",
+          "views": 2468
+        },
+        {
+          "month": "2026-03",
+          "views": 2094
+        },
+        {
+          "month": "2026-04",
+          "views": 2134
+        },
+        {
+          "month": "2026-05",
+          "views": 1901
+        },
+        {
+          "month": "2026-06",
+          "views": 1521
+        },
+        {
+          "month": "2026-07",
+          "views": 1644
+        },
+        {
+          "month": "2026-08",
+          "views": 1715
+        },
+        {
+          "month": "2026-09",
+          "views": 1535
+        },
+        {
+          "month": "2026-10",
+          "views": 1385
+        }
+      ],
+      "totalViews": 22946,
+      "medianMonthlyViews": 1997.5
+    },
+    "จังหวัดพิษณุโลก": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9E%E0%B8%B4%E0%B8%A9%E0%B8%93%E0%B8%B8%E0%B9%82%E0%B8%A5%E0%B8%81/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดพิษณุโลก",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 4704
+        },
+        {
+          "month": "2025-12",
+          "views": 5015
+        },
+        {
+          "month": "2026-01",
+          "views": 4710
+        },
+        {
+          "month": "2026-02",
+          "views": 4050
+        },
+        {
+          "month": "2026-03",
+          "views": 3711
+        },
+        {
+          "month": "2026-04",
+          "views": 4328
+        },
+        {
+          "month": "2026-05",
+          "views": 4289
+        },
+        {
+          "month": "2026-06",
+          "views": 3656
+        },
+        {
+          "month": "2026-07",
+          "views": 3929
+        },
+        {
+          "month": "2026-08",
+          "views": 3555
+        },
+        {
+          "month": "2026-09",
+          "views": 3891
+        },
+        {
+          "month": "2026-10",
+          "views": 3634
+        }
+      ],
+      "totalViews": 49472,
+      "medianMonthlyViews": 3989.5
+    },
+    "จังหวัดเพชรบุรี": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B9%80%E0%B8%9E%E0%B8%8A%E0%B8%A3%E0%B8%9A%E0%B8%B8%E0%B8%A3%E0%B8%B5/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดเพชรบุรี",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3766
+        },
+        {
+          "month": "2025-12",
+          "views": 3496
+        },
+        {
+          "month": "2026-01",
+          "views": 4037
+        },
+        {
+          "month": "2026-02",
+          "views": 3635
+        },
+        {
+          "month": "2026-03",
+          "views": 5619
+        },
+        {
+          "month": "2026-04",
+          "views": 5023
+        },
+        {
+          "month": "2026-05",
+          "views": 3836
+        },
+        {
+          "month": "2026-06",
+          "views": 3066
+        },
+        {
+          "month": "2026-07",
+          "views": 3368
+        },
+        {
+          "month": "2026-08",
+          "views": 3056
+        },
+        {
+          "month": "2026-09",
+          "views": 2841
+        },
+        {
+          "month": "2026-10",
+          "views": 2979
+        }
+      ],
+      "totalViews": 44722,
+      "medianMonthlyViews": 3565.5
+    },
+    "จังหวัดภูเก็ต": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%A0%E0%B8%B9%E0%B9%80%E0%B8%81%E0%B9%87%E0%B8%95/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดภูเก็ต",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 6054
+        },
+        {
+          "month": "2025-12",
+          "views": 4693
+        },
+        {
+          "month": "2026-01",
+          "views": 4740
+        },
+        {
+          "month": "2026-02",
+          "views": 4386
+        },
+        {
+          "month": "2026-03",
+          "views": 4488
+        },
+        {
+          "month": "2026-04",
+          "views": 3876
+        },
+        {
+          "month": "2026-05",
+          "views": 4769
+        },
+        {
+          "month": "2026-06",
+          "views": 4234
+        },
+        {
+          "month": "2026-07",
+          "views": 4157
+        },
+        {
+          "month": "2026-08",
+          "views": 3668
+        },
+        {
+          "month": "2026-09",
+          "views": 3719
+        },
+        {
+          "month": "2026-10",
+          "views": 4020
+        }
+      ],
+      "totalViews": 52804,
+      "medianMonthlyViews": 4310
+    },
+    "จังหวัดมุกดาหาร": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%A1%E0%B8%B8%E0%B8%81%E0%B8%94%E0%B8%B2%E0%B8%AB%E0%B8%B2%E0%B8%A3/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดมุกดาหาร",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 2468
+        },
+        {
+          "month": "2025-12",
+          "views": 2611
+        },
+        {
+          "month": "2026-01",
+          "views": 2440
+        },
+        {
+          "month": "2026-02",
+          "views": 2127
+        },
+        {
+          "month": "2026-03",
+          "views": 2135
+        },
+        {
+          "month": "2026-04",
+          "views": 2370
+        },
+        {
+          "month": "2026-05",
+          "views": 3692
+        },
+        {
+          "month": "2026-06",
+          "views": 3739
+        },
+        {
+          "month": "2026-07",
+          "views": 3713
+        },
+        {
+          "month": "2026-08",
+          "views": 2287
+        },
+        {
+          "month": "2026-09",
+          "views": 2819
+        },
+        {
+          "month": "2026-10",
+          "views": 2909
+        }
+      ],
+      "totalViews": 33310,
+      "medianMonthlyViews": 2539.5
+    },
+    "จังหวัดแม่ฮ่องสอน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B9%81%E0%B8%A1%E0%B9%88%E0%B8%AE%E0%B9%88%E0%B8%AD%E0%B8%87%E0%B8%AA%E0%B8%AD%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดแม่ฮ่องสอน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3341
+        },
+        {
+          "month": "2025-12",
+          "views": 3247
+        },
+        {
+          "month": "2026-01",
+          "views": 3294
+        },
+        {
+          "month": "2026-02",
+          "views": 2303
+        },
+        {
+          "month": "2026-03",
+          "views": 2069
+        },
+        {
+          "month": "2026-04",
+          "views": 1929
+        },
+        {
+          "month": "2026-05",
+          "views": 1932
+        },
+        {
+          "month": "2026-06",
+          "views": 1957
+        },
+        {
+          "month": "2026-07",
+          "views": 1947
+        },
+        {
+          "month": "2026-08",
+          "views": 1934
+        },
+        {
+          "month": "2026-09",
+          "views": 2134
+        },
+        {
+          "month": "2026-10",
+          "views": 1865
+        }
+      ],
+      "totalViews": 27952,
+      "medianMonthlyViews": 2013
+    },
+    "จังหวัดระนอง": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%A3%E0%B8%B0%E0%B8%99%E0%B8%AD%E0%B8%87/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดระนอง",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 4306
+        },
+        {
+          "month": "2025-12",
+          "views": 2049
+        },
+        {
+          "month": "2026-01",
+          "views": 2230
+        },
+        {
+          "month": "2026-02",
+          "views": 2079
+        },
+        {
+          "month": "2026-03",
+          "views": 1899
+        },
+        {
+          "month": "2026-04",
+          "views": 2109
+        },
+        {
+          "month": "2026-05",
+          "views": 2112
+        },
+        {
+          "month": "2026-06",
+          "views": 1811
+        },
+        {
+          "month": "2026-07",
+          "views": 1698
+        },
+        {
+          "month": "2026-08",
+          "views": 1796
+        },
+        {
+          "month": "2026-09",
+          "views": 1591
+        },
+        {
+          "month": "2026-10",
+          "views": 1488
+        }
+      ],
+      "totalViews": 25168,
+      "medianMonthlyViews": 1974
+    },
+    "จังหวัดราชบุรี": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%A3%E0%B8%B2%E0%B8%8A%E0%B8%9A%E0%B8%B8%E0%B8%A3%E0%B8%B5/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดราชบุรี",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 4424
+        },
+        {
+          "month": "2025-12",
+          "views": 4083
+        },
+        {
+          "month": "2026-01",
+          "views": 4295
+        },
+        {
+          "month": "2026-02",
+          "views": 3744
+        },
+        {
+          "month": "2026-03",
+          "views": 3357
+        },
+        {
+          "month": "2026-04",
+          "views": 3611
+        },
+        {
+          "month": "2026-05",
+          "views": 3529
+        },
+        {
+          "month": "2026-06",
+          "views": 3275
+        },
+        {
+          "month": "2026-07",
+          "views": 3309
+        },
+        {
+          "month": "2026-08",
+          "views": 3021
+        },
+        {
+          "month": "2026-09",
+          "views": 3399
+        },
+        {
+          "month": "2026-10",
+          "views": 3119
+        }
+      ],
+      "totalViews": 43166,
+      "medianMonthlyViews": 3464
+    },
+    "จังหวัดลพบุรี": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%A5%E0%B8%9E%E0%B8%9A%E0%B8%B8%E0%B8%A3%E0%B8%B5/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดลพบุรี",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3602
+        },
+        {
+          "month": "2025-12",
+          "views": 3984
+        },
+        {
+          "month": "2026-01",
+          "views": 3710
+        },
+        {
+          "month": "2026-02",
+          "views": 3554
+        },
+        {
+          "month": "2026-03",
+          "views": 2902
+        },
+        {
+          "month": "2026-04",
+          "views": 2688
+        },
+        {
+          "month": "2026-05",
+          "views": 3232
+        },
+        {
+          "month": "2026-06",
+          "views": 3242
+        },
+        {
+          "month": "2026-07",
+          "views": 2840
+        },
+        {
+          "month": "2026-08",
+          "views": 3621
+        },
+        {
+          "month": "2026-09",
+          "views": 3023
+        },
+        {
+          "month": "2026-10",
+          "views": 3318
+        }
+      ],
+      "totalViews": 39716,
+      "medianMonthlyViews": 3280
+    },
+    "จังหวัดเลย": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B9%80%E0%B8%A5%E0%B8%A2/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดเลย",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 5823
+        },
+        {
+          "month": "2025-12",
+          "views": 5975
+        },
+        {
+          "month": "2026-01",
+          "views": 6331
+        },
+        {
+          "month": "2026-02",
+          "views": 5197
+        },
+        {
+          "month": "2026-03",
+          "views": 3583
+        },
+        {
+          "month": "2026-04",
+          "views": 3631
+        },
+        {
+          "month": "2026-05",
+          "views": 3920
+        },
+        {
+          "month": "2026-06",
+          "views": 3908
+        },
+        {
+          "month": "2026-07",
+          "views": 5916
+        },
+        {
+          "month": "2026-08",
+          "views": 3472
+        },
+        {
+          "month": "2026-09",
+          "views": 3818
+        },
+        {
+          "month": "2026-10",
+          "views": 3737
+        }
+      ],
+      "totalViews": 55311,
+      "medianMonthlyViews": 3914
+    },
+    "จังหวัดสกลนคร": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%81%E0%B8%A5%E0%B8%99%E0%B8%84%E0%B8%A3/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดสกลนคร",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3708
+        },
+        {
+          "month": "2025-12",
+          "views": 3797
+        },
+        {
+          "month": "2026-01",
+          "views": 3701
+        },
+        {
+          "month": "2026-02",
+          "views": 3436
+        },
+        {
+          "month": "2026-03",
+          "views": 3201
+        },
+        {
+          "month": "2026-04",
+          "views": 2878
+        },
+        {
+          "month": "2026-05",
+          "views": 3135
+        },
+        {
+          "month": "2026-06",
+          "views": 3044
+        },
+        {
+          "month": "2026-07",
+          "views": 2990
+        },
+        {
+          "month": "2026-08",
+          "views": 3045
+        },
+        {
+          "month": "2026-09",
+          "views": 6660
+        },
+        {
+          "month": "2026-10",
+          "views": 2891
+        }
+      ],
+      "totalViews": 42486,
+      "medianMonthlyViews": 3168
+    },
+    "จังหวัดสงขลา": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%87%E0%B8%82%E0%B8%A5%E0%B8%B2/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดสงขลา",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 14341
+        },
+        {
+          "month": "2025-12",
+          "views": 6512
+        },
+        {
+          "month": "2026-01",
+          "views": 4045
+        },
+        {
+          "month": "2026-02",
+          "views": 3857
+        },
+        {
+          "month": "2026-03",
+          "views": 3403
+        },
+        {
+          "month": "2026-04",
+          "views": 3117
+        },
+        {
+          "month": "2026-05",
+          "views": 3330
+        },
+        {
+          "month": "2026-06",
+          "views": 3335
+        },
+        {
+          "month": "2026-07",
+          "views": 3230
+        },
+        {
+          "month": "2026-08",
+          "views": 3604
+        },
+        {
+          "month": "2026-09",
+          "views": 3116
+        },
+        {
+          "month": "2026-10",
+          "views": 2683
+        }
+      ],
+      "totalViews": 54573,
+      "medianMonthlyViews": 3369
+    },
+    "จังหวัดสตูล": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%95%E0%B8%B9%E0%B8%A5/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดสตูล",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 2586
+        },
+        {
+          "month": "2025-12",
+          "views": 1965
+        },
+        {
+          "month": "2026-01",
+          "views": 2024
+        },
+        {
+          "month": "2026-02",
+          "views": 1905
+        },
+        {
+          "month": "2026-03",
+          "views": 1733
+        },
+        {
+          "month": "2026-04",
+          "views": 1805
+        },
+        {
+          "month": "2026-05",
+          "views": 1799
+        },
+        {
+          "month": "2026-06",
+          "views": 1378
+        },
+        {
+          "month": "2026-07",
+          "views": 1484
+        },
+        {
+          "month": "2026-08",
+          "views": 1530
+        },
+        {
+          "month": "2026-09",
+          "views": 1458
+        },
+        {
+          "month": "2026-10",
+          "views": 4253
+        }
+      ],
+      "totalViews": 23920,
+      "medianMonthlyViews": 1802
+    },
+    "จังหวัดสมุทรปราการ": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%A1%E0%B8%B8%E0%B8%97%E0%B8%A3%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%81%E0%B8%B2%E0%B8%A3/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดสมุทรปราการ",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 4676
+        },
+        {
+          "month": "2025-12",
+          "views": 4064
+        },
+        {
+          "month": "2026-01",
+          "views": 4653
+        },
+        {
+          "month": "2026-02",
+          "views": 4163
+        },
+        {
+          "month": "2026-03",
+          "views": 3670
+        },
+        {
+          "month": "2026-04",
+          "views": 3752
+        },
+        {
+          "month": "2026-05",
+          "views": 3804
+        },
+        {
+          "month": "2026-06",
+          "views": 3727
+        },
+        {
+          "month": "2026-07",
+          "views": 3776
+        },
+        {
+          "month": "2026-08",
+          "views": 3441
+        },
+        {
+          "month": "2026-09",
+          "views": 3960
+        },
+        {
+          "month": "2026-10",
+          "views": 3410
+        }
+      ],
+      "totalViews": 47096,
+      "medianMonthlyViews": 3790
+    },
+    "จังหวัดสมุทรสงคราม": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%A1%E0%B8%B8%E0%B8%97%E0%B8%A3%E0%B8%AA%E0%B8%87%E0%B8%84%E0%B8%A3%E0%B8%B2%E0%B8%A1/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดสมุทรสงคราม",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 2743
+        },
+        {
+          "month": "2025-12",
+          "views": 2554
+        },
+        {
+          "month": "2026-01",
+          "views": 2631
+        },
+        {
+          "month": "2026-02",
+          "views": 2486
+        },
+        {
+          "month": "2026-03",
+          "views": 2049
+        },
+        {
+          "month": "2026-04",
+          "views": 2085
+        },
+        {
+          "month": "2026-05",
+          "views": 4153
+        },
+        {
+          "month": "2026-06",
+          "views": 2899
+        },
+        {
+          "month": "2026-07",
+          "views": 2026
+        },
+        {
+          "month": "2026-08",
+          "views": 1803
+        },
+        {
+          "month": "2026-09",
+          "views": 2023
+        },
+        {
+          "month": "2026-10",
+          "views": 1999
+        }
+      ],
+      "totalViews": 29451,
+      "medianMonthlyViews": 2285.5
+    },
+    "จังหวัดสมุทรสาคร": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%A1%E0%B8%B8%E0%B8%97%E0%B8%A3%E0%B8%AA%E0%B8%B2%E0%B8%84%E0%B8%A3/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดสมุทรสาคร",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3077
+        },
+        {
+          "month": "2025-12",
+          "views": 3247
+        },
+        {
+          "month": "2026-01",
+          "views": 3226
+        },
+        {
+          "month": "2026-02",
+          "views": 2710
+        },
+        {
+          "month": "2026-03",
+          "views": 2927
+        },
+        {
+          "month": "2026-04",
+          "views": 2624
+        },
+        {
+          "month": "2026-05",
+          "views": 2835
+        },
+        {
+          "month": "2026-06",
+          "views": 2617
+        },
+        {
+          "month": "2026-07",
+          "views": 2385
+        },
+        {
+          "month": "2026-08",
+          "views": 2452
+        },
+        {
+          "month": "2026-09",
+          "views": 2451
+        },
+        {
+          "month": "2026-10",
+          "views": 2382
+        }
+      ],
+      "totalViews": 32933,
+      "medianMonthlyViews": 2667
+    },
+    "จังหวัดสระแก้ว": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%A3%E0%B8%B0%E0%B9%81%E0%B8%81%E0%B9%89%E0%B8%A7/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดสระแก้ว",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3196
+        },
+        {
+          "month": "2025-12",
+          "views": 5167
+        },
+        {
+          "month": "2026-01",
+          "views": 3371
+        },
+        {
+          "month": "2026-02",
+          "views": 2848
+        },
+        {
+          "month": "2026-03",
+          "views": 2528
+        },
+        {
+          "month": "2026-04",
+          "views": 2379
+        },
+        {
+          "month": "2026-05",
+          "views": 2458
+        },
+        {
+          "month": "2026-06",
+          "views": 2367
+        },
+        {
+          "month": "2026-07",
+          "views": 2030
+        },
+        {
+          "month": "2026-08",
+          "views": 2284
+        },
+        {
+          "month": "2026-09",
+          "views": 2549
+        },
+        {
+          "month": "2026-10",
+          "views": 2073
+        }
+      ],
+      "totalViews": 33250,
+      "medianMonthlyViews": 2493
+    },
+    "จังหวัดสระบุรี": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%A3%E0%B8%B0%E0%B8%9A%E0%B8%B8%E0%B8%A3%E0%B8%B5/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดสระบุรี",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3610
+        },
+        {
+          "month": "2025-12",
+          "views": 3509
+        },
+        {
+          "month": "2026-01",
+          "views": 3727
+        },
+        {
+          "month": "2026-02",
+          "views": 2762
+        },
+        {
+          "month": "2026-03",
+          "views": 2653
+        },
+        {
+          "month": "2026-04",
+          "views": 2491
+        },
+        {
+          "month": "2026-05",
+          "views": 2592
+        },
+        {
+          "month": "2026-06",
+          "views": 2629
+        },
+        {
+          "month": "2026-07",
+          "views": 2332
+        },
+        {
+          "month": "2026-08",
+          "views": 5156
+        },
+        {
+          "month": "2026-09",
+          "views": 2720
+        },
+        {
+          "month": "2026-10",
+          "views": 2219
+        }
+      ],
+      "totalViews": 36400,
+      "medianMonthlyViews": 2686.5
+    },
+    "จังหวัดสิงห์บุรี": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%B4%E0%B8%87%E0%B8%AB%E0%B9%8C%E0%B8%9A%E0%B8%B8%E0%B8%A3%E0%B8%B5/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดสิงห์บุรี",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 2656
+        },
+        {
+          "month": "2025-12",
+          "views": 2050
+        },
+        {
+          "month": "2026-01",
+          "views": 2141
+        },
+        {
+          "month": "2026-02",
+          "views": 2010
+        },
+        {
+          "month": "2026-03",
+          "views": 1921
+        },
+        {
+          "month": "2026-04",
+          "views": 1682
+        },
+        {
+          "month": "2026-05",
+          "views": 1632
+        },
+        {
+          "month": "2026-06",
+          "views": 1659
+        },
+        {
+          "month": "2026-07",
+          "views": 1528
+        },
+        {
+          "month": "2026-08",
+          "views": 1609
+        },
+        {
+          "month": "2026-09",
+          "views": 1635
+        },
+        {
+          "month": "2026-10",
+          "views": 1573
+        }
+      ],
+      "totalViews": 22096,
+      "medianMonthlyViews": 1670.5
+    },
+    "จังหวัดสุโขทัย": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%B8%E0%B9%82%E0%B8%82%E0%B8%97%E0%B8%B1%E0%B8%A2/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดสุโขทัย",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3909
+        },
+        {
+          "month": "2025-12",
+          "views": 3705
+        },
+        {
+          "month": "2026-01",
+          "views": 3747
+        },
+        {
+          "month": "2026-02",
+          "views": 5840
+        },
+        {
+          "month": "2026-03",
+          "views": 2706
+        },
+        {
+          "month": "2026-04",
+          "views": 2410
+        },
+        {
+          "month": "2026-05",
+          "views": 2757
+        },
+        {
+          "month": "2026-06",
+          "views": 2569
+        },
+        {
+          "month": "2026-07",
+          "views": 2662
+        },
+        {
+          "month": "2026-08",
+          "views": 2810
+        },
+        {
+          "month": "2026-09",
+          "views": 2549
+        },
+        {
+          "month": "2026-10",
+          "views": 2399
+        }
+      ],
+      "totalViews": 38063,
+      "medianMonthlyViews": 2731.5
+    },
+    "จังหวัดสุพรรณบุรี": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%B8%E0%B8%9E%E0%B8%A3%E0%B8%A3%E0%B8%93%E0%B8%9A%E0%B8%B8%E0%B8%A3%E0%B8%B5/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดสุพรรณบุรี",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3658
+        },
+        {
+          "month": "2025-12",
+          "views": 3773
+        },
+        {
+          "month": "2026-01",
+          "views": 3910
+        },
+        {
+          "month": "2026-02",
+          "views": 3393
+        },
+        {
+          "month": "2026-03",
+          "views": 3172
+        },
+        {
+          "month": "2026-04",
+          "views": 3382
+        },
+        {
+          "month": "2026-05",
+          "views": 3124
+        },
+        {
+          "month": "2026-06",
+          "views": 3083
+        },
+        {
+          "month": "2026-07",
+          "views": 3022
+        },
+        {
+          "month": "2026-08",
+          "views": 2951
+        },
+        {
+          "month": "2026-09",
+          "views": 2749
+        },
+        {
+          "month": "2026-10",
+          "views": 2534
+        }
+      ],
+      "totalViews": 38751,
+      "medianMonthlyViews": 3148
+    },
+    "จังหวัดสุราษฎร์ธานี": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%B8%E0%B8%A3%E0%B8%B2%E0%B8%A9%E0%B8%8E%E0%B8%A3%E0%B9%8C%E0%B8%98%E0%B8%B2%E0%B8%99%E0%B8%B5/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดสุราษฎร์ธานี",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 5450
+        },
+        {
+          "month": "2025-12",
+          "views": 4447
+        },
+        {
+          "month": "2026-01",
+          "views": 5213
+        },
+        {
+          "month": "2026-02",
+          "views": 26560
+        },
+        {
+          "month": "2026-03",
+          "views": 17513
+        },
+        {
+          "month": "2026-04",
+          "views": 3720
+        },
+        {
+          "month": "2026-05",
+          "views": 3842
+        },
+        {
+          "month": "2026-06",
+          "views": 3642
+        },
+        {
+          "month": "2026-07",
+          "views": 3950
+        },
+        {
+          "month": "2026-08",
+          "views": 4518
+        },
+        {
+          "month": "2026-09",
+          "views": 3865
+        },
+        {
+          "month": "2026-10",
+          "views": 3390
+        }
+      ],
+      "totalViews": 86110,
+      "medianMonthlyViews": 4198.5
+    },
+    "จังหวัดสุรินทร์": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%B8%E0%B8%A3%E0%B8%B4%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B9%8C/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดสุรินทร์",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3868
+        },
+        {
+          "month": "2025-12",
+          "views": 4446
+        },
+        {
+          "month": "2026-01",
+          "views": 3558
+        },
+        {
+          "month": "2026-02",
+          "views": 3497
+        },
+        {
+          "month": "2026-03",
+          "views": 3012
+        },
+        {
+          "month": "2026-04",
+          "views": 2891
+        },
+        {
+          "month": "2026-05",
+          "views": 3066
+        },
+        {
+          "month": "2026-06",
+          "views": 2774
+        },
+        {
+          "month": "2026-07",
+          "views": 2987
+        },
+        {
+          "month": "2026-08",
+          "views": 2845
+        },
+        {
+          "month": "2026-09",
+          "views": 3027
+        },
+        {
+          "month": "2026-10",
+          "views": 2828
+        }
+      ],
+      "totalViews": 38799,
+      "medianMonthlyViews": 3019.5
+    },
+    "จังหวัดหนองคาย": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AB%E0%B8%99%E0%B8%AD%E0%B8%87%E0%B8%84%E0%B8%B2%E0%B8%A2/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดหนองคาย",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3189
+        },
+        {
+          "month": "2025-12",
+          "views": 3098
+        },
+        {
+          "month": "2026-01",
+          "views": 2967
+        },
+        {
+          "month": "2026-02",
+          "views": 2761
+        },
+        {
+          "month": "2026-03",
+          "views": 2537
+        },
+        {
+          "month": "2026-04",
+          "views": 2323
+        },
+        {
+          "month": "2026-05",
+          "views": 2354
+        },
+        {
+          "month": "2026-06",
+          "views": 2377
+        },
+        {
+          "month": "2026-07",
+          "views": 2429
+        },
+        {
+          "month": "2026-08",
+          "views": 2243
+        },
+        {
+          "month": "2026-09",
+          "views": 2170
+        },
+        {
+          "month": "2026-10",
+          "views": 2426
+        }
+      ],
+      "totalViews": 30874,
+      "medianMonthlyViews": 2427.5
+    },
+    "จังหวัดอำนาจเจริญ": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AD%E0%B8%B3%E0%B8%99%E0%B8%B2%E0%B8%88%E0%B9%80%E0%B8%88%E0%B8%A3%E0%B8%B4%E0%B8%8D/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดอำนาจเจริญ",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 2535
+        },
+        {
+          "month": "2025-12",
+          "views": 2726
+        },
+        {
+          "month": "2026-01",
+          "views": 2857
+        },
+        {
+          "month": "2026-02",
+          "views": 2466
+        },
+        {
+          "month": "2026-03",
+          "views": 2440
+        },
+        {
+          "month": "2026-04",
+          "views": 2424
+        },
+        {
+          "month": "2026-05",
+          "views": 2332
+        },
+        {
+          "month": "2026-06",
+          "views": 1852
+        },
+        {
+          "month": "2026-07",
+          "views": 2019
+        },
+        {
+          "month": "2026-08",
+          "views": 1899
+        },
+        {
+          "month": "2026-09",
+          "views": 1712
+        },
+        {
+          "month": "2026-10",
+          "views": 1686
+        }
+      ],
+      "totalViews": 26948,
+      "medianMonthlyViews": 2378
+    },
+    "จังหวัดอุตรดิตถ์": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AD%E0%B8%B8%E0%B8%95%E0%B8%A3%E0%B8%94%E0%B8%B4%E0%B8%95%E0%B8%96%E0%B9%8C/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดอุตรดิตถ์",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3148
+        },
+        {
+          "month": "2025-12",
+          "views": 3065
+        },
+        {
+          "month": "2026-01",
+          "views": 3057
+        },
+        {
+          "month": "2026-02",
+          "views": 2534
+        },
+        {
+          "month": "2026-03",
+          "views": 2443
+        },
+        {
+          "month": "2026-04",
+          "views": 2554
+        },
+        {
+          "month": "2026-05",
+          "views": 2465
+        },
+        {
+          "month": "2026-06",
+          "views": 2266
+        },
+        {
+          "month": "2026-07",
+          "views": 2527
+        },
+        {
+          "month": "2026-08",
+          "views": 2948
+        },
+        {
+          "month": "2026-09",
+          "views": 2378
+        },
+        {
+          "month": "2026-10",
+          "views": 2340
+        }
+      ],
+      "totalViews": 31725,
+      "medianMonthlyViews": 2530.5
+    },
+    "จังหวัดอุบลราชธานี": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%88%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%AD%E0%B8%B8%E0%B8%9A%E0%B8%A5%E0%B8%A3%E0%B8%B2%E0%B8%8A%E0%B8%98%E0%B8%B2%E0%B8%99%E0%B8%B5/monthly/2025110100/2026103100",
+      "pageTitle": "จังหวัดอุบลราชธานี",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 5959
+        },
+        {
+          "month": "2025-12",
+          "views": 6528
+        },
+        {
+          "month": "2026-01",
+          "views": 5306
+        },
+        {
+          "month": "2026-02",
+          "views": 5033
+        },
+        {
+          "month": "2026-03",
+          "views": 4800
+        },
+        {
+          "month": "2026-04",
+          "views": 4733
+        },
+        {
+          "month": "2026-05",
+          "views": 4526
+        },
+        {
+          "month": "2026-06",
+          "views": 4546
+        },
+        {
+          "month": "2026-07",
+          "views": 5618
+        },
+        {
+          "month": "2026-08",
+          "views": 4638
+        },
+        {
+          "month": "2026-09",
+          "views": 4201
+        },
+        {
+          "month": "2026-10",
+          "views": 4003
+        }
+      ],
+      "totalViews": 59891,
+      "medianMonthlyViews": 4766.5
+    },
+    "ฉลู": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%89%E0%B8%A5%E0%B8%B9/monthly/2025110100/2026103100",
+      "pageTitle": "ฉลู",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 115
+        },
+        {
+          "month": "2025-12",
+          "views": 141
+        },
+        {
+          "month": "2026-01",
+          "views": 215
+        },
+        {
+          "month": "2026-02",
+          "views": 156
+        },
+        {
+          "month": "2026-03",
+          "views": 125
+        },
+        {
+          "month": "2026-04",
+          "views": 131
+        },
+        {
+          "month": "2026-05",
+          "views": 205
+        },
+        {
+          "month": "2026-06",
+          "views": 172
+        },
+        {
+          "month": "2026-07",
+          "views": 125
+        },
+        {
+          "month": "2026-08",
+          "views": 175
+        },
+        {
+          "month": "2026-09",
+          "views": 129
+        },
+        {
+          "month": "2026-10",
+          "views": 109
+        }
+      ],
+      "totalViews": 1798,
+      "medianMonthlyViews": 136
+    },
+    "ชวด": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%8A%E0%B8%A7%E0%B8%94/monthly/2025110100/2026103100",
+      "pageTitle": "ชวด",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 198
+        },
+        {
+          "month": "2025-12",
+          "views": 243
+        },
+        {
+          "month": "2026-01",
+          "views": 250
+        },
+        {
+          "month": "2026-02",
+          "views": 226
+        },
+        {
+          "month": "2026-03",
+          "views": 197
+        },
+        {
+          "month": "2026-04",
+          "views": 185
+        },
+        {
+          "month": "2026-05",
+          "views": 225
+        },
+        {
+          "month": "2026-06",
+          "views": 155
+        },
+        {
+          "month": "2026-07",
+          "views": 152
+        },
+        {
+          "month": "2026-08",
+          "views": 159
+        },
+        {
+          "month": "2026-09",
+          "views": 195
+        },
+        {
+          "month": "2026-10",
+          "views": 142
+        }
+      ],
+      "totalViews": 2327,
+      "medianMonthlyViews": 196
+    },
+    "ซีนอน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%8B%E0%B8%B5%E0%B8%99%E0%B8%AD%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "ซีนอน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 130
+        },
+        {
+          "month": "2025-12",
+          "views": 120
+        },
+        {
+          "month": "2026-01",
+          "views": 117
+        },
+        {
+          "month": "2026-02",
+          "views": 63
+        },
+        {
+          "month": "2026-03",
+          "views": 82
+        },
+        {
+          "month": "2026-04",
+          "views": 90
+        },
+        {
+          "month": "2026-05",
+          "views": 87
+        },
+        {
+          "month": "2026-06",
+          "views": 144
+        },
+        {
+          "month": "2026-07",
+          "views": 168
+        },
+        {
+          "month": "2026-08",
+          "views": 81
+        },
+        {
+          "month": "2026-09",
+          "views": 80
+        },
+        {
+          "month": "2026-10",
+          "views": 68
+        }
+      ],
+      "totalViews": 1230,
+      "medianMonthlyViews": 88.5
+    },
+    "ดาวเนปจูน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%94%E0%B8%B2%E0%B8%A7%E0%B9%80%E0%B8%99%E0%B8%9B%E0%B8%88%E0%B8%B9%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "ดาวเนปจูน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 1326
+        },
+        {
+          "month": "2025-12",
+          "views": 1523
+        },
+        {
+          "month": "2026-01",
+          "views": 1596
+        },
+        {
+          "month": "2026-02",
+          "views": 1635
+        },
+        {
+          "month": "2026-03",
+          "views": 817
+        },
+        {
+          "month": "2026-04",
+          "views": 787
+        },
+        {
+          "month": "2026-05",
+          "views": 1011
+        },
+        {
+          "month": "2026-06",
+          "views": 907
+        },
+        {
+          "month": "2026-07",
+          "views": 898
+        },
+        {
+          "month": "2026-08",
+          "views": 931
+        },
+        {
+          "month": "2026-09",
+          "views": 1033
+        },
+        {
+          "month": "2026-10",
+          "views": 700
+        }
+      ],
+      "totalViews": 13164,
+      "medianMonthlyViews": 971
+    },
+    "ดาวพฤหัสบดี": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%94%E0%B8%B2%E0%B8%A7%E0%B8%9E%E0%B8%A4%E0%B8%AB%E0%B8%B1%E0%B8%AA%E0%B8%9A%E0%B8%94%E0%B8%B5/monthly/2025110100/2026103100",
+      "pageTitle": "ดาวพฤหัสบดี",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 1829
+        },
+        {
+          "month": "2025-12",
+          "views": 2021
+        },
+        {
+          "month": "2026-01",
+          "views": 3477
+        },
+        {
+          "month": "2026-02",
+          "views": 3234
+        },
+        {
+          "month": "2026-03",
+          "views": 1673
+        },
+        {
+          "month": "2026-04",
+          "views": 1443
+        },
+        {
+          "month": "2026-05",
+          "views": 1968
+        },
+        {
+          "month": "2026-06",
+          "views": 1719
+        },
+        {
+          "month": "2026-07",
+          "views": 1872
+        },
+        {
+          "month": "2026-08",
+          "views": 2292
+        },
+        {
+          "month": "2026-09",
+          "views": 2200
+        },
+        {
+          "month": "2026-10",
+          "views": 1236
+        }
+      ],
+      "totalViews": 24964,
+      "medianMonthlyViews": 1920
+    },
+    "ดาวพุธ": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%94%E0%B8%B2%E0%B8%A7%E0%B8%9E%E0%B8%B8%E0%B8%98/monthly/2025110100/2026103100",
+      "pageTitle": "ดาวพุธ",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 1791
+        },
+        {
+          "month": "2025-12",
+          "views": 1809
+        },
+        {
+          "month": "2026-01",
+          "views": 2338
+        },
+        {
+          "month": "2026-02",
+          "views": 2646
+        },
+        {
+          "month": "2026-03",
+          "views": 1111
+        },
+        {
+          "month": "2026-04",
+          "views": 1064
+        },
+        {
+          "month": "2026-05",
+          "views": 1113
+        },
+        {
+          "month": "2026-06",
+          "views": 1239
+        },
+        {
+          "month": "2026-07",
+          "views": 1278
+        },
+        {
+          "month": "2026-08",
+          "views": 1384
+        },
+        {
+          "month": "2026-09",
+          "views": 1505
+        },
+        {
+          "month": "2026-10",
+          "views": 949
+        }
+      ],
+      "totalViews": 18227,
+      "medianMonthlyViews": 1331
+    },
+    "ดาวยูเรนัส": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%94%E0%B8%B2%E0%B8%A7%E0%B8%A2%E0%B8%B9%E0%B9%80%E0%B8%A3%E0%B8%99%E0%B8%B1%E0%B8%AA/monthly/2025110100/2026103100",
+      "pageTitle": "ดาวยูเรนัส",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 1260
+        },
+        {
+          "month": "2025-12",
+          "views": 1511
+        },
+        {
+          "month": "2026-01",
+          "views": 1603
+        },
+        {
+          "month": "2026-02",
+          "views": 1513
+        },
+        {
+          "month": "2026-03",
+          "views": 694
+        },
+        {
+          "month": "2026-04",
+          "views": 734
+        },
+        {
+          "month": "2026-05",
+          "views": 766
+        },
+        {
+          "month": "2026-06",
+          "views": 705
+        },
+        {
+          "month": "2026-07",
+          "views": 747
+        },
+        {
+          "month": "2026-08",
+          "views": 856
+        },
+        {
+          "month": "2026-09",
+          "views": 954
+        },
+        {
+          "month": "2026-10",
+          "views": 467
+        }
+      ],
+      "totalViews": 11810,
+      "medianMonthlyViews": 811
+    },
+    "ดาวศุกร์": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%94%E0%B8%B2%E0%B8%A7%E0%B8%A8%E0%B8%B8%E0%B8%81%E0%B8%A3%E0%B9%8C/monthly/2025110100/2026103100",
+      "pageTitle": "ดาวศุกร์",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 1856
+        },
+        {
+          "month": "2025-12",
+          "views": 2156
+        },
+        {
+          "month": "2026-01",
+          "views": 2578
+        },
+        {
+          "month": "2026-02",
+          "views": 2895
+        },
+        {
+          "month": "2026-03",
+          "views": 1599
+        },
+        {
+          "month": "2026-04",
+          "views": 1605
+        },
+        {
+          "month": "2026-05",
+          "views": 1350
+        },
+        {
+          "month": "2026-06",
+          "views": 1288
+        },
+        {
+          "month": "2026-07",
+          "views": 1282
+        },
+        {
+          "month": "2026-08",
+          "views": 1456
+        },
+        {
+          "month": "2026-09",
+          "views": 1465
+        },
+        {
+          "month": "2026-10",
+          "views": 845
+        }
+      ],
+      "totalViews": 20375,
+      "medianMonthlyViews": 1532
+    },
+    "ดาวเสาร์": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%94%E0%B8%B2%E0%B8%A7%E0%B9%80%E0%B8%AA%E0%B8%B2%E0%B8%A3%E0%B9%8C/monthly/2025110100/2026103100",
+      "pageTitle": "ดาวเสาร์",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 1854
+        },
+        {
+          "month": "2025-12",
+          "views": 1756
+        },
+        {
+          "month": "2026-01",
+          "views": 2442
+        },
+        {
+          "month": "2026-02",
+          "views": 2846
+        },
+        {
+          "month": "2026-03",
+          "views": 1428
+        },
+        {
+          "month": "2026-04",
+          "views": 1323
+        },
+        {
+          "month": "2026-05",
+          "views": 1600
+        },
+        {
+          "month": "2026-06",
+          "views": 1277
+        },
+        {
+          "month": "2026-07",
+          "views": 1355
+        },
+        {
+          "month": "2026-08",
+          "views": 1474
+        },
+        {
+          "month": "2026-09",
+          "views": 1361
+        },
+        {
+          "month": "2026-10",
+          "views": 1249
+        }
+      ],
+      "totalViews": 19965,
+      "medianMonthlyViews": 1451
+    },
+    "ดาวอังคาร": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%94%E0%B8%B2%E0%B8%A7%E0%B8%AD%E0%B8%B1%E0%B8%87%E0%B8%84%E0%B8%B2%E0%B8%A3/monthly/2025110100/2026103100",
+      "pageTitle": "ดาวอังคาร",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 1939
+        },
+        {
+          "month": "2025-12",
+          "views": 2254
+        },
+        {
+          "month": "2026-01",
+          "views": 3512
+        },
+        {
+          "month": "2026-02",
+          "views": 3588
+        },
+        {
+          "month": "2026-03",
+          "views": 1667
+        },
+        {
+          "month": "2026-04",
+          "views": 1736
+        },
+        {
+          "month": "2026-05",
+          "views": 1486
+        },
+        {
+          "month": "2026-06",
+          "views": 1508
+        },
+        {
+          "month": "2026-07",
+          "views": 1563
+        },
+        {
+          "month": "2026-08",
+          "views": 1582
+        },
+        {
+          "month": "2026-09",
+          "views": 1483
+        },
+        {
+          "month": "2026-10",
+          "views": 987
+        }
+      ],
+      "totalViews": 23305,
+      "medianMonthlyViews": 1624.5
+    },
+    "ต้มยำกุ้ง": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%95%E0%B9%89%E0%B8%A1%E0%B8%A2%E0%B8%B3%E0%B8%81%E0%B8%B8%E0%B9%89%E0%B8%87/monthly/2025110100/2026103100",
+      "pageTitle": "ต้มยำกุ้ง",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 1607
+        },
+        {
+          "month": "2025-12",
+          "views": 1375
+        },
+        {
+          "month": "2026-01",
+          "views": 1477
+        },
+        {
+          "month": "2026-02",
+          "views": 1525
+        },
+        {
+          "month": "2026-03",
+          "views": 788
+        },
+        {
+          "month": "2026-04",
+          "views": 569
+        },
+        {
+          "month": "2026-05",
+          "views": 1958
+        },
+        {
+          "month": "2026-06",
+          "views": 674
+        },
+        {
+          "month": "2026-07",
+          "views": 940
+        },
+        {
+          "month": "2026-08",
+          "views": 946
+        },
+        {
+          "month": "2026-09",
+          "views": 790
+        },
+        {
+          "month": "2026-10",
+          "views": 346
+        }
+      ],
+      "totalViews": 12995,
+      "medianMonthlyViews": 943
+    },
+    "เถาะ": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%80%E0%B8%96%E0%B8%B2%E0%B8%B0/monthly/2025110100/2026103100",
+      "pageTitle": "เถาะ",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 148
+        },
+        {
+          "month": "2025-12",
+          "views": 154
+        },
+        {
+          "month": "2026-01",
+          "views": 219
+        },
+        {
+          "month": "2026-02",
+          "views": 178
+        },
+        {
+          "month": "2026-03",
+          "views": 109
+        },
+        {
+          "month": "2026-04",
+          "views": 59
+        },
+        {
+          "month": "2026-05",
+          "views": 70
+        },
+        {
+          "month": "2026-06",
+          "views": 56
+        },
+        {
+          "month": "2026-07",
+          "views": 44
+        },
+        {
+          "month": "2026-08",
+          "views": 85
+        },
+        {
+          "month": "2026-09",
+          "views": 109
+        },
+        {
+          "month": "2026-10",
+          "views": 67
+        }
+      ],
+      "totalViews": 1298,
+      "medianMonthlyViews": 97
+    },
+    "ทังสเตน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%97%E0%B8%B1%E0%B8%87%E0%B8%AA%E0%B9%80%E0%B8%95%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "ทังสเตน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 420
+        },
+        {
+          "month": "2025-12",
+          "views": 364
+        },
+        {
+          "month": "2026-01",
+          "views": 345
+        },
+        {
+          "month": "2026-02",
+          "views": 365
+        },
+        {
+          "month": "2026-03",
+          "views": 433
+        },
+        {
+          "month": "2026-04",
+          "views": 263
+        },
+        {
+          "month": "2026-05",
+          "views": 243
+        },
+        {
+          "month": "2026-06",
+          "views": 246
+        },
+        {
+          "month": "2026-07",
+          "views": 246
+        },
+        {
+          "month": "2026-08",
+          "views": 227
+        },
+        {
+          "month": "2026-09",
+          "views": 222
+        },
+        {
+          "month": "2026-10",
+          "views": 238
+        }
+      ],
+      "totalViews": 3612,
+      "medianMonthlyViews": 254.5
+    },
+    "นีออน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%99%E0%B8%B5%E0%B8%AD%E0%B8%AD%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "นีออน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 303
+        },
+        {
+          "month": "2025-12",
+          "views": 261
+        },
+        {
+          "month": "2026-01",
+          "views": 201
+        },
+        {
+          "month": "2026-02",
+          "views": 144
+        },
+        {
+          "month": "2026-03",
+          "views": 110
+        },
+        {
+          "month": "2026-04",
+          "views": 104
+        },
+        {
+          "month": "2026-05",
+          "views": 224
+        },
+        {
+          "month": "2026-06",
+          "views": 352
+        },
+        {
+          "month": "2026-07",
+          "views": 238
+        },
+        {
+          "month": "2026-08",
+          "views": 155
+        },
+        {
+          "month": "2026-09",
+          "views": 143
+        },
+        {
+          "month": "2026-10",
+          "views": 100
+        }
+      ],
+      "totalViews": 2335,
+      "medianMonthlyViews": 178
+    },
+    "ไนโตรเจน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%84%E0%B8%99%E0%B9%82%E0%B8%95%E0%B8%A3%E0%B9%80%E0%B8%88%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "ไนโตรเจน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 809
+        },
+        {
+          "month": "2025-12",
+          "views": 672
+        },
+        {
+          "month": "2026-01",
+          "views": 736
+        },
+        {
+          "month": "2026-02",
+          "views": 551
+        },
+        {
+          "month": "2026-03",
+          "views": 377
+        },
+        {
+          "month": "2026-04",
+          "views": 278
+        },
+        {
+          "month": "2026-05",
+          "views": 519
+        },
+        {
+          "month": "2026-06",
+          "views": 650
+        },
+        {
+          "month": "2026-07",
+          "views": 584
+        },
+        {
+          "month": "2026-08",
+          "views": 470
+        },
+        {
+          "month": "2026-09",
+          "views": 396
+        },
+        {
+          "month": "2026-10",
+          "views": 297
+        }
+      ],
+      "totalViews": 6339,
+      "medianMonthlyViews": 535
+    },
+    "โบรอน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%82%E0%B8%9A%E0%B8%A3%E0%B8%AD%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "โบรอน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 294
+        },
+        {
+          "month": "2025-12",
+          "views": 258
+        },
+        {
+          "month": "2026-01",
+          "views": 398
+        },
+        {
+          "month": "2026-02",
+          "views": 198
+        },
+        {
+          "month": "2026-03",
+          "views": 168
+        },
+        {
+          "month": "2026-04",
+          "views": 168
+        },
+        {
+          "month": "2026-05",
+          "views": 219
+        },
+        {
+          "month": "2026-06",
+          "views": 324
+        },
+        {
+          "month": "2026-07",
+          "views": 443
+        },
+        {
+          "month": "2026-08",
+          "views": 253
+        },
+        {
+          "month": "2026-09",
+          "views": 324
+        },
+        {
+          "month": "2026-10",
+          "views": 148
+        }
+      ],
+      "totalViews": 3195,
+      "medianMonthlyViews": 255.5
+    },
+    "ประเทศกัมพูชา": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%97%E0%B8%A8%E0%B8%81%E0%B8%B1%E0%B8%A1%E0%B8%9E%E0%B8%B9%E0%B8%8A%E0%B8%B2/monthly/2025110100/2026103100",
+      "pageTitle": "ประเทศกัมพูชา",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 11966
+        },
+        {
+          "month": "2025-12",
+          "views": 25121
+        },
+        {
+          "month": "2026-01",
+          "views": 14550
+        },
+        {
+          "month": "2026-02",
+          "views": 8995
+        },
+        {
+          "month": "2026-03",
+          "views": 8995
+        },
+        {
+          "month": "2026-04",
+          "views": 8269
+        },
+        {
+          "month": "2026-05",
+          "views": 7168
+        },
+        {
+          "month": "2026-06",
+          "views": 6897
+        },
+        {
+          "month": "2026-07",
+          "views": 7407
+        },
+        {
+          "month": "2026-08",
+          "views": 6256
+        },
+        {
+          "month": "2026-09",
+          "views": 6468
+        },
+        {
+          "month": "2026-10",
+          "views": 5234
+        }
+      ],
+      "totalViews": 117326,
+      "medianMonthlyViews": 7838
+    },
+    "ประเทศไทย": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%97%E0%B8%A8%E0%B9%84%E0%B8%97%E0%B8%A2/monthly/2025110100/2026103100",
+      "pageTitle": "ประเทศไทย",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 34247
+        },
+        {
+          "month": "2025-12",
+          "views": 37375
+        },
+        {
+          "month": "2026-01",
+          "views": 37385
+        },
+        {
+          "month": "2026-02",
+          "views": 29493
+        },
+        {
+          "month": "2026-03",
+          "views": 31708
+        },
+        {
+          "month": "2026-04",
+          "views": 26141
+        },
+        {
+          "month": "2026-05",
+          "views": 24304
+        },
+        {
+          "month": "2026-06",
+          "views": 25110
+        },
+        {
+          "month": "2026-07",
+          "views": 27288
+        },
+        {
+          "month": "2026-08",
+          "views": 25432
+        },
+        {
+          "month": "2026-09",
+          "views": 25194
+        },
+        {
+          "month": "2026-10",
+          "views": 23653
+        }
+      ],
+      "totalViews": 347330,
+      "medianMonthlyViews": 26714.5
+    },
+    "ประเทศบรูไน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%97%E0%B8%A8%E0%B8%9A%E0%B8%A3%E0%B8%B9%E0%B9%84%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "ประเทศบรูไน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3353
+        },
+        {
+          "month": "2025-12",
+          "views": 3726
+        },
+        {
+          "month": "2026-01",
+          "views": 3568
+        },
+        {
+          "month": "2026-02",
+          "views": 3027
+        },
+        {
+          "month": "2026-03",
+          "views": 3721
+        },
+        {
+          "month": "2026-04",
+          "views": 2462
+        },
+        {
+          "month": "2026-05",
+          "views": 2104
+        },
+        {
+          "month": "2026-06",
+          "views": 2795
+        },
+        {
+          "month": "2026-07",
+          "views": 2549
+        },
+        {
+          "month": "2026-08",
+          "views": 3626
+        },
+        {
+          "month": "2026-09",
+          "views": 3512
+        },
+        {
+          "month": "2026-10",
+          "views": 2106
+        }
+      ],
+      "totalViews": 36549,
+      "medianMonthlyViews": 3190
+    },
+    "ประเทศพม่า": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%97%E0%B8%A8%E0%B8%9E%E0%B8%A1%E0%B9%88%E0%B8%B2/monthly/2025110100/2026103100",
+      "pageTitle": "ประเทศพม่า",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 7595
+        },
+        {
+          "month": "2025-12",
+          "views": 7711
+        },
+        {
+          "month": "2026-01",
+          "views": 11755
+        },
+        {
+          "month": "2026-02",
+          "views": 6666
+        },
+        {
+          "month": "2026-03",
+          "views": 6884
+        },
+        {
+          "month": "2026-04",
+          "views": 7711
+        },
+        {
+          "month": "2026-05",
+          "views": 5936
+        },
+        {
+          "month": "2026-06",
+          "views": 6243
+        },
+        {
+          "month": "2026-07",
+          "views": 6519
+        },
+        {
+          "month": "2026-08",
+          "views": 7414
+        },
+        {
+          "month": "2026-09",
+          "views": 6913
+        },
+        {
+          "month": "2026-10",
+          "views": 5537
+        }
+      ],
+      "totalViews": 86884,
+      "medianMonthlyViews": 6898.5
+    },
+    "ประเทศฟิลิปปินส์": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%97%E0%B8%A8%E0%B8%9F%E0%B8%B4%E0%B8%A5%E0%B8%B4%E0%B8%9B%E0%B8%9B%E0%B8%B4%E0%B8%99%E0%B8%AA%E0%B9%8C/monthly/2025110100/2026103100",
+      "pageTitle": "ประเทศฟิลิปปินส์",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 6321
+        },
+        {
+          "month": "2025-12",
+          "views": 5223
+        },
+        {
+          "month": "2026-01",
+          "views": 5387
+        },
+        {
+          "month": "2026-02",
+          "views": 4897
+        },
+        {
+          "month": "2026-03",
+          "views": 4173
+        },
+        {
+          "month": "2026-04",
+          "views": 3724
+        },
+        {
+          "month": "2026-05",
+          "views": 4046
+        },
+        {
+          "month": "2026-06",
+          "views": 5684
+        },
+        {
+          "month": "2026-07",
+          "views": 4494
+        },
+        {
+          "month": "2026-08",
+          "views": 5227
+        },
+        {
+          "month": "2026-09",
+          "views": 5009
+        },
+        {
+          "month": "2026-10",
+          "views": 4041
+        }
+      ],
+      "totalViews": 58226,
+      "medianMonthlyViews": 4953
+    },
+    "ประเทศมาเลเซีย": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%97%E0%B8%A8%E0%B8%A1%E0%B8%B2%E0%B9%80%E0%B8%A5%E0%B9%80%E0%B8%8B%E0%B8%B5%E0%B8%A2/monthly/2025110100/2026103100",
+      "pageTitle": "ประเทศมาเลเซีย",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 7463
+        },
+        {
+          "month": "2025-12",
+          "views": 7110
+        },
+        {
+          "month": "2026-01",
+          "views": 6287
+        },
+        {
+          "month": "2026-02",
+          "views": 5210
+        },
+        {
+          "month": "2026-03",
+          "views": 4744
+        },
+        {
+          "month": "2026-04",
+          "views": 4705
+        },
+        {
+          "month": "2026-05",
+          "views": 4587
+        },
+        {
+          "month": "2026-06",
+          "views": 4213
+        },
+        {
+          "month": "2026-07",
+          "views": 4795
+        },
+        {
+          "month": "2026-08",
+          "views": 5626
+        },
+        {
+          "month": "2026-09",
+          "views": 5303
+        },
+        {
+          "month": "2026-10",
+          "views": 4381
+        }
+      ],
+      "totalViews": 64424,
+      "medianMonthlyViews": 5002.5
+    },
+    "ประเทศลาว": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%97%E0%B8%A8%E0%B8%A5%E0%B8%B2%E0%B8%A7/monthly/2025110100/2026103100",
+      "pageTitle": "ประเทศลาว",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 11693
+        },
+        {
+          "month": "2025-12",
+          "views": 13902
+        },
+        {
+          "month": "2026-01",
+          "views": 12643
+        },
+        {
+          "month": "2026-02",
+          "views": 9705
+        },
+        {
+          "month": "2026-03",
+          "views": 11605
+        },
+        {
+          "month": "2026-04",
+          "views": 7799
+        },
+        {
+          "month": "2026-05",
+          "views": 9067
+        },
+        {
+          "month": "2026-06",
+          "views": 9361
+        },
+        {
+          "month": "2026-07",
+          "views": 9585
+        },
+        {
+          "month": "2026-08",
+          "views": 10112
+        },
+        {
+          "month": "2026-09",
+          "views": 9797
+        },
+        {
+          "month": "2026-10",
+          "views": 9148
+        }
+      ],
+      "totalViews": 124417,
+      "medianMonthlyViews": 9751
+    },
+    "ประเทศเวียดนาม": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%97%E0%B8%A8%E0%B9%80%E0%B8%A7%E0%B8%B5%E0%B8%A2%E0%B8%94%E0%B8%99%E0%B8%B2%E0%B8%A1/monthly/2025110100/2026103100",
+      "pageTitle": "ประเทศเวียดนาม",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 9224
+        },
+        {
+          "month": "2025-12",
+          "views": 9575
+        },
+        {
+          "month": "2026-01",
+          "views": 8619
+        },
+        {
+          "month": "2026-02",
+          "views": 6428
+        },
+        {
+          "month": "2026-03",
+          "views": 5869
+        },
+        {
+          "month": "2026-04",
+          "views": 5124
+        },
+        {
+          "month": "2026-05",
+          "views": 5168
+        },
+        {
+          "month": "2026-06",
+          "views": 5666
+        },
+        {
+          "month": "2026-07",
+          "views": 6144
+        },
+        {
+          "month": "2026-08",
+          "views": 6827
+        },
+        {
+          "month": "2026-09",
+          "views": 7391
+        },
+        {
+          "month": "2026-10",
+          "views": 5081
+        }
+      ],
+      "totalViews": 81116,
+      "medianMonthlyViews": 6286
+    },
+    "ประเทศสิงคโปร์": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%97%E0%B8%A8%E0%B8%AA%E0%B8%B4%E0%B8%87%E0%B8%84%E0%B9%82%E0%B8%9B%E0%B8%A3%E0%B9%8C/monthly/2025110100/2026103100",
+      "pageTitle": "ประเทศสิงคโปร์",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 6278
+        },
+        {
+          "month": "2025-12",
+          "views": 5885
+        },
+        {
+          "month": "2026-01",
+          "views": 6254
+        },
+        {
+          "month": "2026-02",
+          "views": 5355
+        },
+        {
+          "month": "2026-03",
+          "views": 4663
+        },
+        {
+          "month": "2026-04",
+          "views": 4235
+        },
+        {
+          "month": "2026-05",
+          "views": 4323
+        },
+        {
+          "month": "2026-06",
+          "views": 4153
+        },
+        {
+          "month": "2026-07",
+          "views": 4839
+        },
+        {
+          "month": "2026-08",
+          "views": 6222
+        },
+        {
+          "month": "2026-09",
+          "views": 5143
+        },
+        {
+          "month": "2026-10",
+          "views": 4162
+        }
+      ],
+      "totalViews": 61512,
+      "medianMonthlyViews": 4991
+    },
+    "ประเทศอินโดนีเซีย": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%97%E0%B8%A8%E0%B8%AD%E0%B8%B4%E0%B8%99%E0%B9%82%E0%B8%94%E0%B8%99%E0%B8%B5%E0%B9%80%E0%B8%8B%E0%B8%B5%E0%B8%A2/monthly/2025110100/2026103100",
+      "pageTitle": "ประเทศอินโดนีเซีย",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 5736
+        },
+        {
+          "month": "2025-12",
+          "views": 5863
+        },
+        {
+          "month": "2026-01",
+          "views": 6027
+        },
+        {
+          "month": "2026-02",
+          "views": 4733
+        },
+        {
+          "month": "2026-03",
+          "views": 4163
+        },
+        {
+          "month": "2026-04",
+          "views": 3695
+        },
+        {
+          "month": "2026-05",
+          "views": 3683
+        },
+        {
+          "month": "2026-06",
+          "views": 4145
+        },
+        {
+          "month": "2026-07",
+          "views": 4682
+        },
+        {
+          "month": "2026-08",
+          "views": 5824
+        },
+        {
+          "month": "2026-09",
+          "views": 5041
+        },
+        {
+          "month": "2026-10",
+          "views": 4002
+        }
+      ],
+      "totalViews": 57594,
+      "medianMonthlyViews": 4707.5
+    },
+    "โพแทสเซียม": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%82%E0%B8%9E%E0%B9%81%E0%B8%97%E0%B8%AA%E0%B9%80%E0%B8%8B%E0%B8%B5%E0%B8%A2%E0%B8%A1/monthly/2025110100/2026103100",
+      "pageTitle": "โพแทสเซียม",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 540
+        },
+        {
+          "month": "2025-12",
+          "views": 538
+        },
+        {
+          "month": "2026-01",
+          "views": 401
+        },
+        {
+          "month": "2026-02",
+          "views": 338
+        },
+        {
+          "month": "2026-03",
+          "views": 290
+        },
+        {
+          "month": "2026-04",
+          "views": 226
+        },
+        {
+          "month": "2026-05",
+          "views": 373
+        },
+        {
+          "month": "2026-06",
+          "views": 430
+        },
+        {
+          "month": "2026-07",
+          "views": 334
+        },
+        {
+          "month": "2026-08",
+          "views": 389
+        },
+        {
+          "month": "2026-09",
+          "views": 360
+        },
+        {
+          "month": "2026-10",
+          "views": 232
+        }
+      ],
+      "totalViews": 4451,
+      "medianMonthlyViews": 366.5
+    },
+    "ฟลูออรีน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%9F%E0%B8%A5%E0%B8%B9%E0%B8%AD%E0%B8%AD%E0%B8%A3%E0%B8%B5%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "ฟลูออรีน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 367
+        },
+        {
+          "month": "2025-12",
+          "views": 261
+        },
+        {
+          "month": "2026-01",
+          "views": 215
+        },
+        {
+          "month": "2026-02",
+          "views": 187
+        },
+        {
+          "month": "2026-03",
+          "views": 205
+        },
+        {
+          "month": "2026-04",
+          "views": 153
+        },
+        {
+          "month": "2026-05",
+          "views": 297
+        },
+        {
+          "month": "2026-06",
+          "views": 380
+        },
+        {
+          "month": "2026-07",
+          "views": 363
+        },
+        {
+          "month": "2026-08",
+          "views": 283
+        },
+        {
+          "month": "2026-09",
+          "views": 306
+        },
+        {
+          "month": "2026-10",
+          "views": 125
+        }
+      ],
+      "totalViews": 3142,
+      "medianMonthlyViews": 272
+    },
+    "ฟอสฟอรัส": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%9F%E0%B8%AD%E0%B8%AA%E0%B8%9F%E0%B8%AD%E0%B8%A3%E0%B8%B1%E0%B8%AA/monthly/2025110100/2026103100",
+      "pageTitle": "ฟอสฟอรัส",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 518
+        },
+        {
+          "month": "2025-12",
+          "views": 370
+        },
+        {
+          "month": "2026-01",
+          "views": 394
+        },
+        {
+          "month": "2026-02",
+          "views": 328
+        },
+        {
+          "month": "2026-03",
+          "views": 263
+        },
+        {
+          "month": "2026-04",
+          "views": 208
+        },
+        {
+          "month": "2026-05",
+          "views": 371
+        },
+        {
+          "month": "2026-06",
+          "views": 379
+        },
+        {
+          "month": "2026-07",
+          "views": 447
+        },
+        {
+          "month": "2026-08",
+          "views": 401
+        },
+        {
+          "month": "2026-09",
+          "views": 388
+        },
+        {
+          "month": "2026-10",
+          "views": 236
+        }
+      ],
+      "totalViews": 4303,
+      "medianMonthlyViews": 375
+    },
+    "มโนราห์ (รำ)": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%A1%E0%B9%82%E0%B8%99%E0%B8%A3%E0%B8%B2%E0%B8%AB%E0%B9%8C%20(%E0%B8%A3%E0%B8%B3)/monthly/2025110100/2026103100",
+      "pageTitle": "มโนราห์ (รำ)",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 1753
+        },
+        {
+          "month": "2025-12",
+          "views": 1454
+        },
+        {
+          "month": "2026-01",
+          "views": 1682
+        },
+        {
+          "month": "2026-02",
+          "views": 2030
+        },
+        {
+          "month": "2026-03",
+          "views": 1075
+        },
+        {
+          "month": "2026-04",
+          "views": 721
+        },
+        {
+          "month": "2026-05",
+          "views": 1003
+        },
+        {
+          "month": "2026-06",
+          "views": 1198
+        },
+        {
+          "month": "2026-07",
+          "views": 1269
+        },
+        {
+          "month": "2026-08",
+          "views": 1042
+        },
+        {
+          "month": "2026-09",
+          "views": 1240
+        },
+        {
+          "month": "2026-10",
+          "views": 481
+        }
+      ],
+      "totalViews": 14948,
+      "medianMonthlyViews": 1219
+    },
+    "มะเมีย": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%A1%E0%B8%B0%E0%B9%80%E0%B8%A1%E0%B8%B5%E0%B8%A2/monthly/2025110100/2026103100",
+      "pageTitle": "มะเมีย",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 615
+        },
+        {
+          "month": "2025-12",
+          "views": 938
+        },
+        {
+          "month": "2026-01",
+          "views": 1170
+        },
+        {
+          "month": "2026-02",
+          "views": 641
+        },
+        {
+          "month": "2026-03",
+          "views": 403
+        },
+        {
+          "month": "2026-04",
+          "views": 360
+        },
+        {
+          "month": "2026-05",
+          "views": 453
+        },
+        {
+          "month": "2026-06",
+          "views": 422
+        },
+        {
+          "month": "2026-07",
+          "views": 361
+        },
+        {
+          "month": "2026-08",
+          "views": 328
+        },
+        {
+          "month": "2026-09",
+          "views": 287
+        },
+        {
+          "month": "2026-10",
+          "views": 233
+        }
+      ],
+      "totalViews": 6211,
+      "medianMonthlyViews": 412.5
+    },
+    "มะแม": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%A1%E0%B8%B0%E0%B9%81%E0%B8%A1/monthly/2025110100/2026103100",
+      "pageTitle": "มะแม",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 424
+        },
+        {
+          "month": "2025-12",
+          "views": 477
+        },
+        {
+          "month": "2026-01",
+          "views": 590
+        },
+        {
+          "month": "2026-02",
+          "views": 302
+        },
+        {
+          "month": "2026-03",
+          "views": 159
+        },
+        {
+          "month": "2026-04",
+          "views": 271
+        },
+        {
+          "month": "2026-05",
+          "views": 360
+        },
+        {
+          "month": "2026-06",
+          "views": 402
+        },
+        {
+          "month": "2026-07",
+          "views": 395
+        },
+        {
+          "month": "2026-08",
+          "views": 391
+        },
+        {
+          "month": "2026-09",
+          "views": 381
+        },
+        {
+          "month": "2026-10",
+          "views": 255
+        }
+      ],
+      "totalViews": 4407,
+      "medianMonthlyViews": 386
+    },
+    "มะโรง": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%A1%E0%B8%B0%E0%B9%82%E0%B8%A3%E0%B8%87/monthly/2025110100/2026103100",
+      "pageTitle": "มะโรง",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 382
+        },
+        {
+          "month": "2025-12",
+          "views": 468
+        },
+        {
+          "month": "2026-01",
+          "views": 585
+        },
+        {
+          "month": "2026-02",
+          "views": 401
+        },
+        {
+          "month": "2026-03",
+          "views": 291
+        },
+        {
+          "month": "2026-04",
+          "views": 332
+        },
+        {
+          "month": "2026-05",
+          "views": 344
+        },
+        {
+          "month": "2026-06",
+          "views": 304
+        },
+        {
+          "month": "2026-07",
+          "views": 301
+        },
+        {
+          "month": "2026-08",
+          "views": 316
+        },
+        {
+          "month": "2026-09",
+          "views": 308
+        },
+        {
+          "month": "2026-10",
+          "views": 247
+        }
+      ],
+      "totalViews": 4279,
+      "medianMonthlyViews": 324
+    },
+    "มะเส็ง": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%A1%E0%B8%B0%E0%B9%80%E0%B8%AA%E0%B9%87%E0%B8%87/monthly/2025110100/2026103100",
+      "pageTitle": "มะเส็ง",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 358
+        },
+        {
+          "month": "2025-12",
+          "views": 431
+        },
+        {
+          "month": "2026-01",
+          "views": 404
+        },
+        {
+          "month": "2026-02",
+          "views": 237
+        },
+        {
+          "month": "2026-03",
+          "views": 209
+        },
+        {
+          "month": "2026-04",
+          "views": 186
+        },
+        {
+          "month": "2026-05",
+          "views": 285
+        },
+        {
+          "month": "2026-06",
+          "views": 241
+        },
+        {
+          "month": "2026-07",
+          "views": 1120
+        },
+        {
+          "month": "2026-08",
+          "views": 300
+        },
+        {
+          "month": "2026-09",
+          "views": 229
+        },
+        {
+          "month": "2026-10",
+          "views": 188
+        }
+      ],
+      "totalViews": 4188,
+      "medianMonthlyViews": 263
+    },
+    "เมตร": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%80%E0%B8%A1%E0%B8%95%E0%B8%A3/monthly/2025110100/2026103100",
+      "pageTitle": "เมตร",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 330
+        },
+        {
+          "month": "2025-12",
+          "views": 213
+        },
+        {
+          "month": "2026-01",
+          "views": 267
+        },
+        {
+          "month": "2026-02",
+          "views": 193
+        },
+        {
+          "month": "2026-03",
+          "views": 199
+        },
+        {
+          "month": "2026-04",
+          "views": 204
+        },
+        {
+          "month": "2026-05",
+          "views": 242
+        },
+        {
+          "month": "2026-06",
+          "views": 205
+        },
+        {
+          "month": "2026-07",
+          "views": 237
+        },
+        {
+          "month": "2026-08",
+          "views": 230
+        },
+        {
+          "month": "2026-09",
+          "views": 263
+        },
+        {
+          "month": "2026-10",
+          "views": 196
+        }
+      ],
+      "totalViews": 2779,
+      "medianMonthlyViews": 221.5
+    },
+    "เมืองประวัติศาสตร์สุโขทัยและเมืองบริวาร": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%80%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%87%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%A7%E0%B8%B1%E0%B8%95%E0%B8%B4%E0%B8%A8%E0%B8%B2%E0%B8%AA%E0%B8%95%E0%B8%A3%E0%B9%8C%E0%B8%AA%E0%B8%B8%E0%B9%82%E0%B8%82%E0%B8%97%E0%B8%B1%E0%B8%A2%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B9%80%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%87%E0%B8%9A%E0%B8%A3%E0%B8%B4%E0%B8%A7%E0%B8%B2%E0%B8%A3/monthly/2025110100/2026103100",
+      "pageTitle": "เมืองประวัติศาสตร์สุโขทัยและเมืองบริวาร",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 259
+        },
+        {
+          "month": "2025-12",
+          "views": 246
+        },
+        {
+          "month": "2026-01",
+          "views": 353
+        },
+        {
+          "month": "2026-02",
+          "views": 473
+        },
+        {
+          "month": "2026-03",
+          "views": 144
+        },
+        {
+          "month": "2026-04",
+          "views": 116
+        },
+        {
+          "month": "2026-05",
+          "views": 78
+        },
+        {
+          "month": "2026-06",
+          "views": 126
+        },
+        {
+          "month": "2026-07",
+          "views": 302
+        },
+        {
+          "month": "2026-08",
+          "views": 325
+        },
+        {
+          "month": "2026-09",
+          "views": 272
+        },
+        {
+          "month": "2026-10",
+          "views": 132
+        }
+      ],
+      "totalViews": 2826,
+      "medianMonthlyViews": 252.5
+    },
+    "โมล": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%82%E0%B8%A1%E0%B8%A5/monthly/2025110100/2026103100",
+      "pageTitle": "โมล",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 288
+        },
+        {
+          "month": "2025-12",
+          "views": 201
+        },
+        {
+          "month": "2026-01",
+          "views": 212
+        },
+        {
+          "month": "2026-02",
+          "views": 162
+        },
+        {
+          "month": "2026-03",
+          "views": 81
+        },
+        {
+          "month": "2026-04",
+          "views": 66
+        },
+        {
+          "month": "2026-05",
+          "views": 72
+        },
+        {
+          "month": "2026-06",
+          "views": 74
+        },
+        {
+          "month": "2026-07",
+          "views": 94
+        },
+        {
+          "month": "2026-08",
+          "views": 59
+        },
+        {
+          "month": "2026-09",
+          "views": 55
+        },
+        {
+          "month": "2026-10",
+          "views": 67
+        }
+      ],
+      "totalViews": 1431,
+      "medianMonthlyViews": 77.5
+    },
+    "ยูเรเนียม": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%A2%E0%B8%B9%E0%B9%80%E0%B8%A3%E0%B9%80%E0%B8%99%E0%B8%B5%E0%B8%A2%E0%B8%A1/monthly/2025110100/2026103100",
+      "pageTitle": "ยูเรเนียม",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 449
+        },
+        {
+          "month": "2025-12",
+          "views": 386
+        },
+        {
+          "month": "2026-01",
+          "views": 380
+        },
+        {
+          "month": "2026-02",
+          "views": 267
+        },
+        {
+          "month": "2026-03",
+          "views": 655
+        },
+        {
+          "month": "2026-04",
+          "views": 445
+        },
+        {
+          "month": "2026-05",
+          "views": 291
+        },
+        {
+          "month": "2026-06",
+          "views": 305
+        },
+        {
+          "month": "2026-07",
+          "views": 338
+        },
+        {
+          "month": "2026-08",
+          "views": 267
+        },
+        {
+          "month": "2026-09",
+          "views": 213
+        },
+        {
+          "month": "2026-10",
+          "views": 188
+        }
+      ],
+      "totalViews": 4184,
+      "medianMonthlyViews": 321.5
+    },
+    "ระกา": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B2/monthly/2025110100/2026103100",
+      "pageTitle": "ระกา",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 250
+        },
+        {
+          "month": "2025-12",
+          "views": 290
+        },
+        {
+          "month": "2026-01",
+          "views": 238
+        },
+        {
+          "month": "2026-02",
+          "views": 87
+        },
+        {
+          "month": "2026-03",
+          "views": 68
+        },
+        {
+          "month": "2026-04",
+          "views": 53
+        },
+        {
+          "month": "2026-05",
+          "views": 130
+        },
+        {
+          "month": "2026-06",
+          "views": 54
+        },
+        {
+          "month": "2026-07",
+          "views": 43
+        },
+        {
+          "month": "2026-08",
+          "views": 98
+        },
+        {
+          "month": "2026-09",
+          "views": 93
+        },
+        {
+          "month": "2026-10",
+          "views": 112
+        }
+      ],
+      "totalViews": 1516,
+      "medianMonthlyViews": 95.5
+    },
+    "เรดอน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%80%E0%B8%A3%E0%B8%94%E0%B8%AD%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "เรดอน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 115
+        },
+        {
+          "month": "2025-12",
+          "views": 102
+        },
+        {
+          "month": "2026-01",
+          "views": 71
+        },
+        {
+          "month": "2026-02",
+          "views": 76
+        },
+        {
+          "month": "2026-03",
+          "views": 52
+        },
+        {
+          "month": "2026-04",
+          "views": 54
+        },
+        {
+          "month": "2026-05",
+          "views": 66
+        },
+        {
+          "month": "2026-06",
+          "views": 96
+        },
+        {
+          "month": "2026-07",
+          "views": 121
+        },
+        {
+          "month": "2026-08",
+          "views": 112
+        },
+        {
+          "month": "2026-09",
+          "views": 91
+        },
+        {
+          "month": "2026-10",
+          "views": 74
+        }
+      ],
+      "totalViews": 1030,
+      "medianMonthlyViews": 83.5
+    },
+    "โลก (ดาวเคราะห์)": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%82%E0%B8%A5%E0%B8%81%20(%E0%B8%94%E0%B8%B2%E0%B8%A7%E0%B9%80%E0%B8%84%E0%B8%A3%E0%B8%B2%E0%B8%B0%E0%B8%AB%E0%B9%8C)/monthly/2025110100/2026103100",
+      "pageTitle": "โลก (ดาวเคราะห์)",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 3660
+        },
+        {
+          "month": "2025-12",
+          "views": 3773
+        },
+        {
+          "month": "2026-01",
+          "views": 4089
+        },
+        {
+          "month": "2026-02",
+          "views": 3561
+        },
+        {
+          "month": "2026-03",
+          "views": 2592
+        },
+        {
+          "month": "2026-04",
+          "views": 2420
+        },
+        {
+          "month": "2026-05",
+          "views": 2582
+        },
+        {
+          "month": "2026-06",
+          "views": 2727
+        },
+        {
+          "month": "2026-07",
+          "views": 2508
+        },
+        {
+          "month": "2026-08",
+          "views": 2401
+        },
+        {
+          "month": "2026-09",
+          "views": 2820
+        },
+        {
+          "month": "2026-10",
+          "views": 1680
+        }
+      ],
+      "totalViews": 34813,
+      "medianMonthlyViews": 2659.5
+    },
+    "วอก": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%A7%E0%B8%AD%E0%B8%81/monthly/2025110100/2026103100",
+      "pageTitle": "วอก",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 342
+        },
+        {
+          "month": "2025-12",
+          "views": 423
+        },
+        {
+          "month": "2026-01",
+          "views": 537
+        },
+        {
+          "month": "2026-02",
+          "views": 415
+        },
+        {
+          "month": "2026-03",
+          "views": 363
+        },
+        {
+          "month": "2026-04",
+          "views": 356
+        },
+        {
+          "month": "2026-05",
+          "views": 483
+        },
+        {
+          "month": "2026-06",
+          "views": 386
+        },
+        {
+          "month": "2026-07",
+          "views": 323
+        },
+        {
+          "month": "2026-08",
+          "views": 305
+        },
+        {
+          "month": "2026-09",
+          "views": 386
+        },
+        {
+          "month": "2026-10",
+          "views": 254
+        }
+      ],
+      "totalViews": 4573,
+      "medianMonthlyViews": 374.5
+    },
+    "วาเนเดียม": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%A7%E0%B8%B2%E0%B9%80%E0%B8%99%E0%B9%80%E0%B8%94%E0%B8%B5%E0%B8%A2%E0%B8%A1/monthly/2025110100/2026103100",
+      "pageTitle": "วาเนเดียม",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 149
+        },
+        {
+          "month": "2025-12",
+          "views": 92
+        },
+        {
+          "month": "2026-01",
+          "views": 103
+        },
+        {
+          "month": "2026-02",
+          "views": 66
+        },
+        {
+          "month": "2026-03",
+          "views": 73
+        },
+        {
+          "month": "2026-04",
+          "views": 60
+        },
+        {
+          "month": "2026-05",
+          "views": 91
+        },
+        {
+          "month": "2026-06",
+          "views": 129
+        },
+        {
+          "month": "2026-07",
+          "views": 126
+        },
+        {
+          "month": "2026-08",
+          "views": 107
+        },
+        {
+          "month": "2026-09",
+          "views": 83
+        },
+        {
+          "month": "2026-10",
+          "views": 54
+        }
+      ],
+      "totalViews": 1133,
+      "medianMonthlyViews": 91.5
+    },
+    "วินาที": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%A7%E0%B8%B4%E0%B8%99%E0%B8%B2%E0%B8%97%E0%B8%B5/monthly/2025110100/2026103100",
+      "pageTitle": "วินาที",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 215
+        },
+        {
+          "month": "2025-12",
+          "views": 174
+        },
+        {
+          "month": "2026-01",
+          "views": 208
+        },
+        {
+          "month": "2026-02",
+          "views": 157
+        },
+        {
+          "month": "2026-03",
+          "views": 119
+        },
+        {
+          "month": "2026-04",
+          "views": 105
+        },
+        {
+          "month": "2026-05",
+          "views": 154
+        },
+        {
+          "month": "2026-06",
+          "views": 113
+        },
+        {
+          "month": "2026-07",
+          "views": 201
+        },
+        {
+          "month": "2026-08",
+          "views": 214
+        },
+        {
+          "month": "2026-09",
+          "views": 152
+        },
+        {
+          "month": "2026-10",
+          "views": 113
+        }
+      ],
+      "totalViews": 1925,
+      "medianMonthlyViews": 155.5
+    },
+    "สงกรานต์ในประเทศไทย": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%AA%E0%B8%87%E0%B8%81%E0%B8%A3%E0%B8%B2%E0%B8%99%E0%B8%95%E0%B9%8C%E0%B9%83%E0%B8%99%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%97%E0%B8%A8%E0%B9%84%E0%B8%97%E0%B8%A2/monthly/2025110100/2026103100",
+      "pageTitle": "สงกรานต์ในประเทศไทย",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 2423
+        },
+        {
+          "month": "2025-12",
+          "views": 1838
+        },
+        {
+          "month": "2026-01",
+          "views": 1833
+        },
+        {
+          "month": "2026-02",
+          "views": 2527
+        },
+        {
+          "month": "2026-03",
+          "views": 3745
+        },
+        {
+          "month": "2026-04",
+          "views": 16856
+        },
+        {
+          "month": "2026-05",
+          "views": 1006
+        },
+        {
+          "month": "2026-06",
+          "views": 926
+        },
+        {
+          "month": "2026-07",
+          "views": 941
+        },
+        {
+          "month": "2026-08",
+          "views": 850
+        },
+        {
+          "month": "2026-09",
+          "views": 1053
+        },
+        {
+          "month": "2026-10",
+          "views": 599
+        }
+      ],
+      "totalViews": 34597,
+      "medianMonthlyViews": 1443
+    },
+    "แหล่งโบราณคดีบ้านเชียง": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%81%E0%B8%AB%E0%B8%A5%E0%B9%88%E0%B8%87%E0%B9%82%E0%B8%9A%E0%B8%A3%E0%B8%B2%E0%B8%93%E0%B8%84%E0%B8%94%E0%B8%B5%E0%B8%9A%E0%B9%89%E0%B8%B2%E0%B8%99%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87/monthly/2025110100/2026103100",
+      "pageTitle": "แหล่งโบราณคดีบ้านเชียง",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 1732
+        },
+        {
+          "month": "2025-12",
+          "views": 1335
+        },
+        {
+          "month": "2026-01",
+          "views": 1516
+        },
+        {
+          "month": "2026-02",
+          "views": 1880
+        },
+        {
+          "month": "2026-03",
+          "views": 750
+        },
+        {
+          "month": "2026-04",
+          "views": 510
+        },
+        {
+          "month": "2026-05",
+          "views": 1061
+        },
+        {
+          "month": "2026-06",
+          "views": 1621
+        },
+        {
+          "month": "2026-07",
+          "views": 1880
+        },
+        {
+          "month": "2026-08",
+          "views": 1823
+        },
+        {
+          "month": "2026-09",
+          "views": 1495
+        },
+        {
+          "month": "2026-10",
+          "views": 861
+        }
+      ],
+      "totalViews": 16464,
+      "medianMonthlyViews": 1505.5
+    },
+    "ออกซิเจน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%AD%E0%B8%AD%E0%B8%81%E0%B8%8B%E0%B8%B4%E0%B9%80%E0%B8%88%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "ออกซิเจน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 985
+        },
+        {
+          "month": "2025-12",
+          "views": 697
+        },
+        {
+          "month": "2026-01",
+          "views": 706
+        },
+        {
+          "month": "2026-02",
+          "views": 625
+        },
+        {
+          "month": "2026-03",
+          "views": 528
+        },
+        {
+          "month": "2026-04",
+          "views": 433
+        },
+        {
+          "month": "2026-05",
+          "views": 700
+        },
+        {
+          "month": "2026-06",
+          "views": 749
+        },
+        {
+          "month": "2026-07",
+          "views": 814
+        },
+        {
+          "month": "2026-08",
+          "views": 679
+        },
+        {
+          "month": "2026-09",
+          "views": 679
+        },
+        {
+          "month": "2026-10",
+          "views": 412
+        }
+      ],
+      "totalViews": 8007,
+      "medianMonthlyViews": 688
+    },
+    "อาร์กอน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%AD%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B8%81%E0%B8%AD%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "อาร์กอน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 302
+        },
+        {
+          "month": "2025-12",
+          "views": 269
+        },
+        {
+          "month": "2026-01",
+          "views": 221
+        },
+        {
+          "month": "2026-02",
+          "views": 159
+        },
+        {
+          "month": "2026-03",
+          "views": 150
+        },
+        {
+          "month": "2026-04",
+          "views": 122
+        },
+        {
+          "month": "2026-05",
+          "views": 247
+        },
+        {
+          "month": "2026-06",
+          "views": 317
+        },
+        {
+          "month": "2026-07",
+          "views": 310
+        },
+        {
+          "month": "2026-08",
+          "views": 218
+        },
+        {
+          "month": "2026-09",
+          "views": 191
+        },
+        {
+          "month": "2026-10",
+          "views": 198
+        }
+      ],
+      "totalViews": 2704,
+      "medianMonthlyViews": 219.5
+    },
+    "อิตเทรียม": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%AD%E0%B8%B4%E0%B8%95%E0%B9%80%E0%B8%97%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%A1/monthly/2025110100/2026103100",
+      "pageTitle": "อิตเทรียม",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 181
+        },
+        {
+          "month": "2025-12",
+          "views": 98
+        },
+        {
+          "month": "2026-01",
+          "views": 132
+        },
+        {
+          "month": "2026-02",
+          "views": 73
+        },
+        {
+          "month": "2026-03",
+          "views": 84
+        },
+        {
+          "month": "2026-04",
+          "views": 65
+        },
+        {
+          "month": "2026-05",
+          "views": 79
+        },
+        {
+          "month": "2026-06",
+          "views": 101
+        },
+        {
+          "month": "2026-07",
+          "views": 80
+        },
+        {
+          "month": "2026-08",
+          "views": 89
+        },
+        {
+          "month": "2026-09",
+          "views": 61
+        },
+        {
+          "month": "2026-10",
+          "views": 58
+        }
+      ],
+      "totalViews": 1101,
+      "medianMonthlyViews": 82
+    },
+    "อุทยานประวัติศาสตร์พระนครศรีอยุธยา": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%AD%E0%B8%B8%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%99%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%A7%E0%B8%B1%E0%B8%95%E0%B8%B4%E0%B8%A8%E0%B8%B2%E0%B8%AA%E0%B8%95%E0%B8%A3%E0%B9%8C%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%99%E0%B8%84%E0%B8%A3%E0%B8%A8%E0%B8%A3%E0%B8%B5%E0%B8%AD%E0%B8%A2%E0%B8%B8%E0%B8%98%E0%B8%A2%E0%B8%B2/monthly/2025110100/2026103100",
+      "pageTitle": "อุทยานประวัติศาสตร์พระนครศรีอยุธยา",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 1352
+        },
+        {
+          "month": "2025-12",
+          "views": 1207
+        },
+        {
+          "month": "2026-01",
+          "views": 1587
+        },
+        {
+          "month": "2026-02",
+          "views": 2307
+        },
+        {
+          "month": "2026-03",
+          "views": 866
+        },
+        {
+          "month": "2026-04",
+          "views": 514
+        },
+        {
+          "month": "2026-05",
+          "views": 693
+        },
+        {
+          "month": "2026-06",
+          "views": 807
+        },
+        {
+          "month": "2026-07",
+          "views": 1128
+        },
+        {
+          "month": "2026-08",
+          "views": 1035
+        },
+        {
+          "month": "2026-09",
+          "views": 929
+        },
+        {
+          "month": "2026-10",
+          "views": 562
+        }
+      ],
+      "totalViews": 12987,
+      "medianMonthlyViews": 982
+    },
+    "อุทยานประวัติศาสตร์ภูพระบาท": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%AD%E0%B8%B8%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%99%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%A7%E0%B8%B1%E0%B8%95%E0%B8%B4%E0%B8%A8%E0%B8%B2%E0%B8%AA%E0%B8%95%E0%B8%A3%E0%B9%8C%E0%B8%A0%E0%B8%B9%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%9A%E0%B8%B2%E0%B8%97/monthly/2025110100/2026103100",
+      "pageTitle": "อุทยานประวัติศาสตร์ภูพระบาท",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 846
+        },
+        {
+          "month": "2025-12",
+          "views": 1046
+        },
+        {
+          "month": "2026-01",
+          "views": 1032
+        },
+        {
+          "month": "2026-02",
+          "views": 894
+        },
+        {
+          "month": "2026-03",
+          "views": 437
+        },
+        {
+          "month": "2026-04",
+          "views": 320
+        },
+        {
+          "month": "2026-05",
+          "views": 473
+        },
+        {
+          "month": "2026-06",
+          "views": 541
+        },
+        {
+          "month": "2026-07",
+          "views": 1266
+        },
+        {
+          "month": "2026-08",
+          "views": 1023
+        },
+        {
+          "month": "2026-09",
+          "views": 835
+        },
+        {
+          "month": "2026-10",
+          "views": 642
+        }
+      ],
+      "totalViews": 9355,
+      "medianMonthlyViews": 840.5
+    },
+    "อุทยานประวัติศาสตร์ศรีเทพ": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%AD%E0%B8%B8%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%99%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%A7%E0%B8%B1%E0%B8%95%E0%B8%B4%E0%B8%A8%E0%B8%B2%E0%B8%AA%E0%B8%95%E0%B8%A3%E0%B9%8C%E0%B8%A8%E0%B8%A3%E0%B8%B5%E0%B9%80%E0%B8%97%E0%B8%9E/monthly/2025110100/2026103100",
+      "pageTitle": "อุทยานประวัติศาสตร์ศรีเทพ",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 2410
+        },
+        {
+          "month": "2025-12",
+          "views": 2629
+        },
+        {
+          "month": "2026-01",
+          "views": 2560
+        },
+        {
+          "month": "2026-02",
+          "views": 2155
+        },
+        {
+          "month": "2026-03",
+          "views": 1331
+        },
+        {
+          "month": "2026-04",
+          "views": 1410
+        },
+        {
+          "month": "2026-05",
+          "views": 1938
+        },
+        {
+          "month": "2026-06",
+          "views": 1598
+        },
+        {
+          "month": "2026-07",
+          "views": 2429
+        },
+        {
+          "month": "2026-08",
+          "views": 2030
+        },
+        {
+          "month": "2026-09",
+          "views": 1945
+        },
+        {
+          "month": "2026-10",
+          "views": 1321
+        }
+      ],
+      "totalViews": 23756,
+      "medianMonthlyViews": 1987.5
+    },
+    "แอมแปร์": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%81%E0%B8%AD%E0%B8%A1%E0%B9%81%E0%B8%9B%E0%B8%A3%E0%B9%8C/monthly/2025110100/2026103100",
+      "pageTitle": "แอมแปร์",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 192
+        },
+        {
+          "month": "2025-12",
+          "views": 149
+        },
+        {
+          "month": "2026-01",
+          "views": 192
+        },
+        {
+          "month": "2026-02",
+          "views": 109
+        },
+        {
+          "month": "2026-03",
+          "views": 133
+        },
+        {
+          "month": "2026-04",
+          "views": 97
+        },
+        {
+          "month": "2026-05",
+          "views": 105
+        },
+        {
+          "month": "2026-06",
+          "views": 112
+        },
+        {
+          "month": "2026-07",
+          "views": 103
+        },
+        {
+          "month": "2026-08",
+          "views": 114
+        },
+        {
+          "month": "2026-09",
+          "views": 118
+        },
+        {
+          "month": "2026-10",
+          "views": 105
+        }
+      ],
+      "totalViews": 1529,
+      "medianMonthlyViews": 113
+    },
+    "โอกาเนสซอน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%82%E0%B8%AD%E0%B8%81%E0%B8%B2%E0%B9%80%E0%B8%99%E0%B8%AA%E0%B8%8B%E0%B8%AD%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "โอกาเนสซอน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 171
+        },
+        {
+          "month": "2025-12",
+          "views": 96
+        },
+        {
+          "month": "2026-01",
+          "views": 125
+        },
+        {
+          "month": "2026-02",
+          "views": 85
+        },
+        {
+          "month": "2026-03",
+          "views": 103
+        },
+        {
+          "month": "2026-04",
+          "views": 90
+        },
+        {
+          "month": "2026-05",
+          "views": 133
+        },
+        {
+          "month": "2026-06",
+          "views": 129
+        },
+        {
+          "month": "2026-07",
+          "views": 137
+        },
+        {
+          "month": "2026-08",
+          "views": 96
+        },
+        {
+          "month": "2026-09",
+          "views": 84
+        },
+        {
+          "month": "2026-10",
+          "views": 60
+        }
+      ],
+      "totalViews": 1309,
+      "medianMonthlyViews": 99.5
+    },
+    "ไอโอดีน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%84%E0%B8%AD%E0%B9%82%E0%B8%AD%E0%B8%94%E0%B8%B5%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "ไอโอดีน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 364
+        },
+        {
+          "month": "2025-12",
+          "views": 254
+        },
+        {
+          "month": "2026-01",
+          "views": 246
+        },
+        {
+          "month": "2026-02",
+          "views": 208
+        },
+        {
+          "month": "2026-03",
+          "views": 193
+        },
+        {
+          "month": "2026-04",
+          "views": 138
+        },
+        {
+          "month": "2026-05",
+          "views": 131
+        },
+        {
+          "month": "2026-06",
+          "views": 280
+        },
+        {
+          "month": "2026-07",
+          "views": 252
+        },
+        {
+          "month": "2026-08",
+          "views": 239
+        },
+        {
+          "month": "2026-09",
+          "views": 150
+        },
+        {
+          "month": "2026-10",
+          "views": 118
+        }
+      ],
+      "totalViews": 2573,
+      "medianMonthlyViews": 223.5
+    },
+    "ฮีเลียม": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B8%AE%E0%B8%B5%E0%B9%80%E0%B8%A5%E0%B8%B5%E0%B8%A2%E0%B8%A1/monthly/2025110100/2026103100",
+      "pageTitle": "ฮีเลียม",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 388
+        },
+        {
+          "month": "2025-12",
+          "views": 280
+        },
+        {
+          "month": "2026-01",
+          "views": 254
+        },
+        {
+          "month": "2026-02",
+          "views": 212
+        },
+        {
+          "month": "2026-03",
+          "views": 199
+        },
+        {
+          "month": "2026-04",
+          "views": 248
+        },
+        {
+          "month": "2026-05",
+          "views": 316
+        },
+        {
+          "month": "2026-06",
+          "views": 374
+        },
+        {
+          "month": "2026-07",
+          "views": 289
+        },
+        {
+          "month": "2026-08",
+          "views": 218
+        },
+        {
+          "month": "2026-09",
+          "views": 281
+        },
+        {
+          "month": "2026-10",
+          "views": 185
+        }
+      ],
+      "totalViews": 3244,
+      "medianMonthlyViews": 267
+    },
+    "ไฮโดรเจน": {
+      "status": "ok",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/th.wikipedia.org/all-access/user/%E0%B9%84%E0%B8%AE%E0%B9%82%E0%B8%94%E0%B8%A3%E0%B9%80%E0%B8%88%E0%B8%99/monthly/2025110100/2026103100",
+      "pageTitle": "ไฮโดรเจน",
+      "months": [
+        {
+          "month": "2025-11",
+          "views": 1012
+        },
+        {
+          "month": "2025-12",
+          "views": 790
+        },
+        {
+          "month": "2026-01",
+          "views": 736
+        },
+        {
+          "month": "2026-02",
+          "views": 595
+        },
+        {
+          "month": "2026-03",
+          "views": 548
+        },
+        {
+          "month": "2026-04",
+          "views": 529
+        },
+        {
+          "month": "2026-05",
+          "views": 781
+        },
+        {
+          "month": "2026-06",
+          "views": 1100
+        },
+        {
+          "month": "2026-07",
+          "views": 893
+        },
+        {
+          "month": "2026-08",
+          "views": 602
+        },
+        {
+          "month": "2026-09",
+          "views": 736
+        },
+        {
+          "month": "2026-10",
+          "views": 547
+        }
+      ],
+      "totalViews": 8869,
+      "medianMonthlyViews": 736
+    }
+  }
+}

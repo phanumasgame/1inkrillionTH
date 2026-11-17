@@ -1,0 +1,12 @@
+.git/
+.github/
+.vercel/
+.playwright-mcp/
+node_modules/
+dist/
+outputs/
+docs/
+tests/
+data/archive/
+data/CONTENT-NOTES.md
+*.log

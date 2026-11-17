@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 2,
+  "purpose": "Generated project artwork and licensed font provenance; see assets/README.md for the independently implemented reference-based sound cues.",
+  "assets": [
+    {
+      "path": "assets/art/ocean.png",
+      "kind": "background",
+      "createdWith": "OpenAI built-in image generation",
+      "createdAt": "2026-11-17",
+      "sourceImages": [],
+      "promptFile": "assets/ART-PROMPTS.md",
+      "bytes": 1360659,
+      "contentType": "image/png",
+      "sha256": "afdb436f1699a926467fb9594012c05c730f3fce2caea0099474cb0aab143f5a",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGB"
+    },
+    {
+      "path": "assets/art/krillion.png",
+      "kind": "character",
+      "createdWith": "OpenAI built-in image generation",
+      "createdAt": "2026-11-17",
+      "sourceImages": [],
+      "promptFile": "assets/ART-PROMPTS.md",
+      "bytes": 1218141,
+      "contentType": "image/png",
+      "sha256": "4d8b4bde0dc5033e3b92bb1241fef40c3116924ce769a8e00980d300ffc4ba23",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/art/plankton.png",
+      "kind": "character",
+      "createdWith": "OpenAI built-in image generation",
+      "createdAt": "2026-11-17",
+      "sourceImages": [],
+      "promptFile": "assets/ART-PROMPTS.md",
+      "bytes": 1496299,
+      "contentType": "image/png",
+      "sha256": "583fede2def31a1425898aceb6f0a9214091d2091cea76ac90a1d09e54cf14d9",
+      "width": 1312,
+      "height": 1199,
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/art/tooclever.png",
+      "kind": "character",
+      "createdWith": "OpenAI built-in image generation",
+      "createdAt": "2026-11-17",
+      "sourceImages": [],
+      "promptFile": "assets/ART-PROMPTS.md",
+      "bytes": 1457725,
+      "contentType": "image/png",
+      "sha256": "e8d90f558f7916f40d0bf90ab212718324472214af8f79d22cd170a35675b3c3",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/art/schooler.png",
+      "kind": "character",
+      "createdWith": "OpenAI built-in image generation",
+      "createdAt": "2026-11-17",
+      "sourceImages": [],
+      "promptFile": "assets/ART-PROMPTS.md",
+      "bytes": 939030,
+      "contentType": "image/png",
+      "sha256": "df1119726f593a6d3e603daa463be8b7ba5b699eca72695a89dc310c01839977",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/art/rare.png",
+      "kind": "character",
+      "createdWith": "OpenAI built-in image generation",
+      "createdAt": "2026-11-17",
+      "sourceImages": [],
+      "promptFile": "assets/ART-PROMPTS.md",
+      "bytes": 1341170,
+      "contentType": "image/png",
+      "sha256": "c4bd424887e20c8006621ddfe4fcd7c9c26b541cbeaddff33b9e46dba08eda3c",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/art/deepcut.png",
+      "kind": "character",
+      "createdWith": "OpenAI built-in image generation",
+      "createdAt": "2026-11-17",
+      "sourceImages": [],
+      "promptFile": "assets/ART-PROMPTS.md",
+      "bytes": 1087892,
+      "contentType": "image/png",
+      "sha256": "186025fa34eaef4f94df6b19609498bd25bc0eb6f9567cff783b9e1b4f3661eb",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA"
+    },
+    {
+      "path": "assets/fonts/Sarabun-Bold.ttf",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/sarabun/Sarabun-Bold.ttf",
+      "kind": "font",
+      "bytes": 89804,
+      "contentType": "application/octet-stream",
+      "sha256": "d38308ca27d067b9a1b79006337c1f9a66c29aa016d96a9d88d3801da7fa83b9",
+      "rights": "Google Fonts; see corresponding OFL file"
+    },
+    {
+      "path": "assets/fonts/Sarabun-OFL.txt",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/sarabun/OFL.txt",
+      "kind": "font-license",
+      "bytes": 4387,
+      "contentType": "text/plain; charset=utf-8",
+      "sha256": "b26cae1321380296ba8311b632a397d5eac11b47197f9d0aa0b9310f1531ad60",
+      "rights": "Google Fonts; see corresponding OFL file"
+    },
+    {
+      "path": "assets/fonts/Sarabun-Regular.ttf",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/sarabun/Sarabun-Regular.ttf",
+      "kind": "font",
+      "bytes": 90220,
+      "contentType": "application/octet-stream",
+      "sha256": "226d4f368fbc0457990ddef2692679badfd2c1a4e89e5ac4d43c10ba7743b2f1",
+      "rights": "Google Fonts; see corresponding OFL file"
+    },
+    {
+      "path": "assets/fonts/VT323-OFL.txt",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/vt323/OFL.txt",
+      "kind": "font-license",
+      "bytes": 4367,
+      "contentType": "text/plain; charset=utf-8",
+      "sha256": "27d9af34210253e7ca1251fbace86c6f65b40031d6ce1a75493a1b2093631298",
+      "rights": "Google Fonts; see corresponding OFL file"
+    },
+    {
+      "path": "assets/fonts/VT323-Regular.ttf",
+      "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/vt323/VT323-Regular.ttf",
+      "kind": "font",
+      "bytes": 153116,
+      "contentType": "application/octet-stream",
+      "sha256": "cf4de751ada78ceac033dbe16a687742939995b77bc2a052ae17a4957958594d",
+      "rights": "Google Fonts; see corresponding OFL file"
+    }
+  ]
+}
