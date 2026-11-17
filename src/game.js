@@ -40,16 +40,20 @@ export function shuffle(values, rng = Math.random) {
   }
   return out;
 }
+export function scopeTargetsForRound(round) {
+  return Math.abs(round) % 2 === 1 ? { thai: 4, world: 3 } : { thai: 3, world: 4 };
+}
 export function selectDaily(bank, date) {
   const rng = random(hash(bank.version + ':' + date));
-  return diverseRound(bank.questions, rng);
+  const day = Math.floor(Date.parse(date + 'T00:00:00Z') / 86_400_000);
+  if (!Number.isFinite(day)) throw new Error('Daily dive needs a calendar date.');
+  return diverseRound(bank.questions, rng, [], false, scopeTargetsForRound(day));
 }
 const questionTheme = question => question.theme || question.category || question.id;
 
-// Keep the 5:2 mix while giving each dive at least five themes and at most two
-// questions per theme. For a 21-question deck, also reserve a feasible mix for
-// the later rounds, so variety does not force early repeats in Endless.
-export function diverseRound(questions, rng = Math.random, requiredIds = [], balanceRemaining = false) {
+// Seven prompts cannot be divided equally, so alternating dives use 4:3 and
+// 3:4. Keep at least five themes where possible, with at most two of each.
+export function diverseRound(questions, rng = Math.random, requiredIds = [], balanceRemaining = false, targets = scopeTargetsForRound(1)) {
   const ordered = shuffle(questions, rng);
   if (balanceRemaining) {
     // Spend larger remaining themes steadily instead of leaving them all for
@@ -60,37 +64,24 @@ export function diverseRound(questions, rng = Math.random, requiredIds = [], bal
   }
   const minimumThemes = Math.min(5,new Set(questions.map(questionTheme)).size);
   const required = new Set(requiredIds);
-  const memo = new Set();
   function plan(pool, mandatory = new Set()) {
-    const key = pool.map(q=>q.id).sort().join('|');
-    if (!mandatory.size && memo.has(key)) return null;
-    if (pool.filter(q=>q.scope==='thai').length < 5 || pool.filter(q=>q.scope==='world').length < 2) return null;
+    if (pool.filter(q=>q.scope==='thai').length < targets.thai || pool.filter(q=>q.scope==='world').length < targets.world) return null;
     const chosen = pool.filter(q=>mandatory.has(q.id));
     const candidates = pool.filter(q=>!mandatory.has(q.id));
     const counts = new Map();
     for (const q of chosen) counts.set(questionTheme(q),(counts.get(questionTheme(q))||0)+1);
     const thai = chosen.filter(q=>q.scope==='thai').length;
     const world = chosen.length-thai;
-    if (thai>5 || world>2 || [...counts.values()].some(n=>n>2)) return null;
+    if (thai>targets.thai || world>targets.world || [...counts.values()].some(n=>n>2)) return null;
     function search(start, thaiCount, worldCount) {
       if (chosen.length===7) {
-        if (thaiCount!==5 || worldCount!==2 || counts.size<minimumThemes) return null;
-        const ids=new Set(chosen.map(q=>q.id)), remaining=pool.filter(q=>!ids.has(q.id));
-        const remainingThai=remaining.filter(q=>q.scope==='thai').length;
-        const remainingWorld=remaining.length-remainingThai;
-        const fullFuture=pool.length<=28 && remaining.length>0 && remainingThai%5===0 &&
-          remainingWorld%2===0 && remainingThai/5===remainingWorld/2;
-        if (fullFuture) {
-          const futureRounds=remainingThai/5, byTheme=new Map();
-          for (const q of remaining) byTheme.set(questionTheme(q),(byTheme.get(questionTheme(q))||0)+1);
-          if ([...byTheme.values()].some(n=>n>2*futureRounds) || !plan(remaining)) return null;
-        }
+        if (thaiCount!==targets.thai || worldCount!==targets.world || counts.size<minimumThemes) return null;
         return [...chosen];
       }
       if (chosen.length+candidates.length-start<7) return null;
       for (let i=start;i<candidates.length;i++) {
         const q=candidates[i], theme=questionTheme(q), n=counts.get(theme)||0;
-        if (n>=2 || q.scope==='thai' && thaiCount>=5 || q.scope==='world' && worldCount>=2) continue;
+        if (n>=2 || q.scope==='thai' && thaiCount>=targets.thai || q.scope==='world' && worldCount>=targets.world) continue;
         chosen.push(q);counts.set(theme,n+1);
         const found=search(i+1,thaiCount+(q.scope==='thai'?1:0),worldCount+(q.scope==='world'?1:0));
         chosen.pop();if(n)counts.set(theme,n);else counts.delete(theme);
@@ -98,9 +89,7 @@ export function diverseRound(questions, rng = Math.random, requiredIds = [], bal
       }
       return null;
     }
-    const found=search(0,thai,world);
-    if(!found && !mandatory.size)memo.add(key);
-    return found;
+    return search(0,thai,world);
   }
   const strict=plan(ordered,required);
   if(strict)return shuffle(strict,rng);
@@ -108,20 +97,21 @@ export function diverseRound(questions, rng = Math.random, requiredIds = [], bal
   // unseen mandatory questions and playability, then maximize available variety.
   const picked=ordered.filter(q=>required.has(q.id)), counts=new Map();
   for(const q of picked)counts.set(questionTheme(q),(counts.get(questionTheme(q))||0)+1);
-  for(const [scope,target] of [['thai',5],['world',2]]) {
+  for(const [scope,target] of Object.entries(targets)) {
     while(picked.filter(q=>q.scope===scope).length<target) {
       const candidates=ordered.filter(q=>q.scope===scope&&!picked.some(p=>p.id===q.id));
       candidates.sort((a,b)=>(counts.get(questionTheme(a))||0)-(counts.get(questionTheme(b))||0));
-      if(!candidates.length)throw new Error('Not enough questions for a 5:2 dive.');
+      if(!candidates.length)throw new Error('Not enough questions for a balanced dive.');
       const q=candidates[0];picked.push(q);counts.set(questionTheme(q),(counts.get(questionTheme(q))||0)+1);
     }
   }
   return shuffle(picked,rng);
 }
-export function selectEndless(bank, seen = [], rng = Math.random) {
+export function selectEndless(bank, seen = [], rng = Math.random, run = 1) {
   const available = [], required = [];
   const nextSeen = [...seen];
-  for (const [scope, count] of [['thai', 5], ['world', 2]]) {
+  const targets = scopeTargetsForRound(run);
+  for (const [scope, count] of Object.entries(targets)) {
     const all = bank.questions.filter(q => q.scope === scope);
     let remaining = shuffle(all.filter(q => !seen.includes(q.id)), rng);
     if (remaining.length < count) {
@@ -135,7 +125,7 @@ export function selectEndless(bank, seen = [], rng = Math.random) {
     }
     available.push(...remaining);
   }
-  const picked = diverseRound(available,rng,required,true);
+  const picked = diverseRound(available,rng,required,true,targets);
   nextSeen.push(...picked.map(q => q.id));
   return { questions: picked, seen: [...new Set(nextSeen)] };
 }

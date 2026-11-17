@@ -29,14 +29,18 @@ test('the retained draft catalog has the promised coverage and unambiguous canon
   for(const question of catalog.questions) for(const answer of question.answers)
     assert.equal(matchAnswer(question,answer.label).answer.id,answer.id);
 });
-test('daily is deterministic, independent of input order mutation, with 5 Thai and 2 world prompts',()=>{
+test('daily alternates the 4:3 split between consecutive days and is deterministic',()=>{
   const before=JSON.stringify(bank);
   assert.deepEqual(selectDaily(bank,date),selectDaily(bank,date));
-  assert.equal(selectDaily(bank,date).filter(q=>q.scope==='thai').length,5);
-  assert.equal(selectDaily(bank,date).filter(q=>q.scope==='world').length,2);
-  assert.equal(new Set(selectDaily(bank,date).map(q=>q.id)).size,7);
+  const first=selectDaily(bank,date),second=selectDaily(bank,'2026-11-18');
+  for(const round of [first,second]) {
+    assert.ok([3,4].includes(round.filter(q=>q.scope==='thai').length));
+    assert.equal(new Set(round.map(q=>q.id)).size,7);
+  }
+  assert.equal([...first,...second].filter(q=>q.scope==='thai').length,7);
+  assert.equal([...first,...second].filter(q=>q.scope==='world').length,7);
   assert.equal(JSON.stringify(bank),before);
-  assert.notDeepEqual(selectDaily(bank,date).map(q=>q.id),selectDaily(bank,'2026-11-18').map(q=>q.id));
+  assert.notDeepEqual(first.map(q=>q.id),second.map(q=>q.id));
 });
 test('daily date uses New York calendar and handles daylight saving',()=>{
   assert.equal(TIME_ZONE,'America/New_York');
@@ -45,17 +49,24 @@ test('daily date uses New York calendar and handles daylight saving',()=>{
   assert.equal(dayKey(Date.parse('2026-07-17T03:59:59Z')),'2026-07-16');
   assert.equal(dayKey(Date.parse('2026-07-17T04:00:00Z')),'2026-07-17');
 });
-test('endless cycles the 70 Thai and 30 world questions independently',()=>{
-  let seen=[],ids=[];
-  for(let i=0;i<15;i++){
-    const draw=selectEndless(catalog,seen,()=>.42);
-    seen=draw.seen;ids.push(...draw.questions.map(q=>q.id));
-    assert.equal(draw.questions.filter(q=>q.scope==='thai').length,5);
+test('endless alternates evenly and exhausts unseen questions in each scope before repeating',()=>{
+  let seen=[],pair=[];
+  for(let i=0;i<20;i++){
+    const before=seen,draw=selectEndless(bank,seen,()=>.42,i+1);
+    seen=draw.seen;pair.push(...draw.questions);
     assert.equal(new Set(draw.questions.map(q=>q.id)).size,7);
-    if(i===13) assert.equal(new Set(ids).size,98);
+    for(const scope of ['thai','world']) {
+      const picked=draw.questions.filter(q=>q.scope===scope);
+      const remaining=bank.questions.filter(q=>q.scope===scope&&!before.includes(q.id));
+      if(remaining.length>=picked.length) assert.ok(picked.every(q=>!before.includes(q.id)));
+      else assert.ok(remaining.every(q=>picked.some(item=>item.id===q.id)));
+    }
+    if(i%2===1) {
+      assert.equal(pair.filter(q=>q.scope==='thai').length,7);
+      assert.equal(pair.filter(q=>q.scope==='world').length,7);
+      pair=[];
+    }
   }
-  assert.equal(new Set(ids).size,100);
-  assert.equal(selectEndless(catalog,seen,()=>.42).questions.length,7);
 });
 test('reviewed aliases and English capitalization match without destroying Thai marks',()=>{
   assert.equal(matchAnswer(q,'  KORAT  ').answer.label,'นครราชสีมา');

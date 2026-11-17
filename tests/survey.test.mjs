@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { createSession, selectDaily, settleRound, TIERS } from '../src/game.js';
+import { createSession, matchAnswer, selectDaily, settleRound, TIERS } from '../src/game.js';
 import { emptySave, prepareSaveForBank, readSave, writeSave } from '../src/storage.js';
 import { isSurveySession, prepareSurveyBank, surveyTier, validateSurveyBank } from '../src/survey.js';
 
@@ -11,9 +11,8 @@ const make = () => createSession({mode:'daily',bank,questions:selectDaily(bank,'
 
 test('active answers have survey metadata, published percentages and exact source examples', () => {
   assert.deepEqual(validateSurveyBank(raw), []);
-  assert.equal(raw.questions.length, 12);
-  assert.equal(raw.questions.filter(q=>q.scope==='thai').length, 9);
-  assert.equal(raw.questions.filter(q=>q.scope==='world').length, 3);
+  assert.ok(raw.questions.length>=40 && raw.questions.length<=50);
+  assert.equal(raw.questions.filter(q=>q.scope==='thai').length,raw.questions.filter(q=>q.scope==='world').length);
   const food=raw.questions.find(q=>q.id==='survey-th-food-2020');
   assert.equal(food.survey.sampleSize, 1144);
   assert.deepEqual(food.answers.map(a=>a.percent), [57.31,51.09,42.61,39.37,38.32]);
@@ -27,7 +26,29 @@ test('active answers have survey metadata, published percentages and exact sourc
   assert.equal(us.survey.sampleSize,6100);
   assert.equal(us.survey.sampleSizeQualifier,'ประมาณ ');
   assert.equal(us.answers.find(a=>a.id==='tv').percent,74.3);
+  const chat=raw.questions.find(q=>q.id==='survey-chat-apps-nbtc-2021');
+  assert.equal(chat.survey.sampleSize,18496);
+  assert.equal(chat.answers.find(a=>a.id==='line').percent,94.7);
+  const iceCream=raw.questions.find(q=>q.id==='world-ice-cream-flavors-idfa-2024');
+  assert.equal(iceCream.answers.length,40);
+  assert.equal(iceCream.answers.find(a=>a.id==='vanilla').percent,38);
+  const games=raw.questions.find(q=>q.id==='world-game-genres-pew-2008');
+  assert.equal(games.survey.sampleSize,1064);
+  assert.equal(games.answers.find(a=>a.id==='racing').percent,74);
+  assert.equal(games.survey.translationNotice,'Pew Research Center has published the original content in English but has not reviewed or approved this translation.');
+  assert.ok(raw.questions.every(q=>!q.survey.url.includes('verasight')));
   assert.ok(raw.questions.every(q=>q.answers.every(a=>!('count' in a) && !('tier' in a))));
+});
+
+test('playable prompts use everyday language and accepted names resolve to their published group', () => {
+  for (const question of raw.questions) {
+    assert.doesNotMatch(question.prompt + ' ' + question.hint,/โพล|ผลสำรวจ|\b20\d\d\b|พ\.?ศ\.?\s*25\d\d/,question.id);
+    for (const answer of question.answers) {
+      for (const name of [answer.label,...answer.aliases]) {
+        assert.equal(matchAnswer(question,name).answer?.id,answer.id,question.id+': '+name);
+      }
+    }
+  }
 });
 
 test('game points are derived from published ordering, with equal percentages tied', () => {

@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { matchAnswer, selectDaily, selectEndless, random } from '../src/game.js';
 
 const bank=JSON.parse(await readFile(new URL('../data/questions.json',import.meta.url),'utf8'));
+const active=JSON.parse(await readFile(new URL('../data/survey-bank.json',import.meta.url),'utf8'));
 
 test('localized questions offer broad answer sets, familiar starters and working aliases',()=>{
   assert.equal(bank.contentStyle,'thai-casual-v2');
@@ -45,26 +46,27 @@ function assertVariety(questions) {
   for(const q of questions) counts.set(q.theme,(counts.get(q.theme)||0)+1);
   assert.ok(counts.size>=5,questions.map(q=>q.id).join(','));
   assert.ok([...counts.values()].every(n=>n<=2));
-  assert.equal(questions.filter(q=>q.scope==='thai').length,5);
-  assert.equal(questions.filter(q=>q.scope==='world').length,2);
+  assert.ok([3,4].includes(questions.filter(q=>q.scope==='thai').length));
+  assert.ok([3,4].includes(questions.filter(q=>q.scope==='world').length));
 }
 
 test('Daily keeps broad topic variety across a year of dates',()=>{
   for(let i=0;i<366;i++) {
     const date=new Date(Date.UTC(2026,0,1+i)).toISOString().slice(0,10);
-    assertVariety(selectDaily(bank,date));
+    assertVariety(selectDaily(active,date));
   }
 });
 
-test('Endless keeps variety while exhausting both scopes of the expanded bank',()=>{
+test('Endless keeps variety and an even split across pairs of dives',()=>{
   for(let seed=1;seed<=20;seed++) {
-    let seen=[];const all=[],rng=random(seed);
-    for(let round=0;round<15;round++) {
-      const draw=selectEndless(bank,seen,rng);seen=draw.seen;
-      assertVariety(draw.questions);all.push(...draw.questions.map(q=>q.id));
-      if(round===13) assert.equal(new Set(all).size,98,'seed '+seed);
+    let seen=[];const rng=random(seed);
+    for(let round=0;round<14;round+=2) {
+      const first=selectEndless(active,seen,rng,round+1);seen=first.seen;
+      const second=selectEndless(active,seen,rng,round+2);seen=second.seen;
+      assertVariety(first.questions);assertVariety(second.questions);
+      assert.equal([...first.questions,...second.questions].filter(q=>q.scope==='thai').length,7);
+      assert.equal([...first.questions,...second.questions].filter(q=>q.scope==='world').length,7);
     }
-    assert.equal(new Set(all).size,100,'seed '+seed);
-    assertVariety(selectEndless(bank,seen,rng).questions);
+    assertVariety(selectEndless(active,seen,rng,15).questions);
   }
 });

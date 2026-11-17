@@ -51,8 +51,8 @@ export function validateSurveyBank(bank) {
     if (ids.has(q?.id)) errors.push('Duplicate question: ' + q.id);
     ids.add(q?.id);
   }
-  if (bank.questions.filter(q => q?.scope === 'thai').length < 5) errors.push('Not enough survey-backed Thai questions');
-  if (bank.questions.filter(q => q?.scope === 'world').length < 2) errors.push('Not enough survey-backed general questions');
+  if (bank.questions.filter(q => q?.scope === 'thai').length < 4) errors.push('Not enough survey-backed Thai questions');
+  if (bank.questions.filter(q => q?.scope === 'world').length < 4) errors.push('Not enough survey-backed general questions');
   return errors;
 }
 

@@ -13,6 +13,7 @@ let bank, audio, scene;
 let save = readSave(), mode = location.pathname.startsWith('/unlimited') ? 'endless' : 'daily';
 let session = null, view = 'home', composing = false, lastTick = -1, lastTierLine = null, landed = false, inputSaveTimer, toastTimer;
 let modalRestoreFocus = null, modalKind = null;
+const openExamples = new Set();
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 const number = n => Number(n).toLocaleString('en-US');
 const surveySession = value => validSession(value) && isSurveySession(value);
@@ -133,7 +134,7 @@ function landing() {
     '<li>SEVEN PROMPTS. A SHARED DAILY CHALLENGE.</li><li>25 SECONDS. TYPE ONE ANSWER THAT FITS.</li>' +
     '<li>LOWER SURVEY RANKS CAN SINK DEEPER.</li><li>ONLY PUBLISHED SURVEY ANSWERS CAN SCORE.</li>' +
     '<li>ONE POINT = 10 METRES. AIM FOR 7,000M.</li><li>ONE DAILY ATTEMPT. ENDLESS DIVES ANYTIME.</li></ol></details>' +
-    '<div class="landing-credits"><button class="small-link" data-action="about">About this dive</button><span>นำร่อง ' + bank.questions.length + ' โจทย์จากผลสำรวจ · เล่นซ้ำได้</span></div>' +
+    '<div class="landing-credits"><button class="small-link" data-action="about">About this dive</button><span>' + bank.questions.length + ' คำถาม · ไทยและเรื่องทั่วไป</span></div>' +
     (mode === 'daily' ? '<button class="discovery-card" data-action="endless"><span class="discovery-tag">DIVE AFTER DIVE</span><img src="' +
       sprite('schooler') + '" alt=""><span>ENDLESS DIVE</span><small>∞</small></button>' : '') +
     '<button class="begin" data-action="begin">▼ ' + label + ' ▼</button>' +
@@ -157,9 +158,14 @@ function hud() {
 }
 function promptCard() {
   const q = session.questions[session.index];
+  const example = q.answers.reduce((best, answer) => answer.percent > best.percent ? answer : best);
+  const exampleKey = session.id + ':' + session.index;
+  const exampleHint = ['preview','answer','correction'].includes(session.phase)
+    ? '<details class="starter-hint" data-example-key="' + esc(exampleKey) + '"' + (openExamples.has(exampleKey) ? ' open' : '') +
+      '><summary>ขอตัวอย่างคำตอบ</summary><span>เช่น ' + esc(example.label) + '</span></details>' : '';
   return '<article class="prompt-card"><p class="eyebrow">PROMPT ' + (session.index + 1) + ' OF 7</p><h2>' + esc(q.prompt) +
     '</h2><p class="prompt-tag">▼ rarer answers sink deeper ▼</p><p class="category-hint">' + esc(q.hint) +
-    '</p></article>';
+    '</p>' + exampleHint + '</article>';
 }
 function answerDock() {
   const correction = session.phase === 'correction' ? '<div class="correction" role="status"><p>Did you mean…</p><strong>' +
@@ -293,6 +299,12 @@ function positionFriend() {
   target.style.top = bounds.bottom - 56 + 'px';
 }
 addEventListener('resize',positionFriend);
+document.addEventListener('toggle', event => {
+  const details = event.target;
+  if (!details.matches?.('details[data-example-key]')) return;
+  if (details.open) openExamples.add(details.dataset.exampleKey);
+  else openExamples.delete(details.dataset.exampleKey);
+}, true);
 function wireInput() {
   const input = document.getElementById('answer'), form = document.getElementById('answer-form');
   if (!input || !form) return;
@@ -377,7 +389,7 @@ function startDive(forceNew = false) {
   let questions;
   if (mode === 'daily') questions = selectDaily(bank, date);
   else {
-    const selection = selectEndless(bank, save.seen);
+    const selection = selectEndless(bank, save.seen, Math.random, save.run + 1);
     questions = selection.questions; save.seen = selection.seen; save.run++;
   }
   session = createSession({mode,bank,questions,date,run: mode === 'daily' ? 1 : save.run});
@@ -440,11 +452,11 @@ function menuDialog() {
 }
 function aboutDialog() {
   openModal('about','About this dive','<div class="body-copy"><p>เกมคำตอบหายากฉบับไทยที่สร้างตามประสบการณ์การเล่นของ ' +
-    '<a href="https://krillion.io/" target="_blank" rel="noopener noreferrer">Krillion.io</a> สำหรับเล่นในเครื่อง</p>' +
-    '<p>นำร่อง ' + bank.questions.length + ' โจทย์จากผลสำรวจ: เรื่องไทย ' + bank.questions.filter(q => q.scope === 'thai').length +
+    '<a href="https://krillion.io/" target="_blank" rel="noopener noreferrer">Krillion.io</a> สำหรับเล่นผ่านเบราว์เซอร์</p>' +
+    '<p>มี ' + bank.questions.length + ' คำถาม: เรื่องไทย ' + bank.questions.filter(q => q.scope === 'thai').length +
     ' ข้อ และเรื่องทั่วไป ' + bank.questions.filter(q => q.scope === 'world').length +
-    ' ข้อ แต่ละรอบใช้ไทย 5 ข้อกับทั่วไป 2 ข้อ คลังยังเล็กจึงมีโจทย์วนซ้ำ</p>' +
-    '<p>โจทย์เดิม 100 ข้อยังรอตรวจผลสำรวจ จึงยังไม่นำมาใช้คิดคะแนน</p>' +
+    ' ข้อ แต่ละรอบมี 7 ข้อ สลับสัดส่วนไทยกับทั่วไปเป็น 4:3 และ 3:4</p>' +
+    '<p>นึกไม่ออกใช่ไหม? กดขอตัวอย่างคำตอบบนการ์ดได้หนึ่งคำตอบ</p>' +
     '<p><strong>คะแนนมาจากร้อยละที่รายงานในผลสำรวจ</strong> จัดอันดับเฉพาะตัวเลือกที่ผู้สำรวจเผยแพร่ ร้อยละน้อยกว่าจะได้คะแนนเท่าเดิมหรือมากกว่า คะแนนเป็นแต้มเกม ไม่ใช่ร้อยละของผู้เล่นหรือคนไทยทั้งหมด</p>' +
     '<p>หากผลสำรวจเผยแพร่เพียงบางคำตอบ เกมจะรับเฉพาะรายการเหล่านั้น คำตอบที่ไม่ปรากฏไม่ได้แปลว่าไม่มีผู้ตอบ ดูกลุ่มตัวอย่าง ช่วงเวลา และแหล่งข้อมูลได้หลังเฉลย</p>' +
     '<div class="method-info">คลัง ' + esc(bank.version) +
@@ -494,9 +506,10 @@ function explainDialog(index) {
     esc(survey.sourceQuestion) + '</p>' + (answer ? '<p>คำตอบของคุณ: <strong>' + esc(answer.label) +
     '</strong> · ร้อยละ ' + esc(answer.percent) + ' ตามผลสำรวจ</p>' : '') +
     '<div class="method-info">ผู้สำรวจ: ' + esc(survey.publisher) + '<br>ช่วงเก็บข้อมูล: ' + esc(survey.fieldwork) +
-    '<br>กลุ่มตัวอย่าง: ' + esc(survey.population) + '<br>จำนวนตัวอย่างรวม: ' + esc(survey.sampleSizeQualifier || '') + number(survey.sampleSize) +
+    '<br>กลุ่มตัวอย่าง: ' + esc(survey.population) + '<br>จำนวนตัวอย่างที่ระบุ: ' + esc(survey.sampleSizeQualifier || '') + number(survey.sampleSize) +
     ' คน<br>' + esc(survey.sampleNote) + '<br>' + esc(survey.metric) + '<br>' + esc(survey.coverage) +
-    '<br><a href="' + safeUrl(survey.url) + '" target="_blank" rel="noopener noreferrer">ดูผลสำรวจต้นทาง ↗</a></div>' +
+    '<br><a href="' + safeUrl(survey.url) + '" target="_blank" rel="noopener noreferrer">ดูผลสำรวจต้นทาง ↗</a>' +
+    (survey.translationNotice ? '<br>' + esc(survey.translationNotice) : '') + '</div>' +
     '<p>แต้มจัดตามอันดับร้อยละจากมากไปน้อยเฉพาะคำตอบที่เผยแพร่ ค่าเท่ากันได้แต้มเท่ากัน</p>' +
     '<details class="evidence-details"><summary>ดูคำตอบที่โพลเผยแพร่ (' + q.answers.length + ')</summary><div class="answer-bank">' +
     [...q.answers].sort((a,b)=>a.percent-b.percent).map(a => {
