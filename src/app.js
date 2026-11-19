@@ -1,7 +1,7 @@
 import { ANSWER_MS, PREVIEW_MS, TIME_ZONE, TIERS, TIER_ORDER, dayKey, selectDaily, selectEndless,
   createSession, tickSession, submitAnswer, confirmCorrection, skipRound, nextRound, shareText } from './game.js';
 import { readSave, writeSave, validSession, dailySlot, prepareSaveForBank, currentSavedSession, savedSessions } from './storage.js';
-import { isSurveySession, prepareSurveyBank, surveyTier } from './survey.js';
+import { isSurveySession, prepareSurveyBank, surveyTiers } from './survey.js';
 import { DiveAudio } from './audio.js';
 import { OceanScene } from './scene.js';
 import { descentDuration, PIXELS_PER_METER, METERS_PER_POINT } from './descent.js';
@@ -13,6 +13,7 @@ let bank, audio, scene;
 let save = readSave(), mode = location.pathname.startsWith('/unlimited') ? 'endless' : 'daily';
 let session = null, view = 'home', composing = false, lastTick = -1, lastTierLine = null, landed = false, inputSaveTimer, toastTimer;
 let modalRestoreFocus = null, modalKind = null;
+let depthDisplay = null, displayedDepth = null, descentView = null;
 const openExamples = new Set();
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 const number = n => Number(n).toLocaleString('en-US');
@@ -46,8 +47,14 @@ async function load() {
     writeSave(save);
     audio = new DiveAudio(results[1].value, save.settings.muted);
     scene = new OceanScene((depth, frame) => {
-      document.querySelectorAll('[data-live-depth]').forEach(el => { el.textContent = number(depth) + 'm'; });
-      if (frame) updateDescent(frame);
+      if (depthDisplay && displayedDepth !== depth) {
+        depthDisplay.textContent = number(depth) + 'm';
+        displayedDepth = depth;
+      }
+      if (frame && descentView && view === 'play' && session?.phase === 'sinking') {
+        updateDescent(frame);
+        if (frame.finished) transition(tickSession(session));
+      }
     });
     applySettings();
     restoreCurrent();
@@ -174,43 +181,48 @@ function answerDock() {
   return '<section class="answer-dock" aria-label="Answer this prompt">' +
     '<div class="timer-row"><span>MAKE IT COUNT.</span><span class="timer-number" id="timer" role="timer" aria-label="Seconds remaining">25</span></div>' +
     '<div class="timer-track" id="timer-track"><span id="timer-fill"></span></div>' + correction +
-    (session.rejected ? '<div class="reject-text" role="status">ยังไม่พบคำตอบนี้ในผลสำรวจที่เผยแพร่ ลองคำอื่นก่อนหมดเวลา</div>' : '') +
+    (session.rejected ? '<div class="reject-text" role="status">ไม่เจอคำนี้ในชุดคำตอบ ลองชื่ออื่นหรือคำที่สั้นลงได้</div>' : '') +
     '<form class="answer-form" id="answer-form"><input id="answer" name="answer" aria-label="Your answer" maxlength="256" placeholder="type one answer…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" value="' +
     esc(session.input || '') + '"' + (session.phase === 'correction' ? ' disabled' : '') + '><button class="dive-button" type="submit"' +
     (!session.input?.trim() || session.phase === 'correction' ? ' disabled' : '') + '>DIVE</button></form>' +
     '<div class="answer-meta"><span>ENTER ↵ TO DIVE</span><button data-action="skip">SKIP THIS PROMPT →</button></div></section>';
 }
-function revealView() {
+function revealView(arriving = false) {
   const result = session.results.at(-1), tier = result.tier ? TIERS[result.tier] : null;
-  return '<section class="reveal" style="--result-color:' + (tier ? tierColor(result.tier) : '#92a5b8') + '">' +
+  const revealClass = arriving ? ' is-arriving' : tier ? '' : ' is-miss';
+  return '<section class="reveal' + revealClass + '"' + (arriving ? ' inert aria-hidden="true"' : '') +
+    ' style="--result-color:' + (tier ? tierColor(result.tier) : '#92a5b8') + '">' +
     (tier ? '<img class="reveal-sprite" src="' + sprite(result.tier) + '" alt="">' : '<div class="reveal-sprite" style="margin:auto;font-size:70px">×</div>') +
     '<h2>' + (tier ? tier.name.toUpperCase() : result.reason === 'timeout' ? 'OUT OF TIME' : 'MISSED IT') + '</h2>' +
     '<p class="answer-label">' + (result.label ? '“' + esc(result.label) + '”' : 'ยังมีความรู้รออยู่ข้างล่าง') + '</p>' +
     '<p class="points"><strong>+' + result.points + ' PTS</strong> · sink ' + number(result.points * 10) + 'm</p>' +
     '<p class="blurb">' + (tier?.blurb || 'Take a breath. The next prompt awaits.') + '</p>' +
     '<button class="explanation-toggle" data-action="explain" data-index="' + session.index + '">เฉลยและที่มาของคำตอบ ↗</button></section>' +
-    '<div class="next-dock"><button class="primary-button" data-action="next">' + (session.index === 6 ? 'SURFACE ▲' : 'DESCEND ▼') + '</button></div>';
+    (arriving ? '' : '<div class="next-dock"><button class="primary-button" data-action="next">' +
+      (session.index === 6 ? 'SURFACE ▲' : 'DESCEND ▼') + '</button></div>');
 }
 function playing() {
   let content = '';
   const sinking = session.phase === 'sinking';
   const result = sinking ? session.results.at(-1) : null;
+  const scoredReveal = session.phase === 'reveal' && session.results.at(-1)?.points;
   if (session.phase === 'reveal') content = revealView();
   else if (sinking && result.points) {
     const startDepth = session.depth - result.points * METERS_PER_POINT;
-    const bubbles = Array.from({length:18}, (_, i) =>
+    const bubbles = Array.from({length:12}, (_, i) =>
       '<i style="--x:' + ((i * 37 % 91) - 45) + 'px;--drift:' + ((i * 23 % 49) - 24) +
       'px;--delay:-' + (i * 173 % 1600) + 'ms;--size:' + (4 + i % 5) + 'px"></i>').join('');
-    const sparks = result.tier === 'krillion' ? Array.from({length:12}, (_, i) =>
+    const sparks = result.tier === 'krillion' ? Array.from({length:6}, (_, i) =>
       '<i class="dive-spark" style="--x:' + ((i * 43 % 137) - 68) + 'px;--drift:' + ((i * 29 % 57) - 28) +
       'px;--delay:-' + (i * 193 % 1500) + 'ms;--size:' + (9 + i % 5) + 'px"></i>').join('') : '';
-    content = promptCard() + '<div class="tier-lines" aria-hidden="true">' + TIER_ORDER.map(tier =>
-      '<div class="tier-line" data-tier-depth="' + (startDepth + TIERS[tier].score * METERS_PER_POINT) +
-      '" data-tier-score="' + TIERS[tier].score + '" style="--tier:' + tierColor(tier) + '"><span><img src="' +
+    content = promptCard() + '<div class="tier-lines" aria-hidden="true"><div class="tier-track" data-start-depth="' +
+      startDepth + '">' + TIER_ORDER.map(tier =>
+      '<div class="tier-line" data-tier-score="' + TIERS[tier].score + '" style="--tier:' + tierColor(tier) +
+      ';top:' + TIERS[tier].score * METERS_PER_POINT * PIXELS_PER_METER + 'px"><span><img src="' +
       sprite(tier) + '" alt="">' + esc(TIERS[tier].name.toUpperCase()) + ' · ' + TIERS[tier].score + '</span></div>').join('') +
-      '</div><div class="dive-rig' + (result.tier === 'krillion' ? ' is-gem' : '') + '" aria-live="polite">' +
+      '</div></div><div class="dive-rig' + (result.tier === 'krillion' ? ' is-gem' : '') + '" aria-live="polite">' +
       '<div class="dive-wake" aria-hidden="true">' + bubbles + sparks + '</div><div class="dive-ring" aria-hidden="true"></div>' +
-      '<div class="sinking-answer">“' + esc(result.label || result.raw) + '” <span>▼</span></div>' + friend(true) + '</div>';
+      '<div class="sinking-answer">“' + esc(result.label || result.raw) + '” <span>▼</span></div>' + friend(true) + '</div>' + revealView(true);
   } else if (sinking) {
     content = promptCard() + '<div class="miss-feedback">' + (result.reason === 'timeout' ? 'OUT OF TIME' : 'SKIPPED') + '</div>';
   } else {
@@ -219,7 +231,7 @@ function playing() {
       : answerDock());
   }
   return '<main class="playing' + (sinking ? ' is-sinking' : '') + '">' + controls(true) + hud() +
-    (sinking && result.points ? '' : friend()) + content + '</main>';
+    ((sinking && result.points) || scoredReveal ? '' : friend()) + content + '</main>';
 }
 function resultsView() {
   const gems = session.results.filter(r => r.tier === 'krillion').length;
@@ -245,6 +257,15 @@ function resultsView() {
 function render(answerSelection = null) {
   document.title = 'Krillion TH · ' + (mode === 'daily' ? 'the daily dive' : 'the endless dive');
   app.innerHTML = view === 'home' ? landing() : view === 'play' ? playing() : resultsView();
+  depthDisplay = app.querySelector('[data-live-depth]');
+  displayedDepth = null;
+  const rig = app.querySelector('.dive-rig');
+  const track = app.querySelector('.tier-track');
+  descentView = rig && {
+    rig, reveal: app.querySelector('.reveal.is-arriving'), track,
+    startDepth: Number(track.dataset.startDepth),
+    tiers: [...track.children].map(line => ({ line, score: Number(line.dataset.tierScore) }))
+  };
   positionFriend();
   document.fonts.ready.then(positionFriend);
   syncScene();
@@ -268,22 +289,21 @@ function syncScene() {
   } else scene.set(view === 'home' ? 0 : session?.depth || 0, view !== 'home', save.settings.lowPower);
 }
 function updateDescent(frame) {
-  if (view !== 'play' || session?.phase !== 'sinking') return;
   const result = session.results.at(-1);
-  if (!result?.points) return;
-  const rig = document.querySelector('.dive-rig');
-  if (rig) {
-    rig.style.top = frame.objectY.toFixed(1) + 'px';
-    rig.classList.toggle('is-landed', frame.landed);
-  }
+  const { rig, reveal, track, startDepth, tiers } = descentView;
+  const diveOpacity = frame.visibility * (1 - frame.handoff);
+  rig.style.transform = 'translate3d(-50%,calc(' + frame.objectY.toFixed(2) + 'px - 50%),0)';
+  rig.style.opacity = diveOpacity;
+  rig.classList.toggle('is-landed', frame.landed);
+  track.style.transform = 'translate3d(0,' + (frame.surface + startDepth * PIXELS_PER_METER).toFixed(2) + 'px,0)';
+  track.style.opacity = diveOpacity;
+  reveal.style.opacity = frame.handoff;
   let crossed = 0;
-  document.querySelectorAll('.tier-line').forEach(line => {
-    const threshold = Number(line.dataset.tierDepth);
-    line.style.transform = 'translate3d(0,' + (frame.surface + threshold * PIXELS_PER_METER).toFixed(1) + 'px,0)';
-    const passed = frame.depth + .05 >= threshold;
+  for (const {line, score} of tiers) {
+    const passed = frame.depth + .05 >= startDepth + score * METERS_PER_POINT;
     line.classList.toggle('is-crossed', passed);
-    if (passed && Number(line.dataset.tierScore) < result.points) crossed++;
-  });
+    if (passed && score < result.points) crossed++;
+  }
   if (lastTierLine === null) lastTierLine = crossed;
   else if (crossed > lastTierLine) { lastTierLine = crossed; audio.play('tierline'); }
   if (frame.landed && !landed) {
@@ -356,6 +376,7 @@ function transition(updated, answerSelection = null) {
 }
 function pulse() {
   if (view === 'play' && session) {
+    if (descentView && session.phase === 'sinking' && !document.hidden) return;
     const updated = tickSession(session);
     if (updated !== session) transition(updated);
     updateTimer();
@@ -502,18 +523,20 @@ function explainDialog(index) {
   if (!q || !result) return;
   const answer = q.answers.find(a=>a.id===result.answerId);
   const survey=q.survey;
+  const tiers=surveyTiers(q);
   openModal('explain','Field notes · ' + (index+1),'<div class="body-copy"><p><strong>' + esc(q.prompt) + '</strong></p><p>' +
     esc(survey.sourceQuestion) + '</p>' + (answer ? '<p>คำตอบของคุณ: <strong>' + esc(answer.label) +
     '</strong> · ร้อยละ ' + esc(answer.percent) + ' ตามผลสำรวจ</p>' : '') +
     '<div class="method-info">ผู้สำรวจ: ' + esc(survey.publisher) + '<br>ช่วงเก็บข้อมูล: ' + esc(survey.fieldwork) +
-    '<br>กลุ่มตัวอย่าง: ' + esc(survey.population) + '<br>จำนวนตัวอย่างที่ระบุ: ' + esc(survey.sampleSizeQualifier || '') + number(survey.sampleSize) +
-    ' คน<br>' + esc(survey.sampleNote) + '<br>' + esc(survey.metric) + '<br>' + esc(survey.coverage) +
+    '<br>กลุ่มตัวอย่าง: ' + esc(survey.population) + '<br>จำนวนตัวอย่าง: ' +
+    (survey.sampleSize === null ? 'ตารางนี้ไม่ได้ระบุ' : esc(survey.sampleSizeQualifier || '') + number(survey.sampleSize) + ' คน') +
+    '<br>' + esc(survey.sampleNote) + '<br>' + esc(survey.metric) + '<br>' + esc(survey.coverage) +
     '<br><a href="' + safeUrl(survey.url) + '" target="_blank" rel="noopener noreferrer">ดูผลสำรวจต้นทาง ↗</a>' +
     (survey.translationNotice ? '<br>' + esc(survey.translationNotice) : '') + '</div>' +
     '<p>แต้มจัดตามอันดับร้อยละจากมากไปน้อยเฉพาะคำตอบที่เผยแพร่ ค่าเท่ากันได้แต้มเท่ากัน</p>' +
     '<details class="evidence-details"><summary>ดูคำตอบที่โพลเผยแพร่ (' + q.answers.length + ')</summary><div class="answer-bank">' +
-    [...q.answers].sort((a,b)=>a.percent-b.percent).map(a => {
-      const tier=surveyTier(q,a.id);
+    [...q.answers].sort((a,b)=>b.percent-a.percent).map(a => {
+      const tier=tiers.get(a.id);
       return '<div class="bank-row"><span>' + esc(a.label) + '</span><small style="--tier:' + tierColor(tier) +
         '"> ' + esc(a.percent) + '% · ' + TIERS[tier].score + ' PTS</small></div>';
     }).join('') +

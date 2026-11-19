@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createSession, matchAnswer, selectDaily, settleRound, TIERS } from '../src/game.js';
 import { emptySave, prepareSaveForBank, readSave, writeSave } from '../src/storage.js';
-import { isSurveySession, prepareSurveyBank, surveyTier, validateSurveyBank } from '../src/survey.js';
+import { isSurveySession, MIN_PLAYABLE_ANSWERS, prepareSurveyBank, surveyTier, validateSurveyBank } from '../src/survey.js';
 
 const raw = JSON.parse(await readFile(new URL('../data/survey-bank.json', import.meta.url), 'utf8'));
 const bank = prepareSurveyBank(raw);
@@ -13,19 +13,22 @@ test('active answers have survey metadata, published percentages and exact sourc
   assert.deepEqual(validateSurveyBank(raw), []);
   assert.ok(raw.questions.length>=40 && raw.questions.length<=50);
   assert.equal(raw.questions.filter(q=>q.scope==='thai').length,raw.questions.filter(q=>q.scope==='world').length);
-  const food=raw.questions.find(q=>q.id==='survey-th-food-2020');
-  assert.equal(food.survey.sampleSize, 1144);
-  assert.deepEqual(food.answers.map(a=>a.percent), [57.31,51.09,42.61,39.37,38.32]);
+  assert.ok(raw.questions.every(q=>q.answers.length >= MIN_PLAYABLE_ANSWERS));
+  const food=raw.questions.find(q=>q.id==='th-one-dish-meals-dusit-2020');
+  assert.equal(food.survey.sampleSize, 1566);
+  assert.equal(food.answers.find(a=>a.id==='noodles').percent,80.19);
   const fruit=raw.questions.find(q=>q.id==='survey-th-fruit-regular-2026');
   assert.equal(fruit.survey.sampleSize,5433);
   assert.equal(fruit.answers.find(a=>a.id==='papaya').percent,11.15);
-  const media=raw.questions.find(q=>q.id==='survey-media-influence-th-2024');
-  assert.equal(media.survey.sampleSize,5446);
-  assert.deepEqual(media.answers.map(a=>a.percent), [40.89,40.89,39.81,39.02,25.69]);
-  const us=raw.questions.find(q=>q.id==='survey-daily-us-2025');
-  assert.equal(us.survey.sampleSize,6100);
-  assert.equal(us.survey.sampleSizeQualifier,'ประมาณ ');
-  assert.equal(us.answers.find(a=>a.id==='tv').percent,74.3);
+  const trip=raw.questions.find(q=>q.id==='th-tat-trip-activities-2023');
+  assert.equal(trip.survey.sampleSize,null);
+  assert.equal(trip.answers.length,18);
+  assert.equal(matchAnswer(trip,'ถ่ายรูป').answer.percent,75.60);
+  const asia=raw.questions.find(q=>q.id==='world-asia-destinations-siat-2025');
+  assert.equal(asia.answers.length,14);
+  assert.equal(matchAnswer(asia,'ประเทศไทย').answer.percent,1.3);
+  assert.equal(raw.questions.find(q=>q.id==='world-board-games-2025').answers.length,22);
+  assert.equal(raw.questions.find(q=>q.id==='world-card-games-2025').answers.length,25);
   const chat=raw.questions.find(q=>q.id==='survey-chat-apps-nbtc-2021');
   assert.equal(chat.survey.sampleSize,18496);
   assert.equal(chat.answers.find(a=>a.id==='line').percent,94.7);
@@ -53,6 +56,7 @@ test('playable prompts use everyday language and accepted names resolve to their
 
 test('game points are derived from published ordering, with equal percentages tied', () => {
   const q=structuredClone(raw.questions[0]);
+  q.answers=q.answers.slice(0,5);
   q.answers.forEach((a,i)=>{a.percent=[80,40,40,10,5][i];a.tier='krillion';});
   const values=q.answers.map(a=>surveyTier(q,a.id));
   assert.deepEqual(values,['plankton','schooler','schooler','rare','krillion']);
@@ -66,6 +70,7 @@ test('game points are derived from published ordering, with equal percentages ti
 test('missing provenance or percentage cannot receive a fabricated score or start a dive', () => {
   for (const modify of [
     q=>delete q.survey,
+    q=>delete q.survey.sampleSize,
     q=>delete q.answers[0].percent,
     q=>q.answers[0].percent=0,
     q=>q.answers[0].percent=101,

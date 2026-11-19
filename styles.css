@@ -14,16 +14,11 @@ a{color:inherit;text-decoration:none}
 button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--gold);outline-offset:5px}
 button{color:inherit}
 .thai{font-family:Sarabun,sans-serif;letter-spacing:0;line-height:1.65}
-#world{position:fixed;inset:0;overflow:hidden;pointer-events:none;background:var(--ocean-color);transition:background-color 2s;isolation:isolate}
-#sky{position:absolute;left:0;right:0;bottom:calc(100% - var(--surface-y));height:max(72vh,760px);background:radial-gradient(ellipse 130px 34px at 15% 75%,#ecfbffb3 0 66%,transparent 70%),radial-gradient(ellipse 115px 30px at 75% 68%,#ecfbff99 0 65%,transparent 70%),linear-gradient(180deg,#7ac4dd,#b8e9e7 72%,#d5f1df);filter:saturate(.85)}
-#world:after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(2,7,17,var(--depth-dim,0)),rgba(2,7,17,var(--depth-dim,0))),linear-gradient(to bottom,transparent 32%,#02071100 55%,#020711cf 84%,#020711f0 100%);pointer-events:none;z-index:1}
-#ocean{position:absolute;top:var(--surface-y);left:0;right:0;height:max(16000px,200vh);background:linear-gradient(to bottom,#215e88 0,#17496f 950px,#10304c 2200px,#09182b 4600px,#040b17 9200px,#02050d 14000px);box-shadow:inset 0 10px 40px #b3edff1c}
-#ocean:before{content:"";position:absolute;left:-5%;top:-7px;width:110%;height:13px;background:#215e88;clip-path:polygon(0 40%,8% 3%,18% 65%,30% 4%,40% 70%,52% 0,67% 60%,78% 4%,88% 60%,100% 15%,100% 100%,0 100%);animation:surface 10s ease-in-out infinite alternate}
-.water-texture{position:absolute;inset:0;background:url('/assets/art/ocean.png') center top / 100% 14000px no-repeat;opacity:.25;mix-blend-mode:screen}
-.water-rays{position:absolute;top:0;height:1300px;left:-20%;width:140%;background:repeating-conic-gradient(from 160deg at 50% -20%,transparent 0 9deg,#9cdff608 9deg 12deg,transparent 12deg 20deg);filter:blur(12px)}
-#life{position:absolute;inset:0;width:100%;height:100%;opacity:.8}
-.scanlines{position:fixed;inset:0;z-index:80;pointer-events:none;opacity:.18;background:repeating-linear-gradient(to bottom,transparent 0,transparent 1px,#001324 1px,#001324 2px);mix-blend-mode:multiply}
-#seafloor{position:absolute;bottom:0;left:0;width:100%;height:70px;opacity:.7;background:#020610;clip-path:polygon(0 80%,4% 80%,4% 60%,5% 60%,5% 40%,6% 40%,6% 20%,7% 20%,7% 100%,100% 100%,100% 100%,0 100%)}
+#world{position:fixed;inset:0;overflow:hidden;pointer-events:none;background:#081a2b;isolation:isolate}
+#sky{position:absolute;inset:0;background:radial-gradient(ellipse 145px 28px at 18% 11%,#e8f9fdb0,transparent 94%),radial-gradient(ellipse 105px 22px at 76% 16%,#effeff90,transparent 95%),linear-gradient(180deg,#75b9d4,#b8e8ea 34%,#d6ede1 61%,#235471 62%,#081a2b)}
+#world:after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,transparent 48%,#02091566 76%,#020914ed 100%);pointer-events:none;z-index:1}
+#life{position:absolute;inset:0;width:100%;height:100%}
+#seafloor{position:absolute;bottom:0;left:0;width:100%;height:70px;opacity:0;background:#020610;clip-path:polygon(0 80%,4% 80%,4% 60%,5% 60%,5% 40%,6% 40%,6% 20%,7% 20%,7% 100%,100% 100%,100% 100%,0 100%)}
 #boat{display:none;position:absolute;left:calc(50% - 300px);top:calc(var(--surface-y) - 45px);width:70px;height:48px;transform-origin:center bottom;animation:boat 4s ease-in-out infinite}
 #boat i{position:absolute;display:block;background:#092435}
 #boat .hull{bottom:0;width:70px;height:15px;clip-path:polygon(0 0,100% 0,89% 74%,77% 100%,8% 100%,8% 70%,0 70%)}
@@ -31,13 +26,14 @@ button{color:inherit}
 #boat .flag{left:8px;top:-5px;width:22px;height:13px;background:var(--pink);clip-path:polygon(0 25%,40% 25%,40% 0,100% 0,100% 100%,40% 100%,40% 75%,0 75%)}
 #boat .cabin{bottom:13px;left:22px;width:27px;height:14px;border:4px solid #092435;background:#90c4d1}
 #depth-ruler{position:absolute;top:0;bottom:0;right:14px;width:40px;opacity:.35;border-right:2px solid #9bc8dc}
+#depth-ruler>div,#world-notes>div{position:absolute;inset:0;will-change:transform}
 .ruler-mark{position:absolute;right:0;width:7px;border-top:1px solid #a8d8ef;height:1px}
 .ruler-mark.major{width:19px}
 .ruler-mark span{position:absolute;right:22px;top:-8px;font-size:12px;color:#b0def3;white-space:nowrap}
-#world-notes{position:absolute;inset:0;font-size:13px;letter-spacing:1px;opacity:.2}
-.world-note{position:absolute;max-width:35%;white-space:nowrap}
-.world-note:nth-child(odd){left:max(25px,calc((100% - 930px)/2));text-align:left}
-.world-note:nth-child(even){right:max(25px,calc((100% - 930px)/2));text-align:right}
+#world-notes{position:absolute;inset:0;font-size:13px;letter-spacing:1px;opacity:.2;mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent)}
+.world-note{position:absolute;max-width:40%;line-height:1.2}
+.world-note.left{left:max(25px,calc((100% - 930px)/2));text-align:left}
+.world-note.right{right:max(65px,calc((100% - 930px)/2));text-align:right}
 #app{position:relative;max-width:940px;margin:auto;min-height:100svh;z-index:2}
 #loading{padding-top:40vh;text-align:center;letter-spacing:4px;color:var(--cyan)}
 .loading-dots{animation:blink 1.2s steps(2) infinite}
@@ -129,26 +125,28 @@ button{color:inherit}
 .correction-actions{display:flex;gap:10px}
 .correction-actions button{border:1px solid #5897b2;background:#122d43;padding:7px 16px;font-size:19px;letter-spacing:1px}
 .correction-actions button:first-child{border-color:var(--cyan);color:var(--cyan)}
-.is-sinking .prompt-card{animation:prompt-submerge .55s ease-in forwards;pointer-events:none}
+.is-sinking .prompt-card{animation:prompt-submerge .34s ease-out forwards;pointer-events:none}
 .tier-lines{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:2}
-.tier-line{position:absolute;top:0;left:50%;width:min(860px,calc(100% - 56px));margin-left:max(-430px,calc((56px - 100%) / 2));height:1px;border-top:2px dashed color-mix(in srgb,var(--tier),transparent 70%);color:var(--tier);opacity:.48;will-change:transform}
+.tier-track{position:absolute;inset:0 0 auto;opacity:0;will-change:transform,opacity}
+.tier-line{position:absolute;left:50%;width:min(860px,calc(100% - 56px));margin-left:max(-430px,calc((56px - 100%) / 2));height:1px;border-top:2px dashed color-mix(in srgb,var(--tier),transparent 70%);color:var(--tier);opacity:.48}
 .tier-line span{position:absolute;right:0;bottom:4px;display:flex;align-items:center;gap:5px;font-size:13px;line-height:1;letter-spacing:2px;white-space:nowrap}
 .tier-line img{width:17px;height:17px;object-fit:contain;image-rendering:pixelated}
 .tier-line.is-crossed{animation:tier-cross .8s ease-out both}
-.dive-rig{position:fixed;top:40%;left:50%;z-index:7;width:max-content;max-width:calc(100vw - 64px);transform:translate(-50%,-50%);pointer-events:none;will-change:top}
-.sinking-answer{position:relative;max-width:min(520px,calc(100vw - 64px));padding:11px 18px;background:#0a172aee;clip-path:polygon(7px 0,calc(100% - 7px) 0,calc(100% - 7px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 7px) calc(100% - 4px),calc(100% - 7px) 100%,7px 100%,7px calc(100% - 4px),0 calc(100% - 4px),0 4px,7px 4px);font-family:Sarabun,sans-serif;font-weight:700;font-size:21px;line-height:1.4;color:#dceaf6;text-align:center;text-shadow:0 0 8px #b9dcff8c;overflow-wrap:anywhere;animation:answer-drift 2.1s ease-in-out infinite}
+.dive-rig{position:fixed;top:0;left:50%;z-index:7;width:max-content;max-width:calc(100vw - 64px);opacity:0;pointer-events:none;will-change:transform,opacity}
+.sinking-answer{position:relative;max-width:min(520px,calc(100vw - 64px));padding:11px 18px;background:#0a172aee;clip-path:polygon(7px 0,calc(100% - 7px) 0,calc(100% - 7px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 7px) calc(100% - 4px),calc(100% - 7px) 100%,7px 100%,7px calc(100% - 4px),0 calc(100% - 4px),0 4px,7px 4px);font-family:Sarabun,sans-serif;font-weight:700;font-size:21px;line-height:1.4;color:#dceaf6;text-align:center;text-shadow:0 0 8px #b9dcff8c;overflow-wrap:anywhere}
 .sinking-answer span{font:17px var(--font);color:#91aecb;white-space:nowrap}
 .dive-rig.is-gem .sinking-answer{color:var(--gold);text-shadow:0 0 12px #ffd75a99}
 .dive-rig.is-gem .sinking-answer span{color:var(--gold)}
 .playing .dive-rig .dive-friend{position:absolute;left:auto;top:auto;right:4px;bottom:calc(100% - 14px);width:54px;height:54px;transition:none;pointer-events:auto;animation:dive-friend 1.25s ease-in-out infinite}
 .dive-wake{position:absolute;left:50%;bottom:45%;width:1px;height:1px;pointer-events:none}
-.dive-wake i{position:absolute;left:0;bottom:0;width:var(--size);height:var(--size);border:1px solid #b9edffb8;border-radius:50%;box-shadow:0 0 4px #bcefff55;animation:bubble-wake 1.6s linear var(--delay) infinite}
+.dive-wake i{position:absolute;left:0;bottom:0;width:var(--size);height:var(--size);border:1px solid #b9edffb8;border-radius:50%;animation:bubble-wake 1.6s linear var(--delay) infinite}
 .dive-wake i.dive-spark{border:0;border-radius:0;background:url('/assets/art/krillion.png') center/contain no-repeat;image-rendering:pixelated;box-shadow:none;animation:spark-wake 1.5s linear var(--delay) infinite}
 .dive-ring{position:absolute;left:50%;top:50%;width:65px;height:28px;border:2px solid #d7f7ffd0;border-radius:50%;opacity:0;transform:translate(-50%,-50%) scale(.2);pointer-events:none}
-.dive-rig.is-landed .dive-ring{animation:dive-landing .4s ease-out both}
-.dive-rig.is-landed .sinking-answer{animation-duration:2.8s}
+.dive-rig.is-landed .dive-ring{animation:dive-landing .36s ease-out both}
 .miss-feedback{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%);color:#9db7c9;letter-spacing:4px;font-size:25px;animation:reveal .3s ease-out}
-.reveal{position:absolute;top:29%;left:50%;width:min(640px,calc(100% - 40px));transform:translateX(-50%);text-align:center;animation:reveal .6s ease-out}
+.reveal{position:absolute;top:29%;left:50%;width:min(640px,calc(100% - 40px));transform:translateX(-50%);text-align:center;z-index:4}
+.reveal.is-arriving{opacity:0;pointer-events:none;will-change:opacity}
+.reveal.is-miss,.next-dock{animation:reveal .3s ease-out}
 .reveal-sprite{width:110px;height:110px;object-fit:contain;image-rendering:pixelated;margin-bottom:-8px}
 .reveal h2{font-size:clamp(35px,5vw,55px);font-weight:400;letter-spacing:5px;color:var(--result-color);text-shadow:3px 3px #05101e;margin:0 0 14px;line-height:1}
 .reveal .answer-label{font-family:Sarabun,sans-serif;font-size:23px;font-weight:700;line-height:1.6;margin:0 0 15px}
@@ -235,22 +233,18 @@ button{color:inherit}
 .noscript{font-family:Sarabun,sans-serif;padding:30px;text-align:center}
 .colorblind{--cyan:#75f0ff;--pink:#ff9f4a;--gold:#fff4a0;--muted:#bdd5e8}
 .colorblind .prompt-tag,.colorblind .category-hint,.colorblind .results-sub{color:#c0d5e6}
-.low-power .scanlines{opacity:.1}
-.low-power .water-rays{display:none}
 .low-power .dive-wake i:nth-child(n+10){display:none}
-.low-power #boat,.low-power .friend,.low-power #ocean:before{animation:none}
+.low-power #boat,.low-power .friend{animation:none}
 .low-power .overlay{backdrop-filter:none}
-@keyframes surface{from{transform:translateX(-8px)}to{transform:translateX(10px)}}
 @keyframes boat{0%,100%{transform:translateY(1px) rotate(-1deg)}50%{transform:translateY(-2px) rotate(2deg)}}
 @keyframes friend{0%,100%{margin-top:0}50%{margin-top:-9px}}
 @keyframes blink{50%{opacity:.45}}
 @keyframes reveal{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
 @keyframes prompt-submerge{from{opacity:1;translate:0 0}to{opacity:0;translate:0 -34px}}
-@keyframes answer-drift{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(2deg) translateY(5px)}}
 @keyframes dive-friend{0%,100%{transform:translate(0,0) rotate(-7deg)}50%{transform:translate(-5px,-7px) rotate(7deg)}}
 @keyframes bubble-wake{0%{opacity:0;transform:translate(var(--x),0) scale(.55)}18%{opacity:.9}80%{opacity:.5}100%{opacity:0;transform:translate(calc(var(--x) + var(--drift)),-175px) scale(1.25)}}
 @keyframes spark-wake{0%{opacity:0;transform:translate(var(--x),24px) rotate(-25deg) scale(.6)}18%{opacity:.95}75%{opacity:.85}100%{opacity:0;transform:translate(calc(var(--x) + var(--drift)),-85px) rotate(70deg) scale(1.1)}}
-@keyframes tier-cross{0%{opacity:.48}18%{opacity:1;filter:drop-shadow(0 0 8px var(--tier))}100%{opacity:.7;filter:none}}
+@keyframes tier-cross{0%{opacity:.48}18%{opacity:1}100%{opacity:.7}}
 @keyframes dive-landing{0%{opacity:.9;transform:translate(-50%,-50%) scale(.2)}100%{opacity:0;transform:translate(-50%,-50%) scale(3.5)}}
 @media(min-width:1100px){.menu-button{left:18px}.toolbar{right:18px}}
 @media(max-width:600px){

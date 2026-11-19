@@ -2,6 +2,7 @@ import { answerForms } from './answers.js';
 
 export const SURVEY_SCORING = 'published-survey-relative-rank-v1';
 export const SURVEY_TIERS = Object.freeze(['plankton', 'schooler', 'rare', 'deepcut', 'krillion']);
+export const MIN_PLAYABLE_ANSWERS = 9;
 const nonempty = value => typeof value === 'string' && value.trim().length > 0;
 
 // This checks that evidence is present and internally consistent; reviewing the
@@ -18,7 +19,7 @@ export function validateSurveyQuestion(q) {
   else {
     for (const field of ['publisher', 'fieldwork', 'population', 'sampleNote', 'sourceQuestion', 'metric', 'coverage'])
       if (!nonempty(s[field])) errors.push(name + ': missing survey ' + field);
-    if (!Number.isInteger(s.sampleSize) || s.sampleSize <= 0) errors.push(name + ': invalid survey sample size');
+    if (s.sampleSize !== null && (!Number.isInteger(s.sampleSize) || s.sampleSize <= 0)) errors.push(name + ': invalid survey sample size');
     try { if (new URL(s.url).protocol !== 'https:') throw new Error(); }
     catch { errors.push(name + ': invalid survey URL'); }
   }
@@ -60,19 +61,27 @@ export function validateSurveyBank(bank) {
 // Identical percentages always receive identical scores; no unreported value
 // is inferred. Scores are game points, not probabilities or respondent counts.
 export function surveyTier(question, answerId) {
-  if (validateSurveyQuestion(question).length) return null;
-  const answer = question.answers.find(a => a.id === answerId);
-  if (!answer) return null;
+  return surveyTiers(question).get(answerId) ?? null;
+}
+
+export function surveyTiers(question) {
+  return validateSurveyQuestion(question).length ? new Map() : tiersFor(question);
+}
+
+function tiersFor(question) {
   const values = [...new Set(question.answers.map(a => a.percent))].sort((a, b) => b - a);
-  return SURVEY_TIERS[Math.floor(values.indexOf(answer.percent) * (SURVEY_TIERS.length - 1) / (values.length - 1))];
+  const ranks = new Map(values.map((value, rank) => [value, SURVEY_TIERS[Math.floor(rank * (SURVEY_TIERS.length - 1) / (values.length - 1))]]));
+  return new Map(question.answers.map(answer => [answer.id, ranks.get(answer.percent)]));
 }
 
 export function prepareSurveyBank(raw) {
   const errors = validateSurveyBank(raw);
   if (errors.length) throw new Error('คลังผลสำรวจไม่ผ่านการตรวจ: ' + errors[0]);
   const bank = structuredClone(raw);
-  for (const question of bank.questions)
-    for (const answer of question.answers) answer.tier = surveyTier(question, answer.id);
+  for (const question of bank.questions) {
+    const tiers = tiersFor(question);
+    for (const answer of question.answers) answer.tier = tiers.get(answer.id);
+  }
   return bank;
 }
 
