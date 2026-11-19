@@ -5,7 +5,7 @@ import { dayKey, TIME_ZONE, TIERS, PREVIEW_MS, ANSWER_MS, selectDaily, selectEnd
   createSession, tickSession, submitAnswer, confirmCorrection, skipRound, nextRound, shareText, validateBank } from '../src/game.js';
 import { readSave, writeSave, emptySave, validSession, dailySlot, prepareSaveForBank,
   currentSavedSession, savedSessions } from '../src/storage.js';
-import { prepareSurveyBank } from '../src/survey.js';
+import { BROAD_ANSWER_TARGET, prepareSurveyBank } from '../src/survey.js';
 
 const catalog = JSON.parse(await readFile(new URL('../data/questions.json',import.meta.url),'utf8'));
 const bank = prepareSurveyBank(JSON.parse(await readFile(new URL('../data/survey-bank.json',import.meta.url),'utf8')));
@@ -49,17 +49,21 @@ test('daily date uses New York calendar and handles daylight saving',()=>{
   assert.equal(dayKey(Date.parse('2026-07-17T03:59:59Z')),'2026-07-16');
   assert.equal(dayKey(Date.parse('2026-07-17T04:00:00Z')),'2026-07-17');
 });
-test('endless alternates evenly and exhausts unseen questions in each scope before repeating',()=>{
+test('endless alternates evenly and rotates broad and shorter questions without early repeats within each group',()=>{
   let seen=[],pair=[];
   for(let i=0;i<20;i++){
     const before=seen,draw=selectEndless(bank,seen,()=>.42,i+1);
     seen=draw.seen;pair.push(...draw.questions);
     assert.equal(new Set(draw.questions.map(q=>q.id)).size,7);
     for(const scope of ['thai','world']) {
-      const picked=draw.questions.filter(q=>q.scope===scope);
-      const remaining=bank.questions.filter(q=>q.scope===scope&&!before.includes(q.id));
-      if(remaining.length>=picked.length) assert.ok(picked.every(q=>!before.includes(q.id)));
-      else assert.ok(remaining.every(q=>picked.some(item=>item.id===q.id)));
+      for(const wide of [true,false]) {
+        const hasGroup=q=>q.scope===scope && (q.answers.length>=BROAD_ANSWER_TARGET)===wide;
+        const picked=draw.questions.filter(hasGroup);
+        const remaining=bank.questions.filter(q=>hasGroup(q)&&!before.includes(q.id));
+        if(wide) assert.equal(picked.length,2);
+        if(remaining.length>=picked.length) assert.ok(picked.every(q=>!before.includes(q.id)));
+        else assert.ok(remaining.every(q=>picked.some(item=>item.id===q.id)));
+      }
     }
     if(i%2===1) {
       assert.equal(pair.filter(q=>q.scope==='thai').length,7);

@@ -1,6 +1,6 @@
 import { descentDuration } from './descent.js';
 import { normalize, answerForms } from './answers.js';
-import { SURVEY_SCORING, SURVEY_TIERS, isSurveySession, surveyTier, validateSurveyBank, validateSurveyQuestion } from './survey.js';
+import { BROAD_ANSWER_TARGET, SURVEY_SCORING, SURVEY_TIERS, isSurveySession, surveyTier, validateSurveyBank, validateSurveyQuestion } from './survey.js';
 export { normalize, answerForms } from './answers.js';
 
 export const ANSWER_MS = 25_000;
@@ -53,8 +53,9 @@ const questionTheme = question => question.theme || question.category || questio
 
 // Seven prompts cannot be divided equally, so alternating dives use 4:3 and
 // 3:4. Keep at least five themes where possible, with at most two of each.
-export function diverseRound(questions, rng = Math.random, requiredIds = [], balanceRemaining = false, targets = scopeTargetsForRound(1)) {
+export function diverseRound(questions, rng = Math.random, requiredIds = [], balanceRemaining = false, targets = scopeTargetsForRound(1), quota = null) {
   const ordered = shuffle(questions, rng);
+  const broad = q => q.answers.length >= BROAD_ANSWER_TARGET;
   if (balanceRemaining) {
     // Spend larger remaining themes steadily instead of leaving them all for
     // the last few dives. Shuffling still randomizes questions within a theme.
@@ -64,46 +65,66 @@ export function diverseRound(questions, rng = Math.random, requiredIds = [], bal
   }
   const minimumThemes = Math.min(5,new Set(questions.map(questionTheme)).size);
   const required = new Set(requiredIds);
-  function plan(pool, mandatory = new Set()) {
+  function plan(pool, mandatory = new Set(), broadMinimum = 0, broadPerScope = null) {
     if (pool.filter(q=>q.scope==='thai').length < targets.thai || pool.filter(q=>q.scope==='world').length < targets.world) return null;
     const chosen = pool.filter(q=>mandatory.has(q.id));
     const candidates = pool.filter(q=>!mandatory.has(q.id));
+    const remainingBroad = Array(candidates.length + 1).fill(0);
+    for (let i = candidates.length - 1; i >= 0; i--) remainingBroad[i] = remainingBroad[i + 1] + Number(broad(candidates[i]));
     const counts = new Map();
     for (const q of chosen) counts.set(questionTheme(q),(counts.get(questionTheme(q))||0)+1);
     const thai = chosen.filter(q=>q.scope==='thai').length;
     const world = chosen.length-thai;
+    const broadThai = chosen.filter(q=>q.scope==='thai'&&broad(q)).length;
+    const broadWorld = chosen.filter(q=>q.scope==='world'&&broad(q)).length;
     if (thai>targets.thai || world>targets.world || [...counts.values()].some(n=>n>2)) return null;
-    function search(start, thaiCount, worldCount) {
+    function search(start, thaiCount, worldCount, thaiWide, worldWide) {
+      const broadCount = thaiWide + worldWide;
+      if (broadPerScope && (
+        thaiWide > broadPerScope.thai || worldWide > broadPerScope.world ||
+        thaiCount-thaiWide > targets.thai-broadPerScope.thai ||
+        worldCount-worldWide > targets.world-broadPerScope.world
+      )) return null;
       if (chosen.length===7) {
-        if (thaiCount!==targets.thai || worldCount!==targets.world || counts.size<minimumThemes) return null;
+        if (thaiCount!==targets.thai || worldCount!==targets.world || counts.size<minimumThemes || broadCount<broadMinimum) return null;
         return [...chosen];
       }
       if (chosen.length+candidates.length-start<7) return null;
+      if (broadCount + Math.min(7-chosen.length, remainingBroad[start]) < broadMinimum) return null;
       for (let i=start;i<candidates.length;i++) {
         const q=candidates[i], theme=questionTheme(q), n=counts.get(theme)||0;
         if (n>=2 || q.scope==='thai' && thaiCount>=targets.thai || q.scope==='world' && worldCount>=targets.world) continue;
         chosen.push(q);counts.set(theme,n+1);
-        const found=search(i+1,thaiCount+(q.scope==='thai'?1:0),worldCount+(q.scope==='world'?1:0));
+        const found=search(i+1,thaiCount+Number(q.scope==='thai'),worldCount+Number(q.scope==='world'),
+          thaiWide+Number(q.scope==='thai'&&broad(q)),worldWide+Number(q.scope==='world'&&broad(q)));
         chosen.pop();if(n)counts.set(theme,n);else counts.delete(theme);
         if(found)return found;
       }
       return null;
     }
-    return search(0,thai,world);
+    return search(0,thai,world,broadThai,broadWorld);
   }
-  const strict=plan(ordered,required);
+  const strict = quota
+    ? plan(ordered,required,quota.thai+quota.world,quota)
+    : plan(ordered,required,Math.min(4,ordered.filter(broad).length)) || plan(ordered,required);
   if(strict)return shuffle(strict,rng);
   // Small/custom banks can make the variety target impossible. Preserve scope,
   // unseen mandatory questions and playability, then maximize available variety.
   const picked=ordered.filter(q=>required.has(q.id)), counts=new Map();
   for(const q of picked)counts.set(questionTheme(q),(counts.get(questionTheme(q))||0)+1);
-  for(const [scope,target] of Object.entries(targets)) {
-    while(picked.filter(q=>q.scope===scope).length<target) {
-      const candidates=ordered.filter(q=>q.scope===scope&&!picked.some(p=>p.id===q.id));
+  function fill(target, belongs) {
+    while(picked.filter(belongs).length<target) {
+      const candidates=ordered.filter(q=>belongs(q)&&!picked.some(p=>p.id===q.id));
       candidates.sort((a,b)=>(counts.get(questionTheme(a))||0)-(counts.get(questionTheme(b))||0));
       if(!candidates.length)throw new Error('Not enough questions for a balanced dive.');
       const q=candidates[0];picked.push(q);counts.set(questionTheme(q),(counts.get(questionTheme(q))||0)+1);
     }
+  }
+  for(const [scope,target] of Object.entries(targets)) {
+    if (quota) {
+      fill(quota[scope], q => q.scope===scope && broad(q));
+      fill(target-quota[scope], q => q.scope===scope && !broad(q));
+    } else fill(target, q => q.scope===scope);
   }
   return shuffle(picked,rng);
 }
@@ -111,28 +132,57 @@ export function selectEndless(bank, seen = [], rng = Math.random, run = 1) {
   const available = [], required = [];
   const nextSeen = [...seen];
   const targets = scopeTargetsForRound(run);
-  for (const [scope, count] of Object.entries(targets)) {
-    const all = bank.questions.filter(q => q.scope === scope);
-    let remaining = shuffle(all.filter(q => !seen.includes(q.id)), rng);
-    if (remaining.length < count) {
-      required.push(...remaining.map(q=>q.id));
-      const used = new Set(remaining.map(q => q.id));
-      remaining.push(...shuffle(all.filter(q => !used.has(q.id)), rng));
-      for (const q of all) {
-        let i;
-        while ((i = nextSeen.indexOf(q.id)) >= 0) nextSeen.splice(i, 1);
+  const quota = Object.keys(targets).every(scope => bank.questions.filter(q=>q.scope===scope && q.answers.length>=BROAD_ANSWER_TARGET).length>=2 &&
+    bank.questions.filter(q=>q.scope===scope && q.answers.length<BROAD_ANSWER_TARGET).length>=targets[scope]-2)
+    ? { thai:2, world:2 } : null;
+  // Cycle broad and smaller sets separately, so the broad set isn't exhausted
+  // in the first few dives and every short set still gets a turn.
+  for (const [scope, target] of Object.entries(targets)) {
+    const questions = bank.questions.filter(q => q.scope === scope);
+    const groups = quota ? [
+      [questions.filter(q=>q.answers.length>=BROAD_ANSWER_TARGET),quota[scope]],
+      [questions.filter(q=>q.answers.length<BROAD_ANSWER_TARGET),target-quota[scope]]
+    ] : [[questions,target]];
+    for (const [all,count] of groups) {
+      let remaining = shuffle(all.filter(q => !seen.includes(q.id)), rng);
+      if (remaining.length < count) {
+        required.push(...remaining.map(q=>q.id));
+        const used = new Set(remaining.map(q => q.id));
+        remaining.push(...shuffle(all.filter(q => !used.has(q.id)), rng));
+        for (const q of all) {
+          let i;
+          while ((i = nextSeen.indexOf(q.id)) >= 0) nextSeen.splice(i, 1);
+        }
       }
+      available.push(...remaining);
     }
-    available.push(...remaining);
   }
-  const picked = diverseRound(available,rng,required,true,targets);
+  const picked = diverseRound(available,rng,required,true,targets,quota);
   nextSeen.push(...picked.map(q => q.id));
   return { questions: picked, seen: [...new Set(nextSeen)] };
 }
-function distance(a, b) {
-  const segmenter = new Intl.Segmenter('th', { granularity: 'grapheme' });
-  const left = [...segmenter.segment(a)].map(s => s.segment);
-  const right = [...segmenter.segment(b)].map(s => s.segment);
+const segmenter = new Intl.Segmenter('th', { granularity: 'grapheme' });
+const graphemes = text => Array.from(segmenter.segment(text), s => s.segment);
+const answerIndexes = new WeakMap();
+function answerIndex(answers) {
+  if (answerIndexes.has(answers)) return answerIndexes.get(answers);
+  const exact = new Map(), byLength = new Map();
+  for (const answer of answers) {
+    const names = new Set([answer.label, ...(answer.aliases || [])].map(normalize));
+    for (const name of names) {
+      for (const form of answerForms(name)) {
+        if (!exact.has(form)) exact.set(form, new Set());
+        exact.get(form).add(answer);
+      }
+      if (!byLength.has(name.length)) byLength.set(name.length, []);
+      byLength.get(name.length).push({ name, answer, parts: null });
+    }
+  }
+  const index = { exact, byLength };
+  answerIndexes.set(answers, index);
+  return index;
+}
+function distance(left, right) {
   let previous = Array.from({ length: right.length + 1 }, (_, i) => i);
   for (let i = 0; i < left.length; i++) {
     const row = [i + 1];
@@ -145,21 +195,25 @@ function distance(a, b) {
 export function matchAnswer(question, raw) {
   const value = normalize(raw);
   if (!value) return { kind: 'empty' };
-  const forms = answerForms(value);
-  const exact = question.answers.filter(a => [a.label, ...(a.aliases || [])].some(name => answerForms(name).some(f => forms.includes(f))));
-  if (exact.length === 1) return { kind: 'exact', answer: exact[0] };
-  if (exact.length > 1) return { kind: 'ambiguous' };
+  const index = answerIndex(question.answers);
+  const exact = new Set(answerForms(value).flatMap(form => [...(index.exact.get(form) || [])]));
+  if (exact.size === 1) return { kind: 'exact', answer: exact.values().next().value };
+  if (exact.size > 1) return { kind: 'ambiguous' };
   if (value.length < 4) return { kind: 'unknown' };
-  const candidates = question.answers.map(answer => ({
-    answer, distance: Math.min(...[answer.label, ...(answer.aliases || [])].map(alias => {
-      const normalized = normalize(alias);
-      if (Math.abs(normalized.length - value.length) > 2) return Infinity;
-      return distance(value, normalized);
-    }))
-  })).sort((a, b) => a.distance - b.distance);
   const limit = value.length >= 10 ? 2 : 1;
-  if (candidates[0] && candidates[0].distance <= limit && candidates[0].distance < (candidates[1]?.distance ?? Infinity))
-    return { kind: 'correction', answer: candidates[0].answer };
+  const parts = graphemes(value);
+  let best = new Set(), bestDistance = limit;
+  for (let length = value.length - 2; length <= value.length + 2; length++) {
+    for (const entry of index.byLength.get(length) || []) {
+      entry.parts ??= graphemes(entry.name);
+      if (Math.abs(parts.length - entry.parts.length) > bestDistance) continue;
+      const delta = distance(parts, entry.parts);
+      if (delta > bestDistance) continue;
+      if (delta < bestDistance) { best = new Set(); bestDistance = delta; }
+      best.add(entry.answer);
+    }
+  }
+  if (best.size === 1) return { kind: 'correction', answer: best.values().next().value };
   return { kind: 'unknown' };
 }
 export function createSession({ mode, bank, questions, date = dayKey(), now = Date.now(), run = 1 }) {

@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { matchAnswer, selectDaily, selectEndless, random } from '../src/game.js';
+import { BROAD_ANSWER_TARGET } from '../src/survey.js';
 
 const bank=JSON.parse(await readFile(new URL('../data/questions.json',import.meta.url),'utf8'));
 const active=JSON.parse(await readFile(new URL('../data/survey-bank.json',import.meta.url),'utf8'));
@@ -53,7 +54,9 @@ function assertVariety(questions) {
 test('Daily keeps broad topic variety across a year of dates',()=>{
   for(let i=0;i<366;i++) {
     const date=new Date(Date.UTC(2026,0,1+i)).toISOString().slice(0,10);
-    assertVariety(selectDaily(active,date));
+    const round=selectDaily(active,date);
+    assertVariety(round);
+    assert.ok(round.filter(q=>q.answers.length>=BROAD_ANSWER_TARGET).length>=4,date);
   }
 });
 

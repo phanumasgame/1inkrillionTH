@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { validateBank, matchAnswer, TIERS } from '../src/game.js';
-import { MIN_PLAYABLE_ANSWERS, validateSurveyBank } from '../src/survey.js';
+import { BROAD_ANSWER_TARGET, MIN_PLAYABLE_ANSWERS, validateSurveyBank } from '../src/survey.js';
 const root = new URL('../', import.meta.url);
 const bank = JSON.parse(await readFile(new URL('data/questions.json', root), 'utf8'));
 const errors = validateBank(bank);
@@ -11,6 +11,9 @@ if (active.questions.filter(q => q.scope === 'thai').length !== active.questions
   errors.push('Playable questions must be split evenly between Thai and general topics');
 for (const q of active.questions)
   if ((q.answers?.length ?? 0) < MIN_PLAYABLE_ANSWERS) errors.push(q.id + ': playable questions need at least ' + MIN_PLAYABLE_ANSWERS + ' measured answers');
+for (const scope of ['thai','world'])
+  if (active.questions.filter(q=>q.scope===scope && q.answers.length>=BROAD_ANSWER_TARGET).length<3)
+    errors.push('Need three questions with ' + BROAD_ANSWER_TARGET + ' measured answers in scope ' + scope);
 if (bank.questions.length !== 100) errors.push('Bank must have 100 questions');
 if (bank.questions.filter(q => q.scope === 'thai').length !== 70) errors.push('Bank must have 70 Thai questions');
 if (bank.questions.filter(q => q.scope === 'world').length !== 30) errors.push('Bank must have 30 world questions');

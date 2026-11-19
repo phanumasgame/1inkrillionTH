@@ -1,7 +1,8 @@
 import { ANSWER_MS, PREVIEW_MS, TIME_ZONE, TIERS, TIER_ORDER, dayKey, selectDaily, selectEndless,
   createSession, tickSession, submitAnswer, confirmCorrection, skipRound, nextRound, shareText } from './game.js';
 import { readSave, writeSave, validSession, dailySlot, prepareSaveForBank, currentSavedSession, savedSessions } from './storage.js';
-import { isSurveySession, prepareSurveyBank, surveyTiers } from './survey.js';
+import { isSurveySession, prepareSurveyBank, surveyTiers, surveyValue } from './survey.js';
+import { answerForms } from './answers.js';
 import { DiveAudio } from './audio.js';
 import { OceanScene } from './scene.js';
 import { descentDuration, PIXELS_PER_METER, METERS_PER_POINT } from './descent.js';
@@ -165,7 +166,7 @@ function hud() {
 }
 function promptCard() {
   const q = session.questions[session.index];
-  const example = q.answers.reduce((best, answer) => answer.percent > best.percent ? answer : best);
+  const example = q.answers.reduce((best, answer) => surveyValue(q, answer) > surveyValue(q, best) ? answer : best);
   const exampleKey = session.id + ':' + session.index;
   const exampleHint = ['preview','answer','correction'].includes(session.phase)
     ? '<details class="starter-hint" data-example-key="' + esc(exampleKey) + '"' + (openExamples.has(exampleKey) ? ' open' : '') +
@@ -181,7 +182,7 @@ function answerDock() {
   return '<section class="answer-dock" aria-label="Answer this prompt">' +
     '<div class="timer-row"><span>MAKE IT COUNT.</span><span class="timer-number" id="timer" role="timer" aria-label="Seconds remaining">25</span></div>' +
     '<div class="timer-track" id="timer-track"><span id="timer-fill"></span></div>' + correction +
-    (session.rejected ? '<div class="reject-text" role="status">ไม่เจอคำนี้ในชุดคำตอบ ลองชื่ออื่นหรือคำที่สั้นลงได้</div>' : '') +
+    (session.rejected ? '<div class="reject-text" role="status">คำนี้ยังไม่มีข้อมูลในคลัง ลองตอบชื่ออื่นได้ก่อนหมดเวลา</div>' : '') +
     '<form class="answer-form" id="answer-form"><input id="answer" name="answer" aria-label="Your answer" maxlength="256" placeholder="type one answer…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" value="' +
     esc(session.input || '') + '"' + (session.phase === 'correction' ? ' disabled' : '') + '><button class="dive-button" type="submit"' +
     (!session.input?.trim() || session.phase === 'correction' ? ' disabled' : '') + '>DIVE</button></form>' +
@@ -251,7 +252,7 @@ function resultsView() {
       '"><div class="result-prompt">' + esc(r.prompt) + '</div><div class="result-answer">' + esc(r.label || (r.reason === 'timeout' ? 'หมดเวลา' : 'ข้ามข้อ')) +
       '</div></button><div class="result-score" style="color:' + (r.tier ? tierColor(r.tier) : '#7890a5') + '">' + r.points +
       '<div style="font-size:12px;letter-spacing:1px">' + (r.tier ? esc(TIERS[r.tier].name.toUpperCase()) : 'MISS') + '</div></div></article>').join('') +
-    '</section><p class="results-footnote">คะแนนจัดอันดับจากร้อยละของคำตอบที่โพลเผยแพร่ในแต่ละข้อ · ไม่ใช่ร้อยละของผู้เล่น<br>บันทึกผลไว้ในเบราว์เซอร์นี้ · ' +
+    '</section><p class="results-footnote">แต้มจัดอันดับจากค่าที่สำรวจได้ของแต่ละข้อ · ไม่ใช่สัดส่วนผู้เล่น<br>บันทึกผลไว้ในเบราว์เซอร์นี้ · ' +
     esc(session.bankVersion) + '</p></main>';
 }
 function render(answerSelection = null) {
@@ -478,8 +479,8 @@ function aboutDialog() {
     ' ข้อ และเรื่องทั่วไป ' + bank.questions.filter(q => q.scope === 'world').length +
     ' ข้อ แต่ละรอบมี 7 ข้อ สลับสัดส่วนไทยกับทั่วไปเป็น 4:3 และ 3:4</p>' +
     '<p>นึกไม่ออกใช่ไหม? กดขอตัวอย่างคำตอบบนการ์ดได้หนึ่งคำตอบ</p>' +
-    '<p><strong>คะแนนมาจากร้อยละที่รายงานในผลสำรวจ</strong> จัดอันดับเฉพาะตัวเลือกที่ผู้สำรวจเผยแพร่ ร้อยละน้อยกว่าจะได้คะแนนเท่าเดิมหรือมากกว่า คะแนนเป็นแต้มเกม ไม่ใช่ร้อยละของผู้เล่นหรือคนไทยทั้งหมด</p>' +
-    '<p>หากผลสำรวจเผยแพร่เพียงบางคำตอบ เกมจะรับเฉพาะรายการเหล่านั้น คำตอบที่ไม่ปรากฏไม่ได้แปลว่าไม่มีผู้ตอบ ดูกลุ่มตัวอย่าง ช่วงเวลา และแหล่งข้อมูลได้หลังเฉลย</p>' +
+    '<p><strong>แต้มมาจากข้อมูลสำรวจของแต่ละข้อ</strong> ค่าที่น้อยกว่าได้แต้มเท่าเดิมหรือมากกว่า ตัวเลขจากแหล่งข้อมูลอาจเป็นร้อยละหรือค่าเฉลี่ยจากแบบสอบถาม ดูหน่วยและกลุ่มตัวอย่างได้หลังเฉลย</p>' +
+    '<p>เกมให้แต้มเฉพาะคำตอบที่มีข้อมูลรองรับ คำที่ไม่มีในคลังอาจยังถูกตามโจทย์ได้ ดูกลุ่มตัวอย่าง ช่วงเวลา และแหล่งข้อมูลหลังเฉลย</p>' +
     '<div class="method-info">คลัง ' + esc(bank.version) +
     '<br>ปฏิทินด่าน: America/New_York ตามต้นแบบ · ความคืบหน้าบันทึกในเบราว์เซอร์นี้</div>' +
     '<p style="font-size:11px;color:#7c9bb6">ภาพฉากและตัวละครสร้างใหม่สำหรับโปรเจกต์นี้ ที่มาและสิทธิ์ของฟอนต์อยู่ใน assets/README.md เกมนี้เป็นโปรเจกต์แยกจาก Krillion.io</p></div>');
@@ -518,6 +519,33 @@ function historyDialog() {
     number(s.depth) + 'm</strong></button>').join('') : '<p class="empty-history">ยังไม่มีประวัติการดำน้ำจากผลสำรวจ<br>เล่นให้ครบ 7 ข้อ แล้วกลับมาดูผลงานได้ที่นี่</p>') +
     (legacyCount ? '<p class="method-info">ประวัติรุ่นก่อน ' + legacyCount + ' รอบยังเก็บไว้ในเครื่อง แต่คะแนนรุ่นนั้นไม่ได้ใช้ผลสำรวจจึงไม่แสดงรวม</p>' : ''));
 }
+const EVIDENCE_PAGE_SIZE = 100;
+const evidenceNumber = new Intl.NumberFormat('en-US', { maximumFractionDigits: 4 });
+const evidenceValue = (q, a) => evidenceNumber.format(surveyValue(q, a)) +
+  (q.survey.scale === 'rating-1-to-7' ? ' / 7' : '%');
+function wireEvidenceList(q, tiers) {
+  const details = modalRoot.querySelector('.evidence-details');
+  const filter = details.querySelector('input'), rows = details.querySelector('.answer-bank');
+  const status = details.querySelector('.evidence-status'), more = details.querySelector('.evidence-more');
+  const ordered = [...q.answers].sort((a,b)=>surveyValue(q,b)-surveyValue(q,a));
+  let shown = EVIDENCE_PAGE_SIZE;
+  const names = ordered.map(a => [a.label, ...a.aliases].flatMap(answerForms));
+  function draw() {
+    const terms = answerForms(filter.value).filter(Boolean);
+    const matches = terms.length ? ordered.filter((_, i) => terms.some(t=>names[i].some(n=>n.includes(t)))) : ordered;
+    rows.innerHTML = matches.slice(0,shown).map(a => {
+      const tier=tiers.get(a.id);
+      return '<div class="bank-row"><span>' + esc(a.label) + '</span><small style="--tier:' + tierColor(tier) +
+        '"> ' + esc(evidenceValue(q,a)) + ' · ' + TIERS[tier].score + ' PTS</small></div>';
+    }).join('');
+    status.textContent = matches.length ? 'แสดง ' + number(Math.min(shown,matches.length)) + ' จาก ' + number(matches.length) : 'ไม่พบคำตอบที่ตรงกับคำค้น';
+    if (matches.length <= shown && document.activeElement === more) status.focus({preventScroll:true});
+    more.hidden = matches.length <= shown;
+  }
+  filter.addEventListener('input', () => { shown = EVIDENCE_PAGE_SIZE; draw(); });
+  more.addEventListener('click', () => { shown += EVIDENCE_PAGE_SIZE; draw(); });
+  details.addEventListener('toggle', () => { if (details.open) draw(); });
+}
 function explainDialog(index) {
   const q = session?.questions[index], result = session?.results[index];
   if (!q || !result) return;
@@ -526,21 +554,20 @@ function explainDialog(index) {
   const tiers=surveyTiers(q);
   openModal('explain','Field notes · ' + (index+1),'<div class="body-copy"><p><strong>' + esc(q.prompt) + '</strong></p><p>' +
     esc(survey.sourceQuestion) + '</p>' + (answer ? '<p>คำตอบของคุณ: <strong>' + esc(answer.label) +
-    '</strong> · ร้อยละ ' + esc(answer.percent) + ' ตามผลสำรวจ</p>' : '') +
+    '</strong> · ' + esc(evidenceValue(q,answer)) + ' ตามข้อมูลต้นทาง</p>' : '') +
     '<div class="method-info">ผู้สำรวจ: ' + esc(survey.publisher) + '<br>ช่วงเก็บข้อมูล: ' + esc(survey.fieldwork) +
     '<br>กลุ่มตัวอย่าง: ' + esc(survey.population) + '<br>จำนวนตัวอย่าง: ' +
-    (survey.sampleSize === null ? 'ตารางนี้ไม่ได้ระบุ' : esc(survey.sampleSizeQualifier || '') + number(survey.sampleSize) + ' คน') +
+    (survey.sampleSize === null ? 'ตารางนี้ไม่ได้ระบุ' : esc(survey.sampleSizeQualifier || '') + number(survey.sampleSize) + ' ' + esc(survey.sampleUnit || 'คน')) +
     '<br>' + esc(survey.sampleNote) + '<br>' + esc(survey.metric) + '<br>' + esc(survey.coverage) +
     '<br><a href="' + safeUrl(survey.url) + '" target="_blank" rel="noopener noreferrer">ดูผลสำรวจต้นทาง ↗</a>' +
+    (survey.licenseUrl ? ' · <a href="' + safeUrl(survey.licenseUrl) + '" target="_blank" rel="noopener noreferrer">สัญญาอนุญาต ↗</a>' : '') +
     (survey.translationNotice ? '<br>' + esc(survey.translationNotice) : '') + '</div>' +
-    '<p>แต้มจัดตามอันดับร้อยละจากมากไปน้อยเฉพาะคำตอบที่เผยแพร่ ค่าเท่ากันได้แต้มเท่ากัน</p>' +
-    '<details class="evidence-details"><summary>ดูคำตอบที่โพลเผยแพร่ (' + q.answers.length + ')</summary><div class="answer-bank">' +
-    [...q.answers].sort((a,b)=>b.percent-a.percent).map(a => {
-      const tier=tiers.get(a.id);
-      return '<div class="bank-row"><span>' + esc(a.label) + '</span><small style="--tier:' + tierColor(tier) +
-        '"> ' + esc(a.percent) + '% · ' + TIERS[tier].score + ' PTS</small></div>';
-    }).join('') +
-    '</div></details></div>');
+    '<p>แต้มจัดตามอันดับค่าที่สำรวจได้ ค่าเท่ากันได้แต้มเท่ากัน</p>' +
+    '<details class="evidence-details"><summary>ดูคำตอบที่มีข้อมูล (' + number(q.answers.length) + ')</summary>' +
+    '<label class="evidence-filter">ค้นหาชื่อคำตอบ <input type="search" placeholder="พิมพ์ชื่อหรือชื่อเรียกอื่น" autocomplete="off"></label>' +
+    '<p class="evidence-status" role="status" tabindex="-1"></p><div class="answer-bank"></div>' +
+    '<button type="button" class="evidence-more small-link" hidden>แสดงเพิ่ม</button></details></div>');
+  wireEvidenceList(q,tiers);
 }
 async function copyResult() {
   const text = shareText(session,save.settings.shareLink,location.origin);

@@ -3,7 +3,11 @@ import { answerForms } from './answers.js';
 export const SURVEY_SCORING = 'published-survey-relative-rank-v1';
 export const SURVEY_TIERS = Object.freeze(['plankton', 'schooler', 'rare', 'deepcut', 'krillion']);
 export const MIN_PLAYABLE_ANSWERS = 9;
+export const BROAD_ANSWER_TARGET = 100;
 const nonempty = value => typeof value === 'string' && value.trim().length > 0;
+
+export const surveyValue = (question, answer) => question.survey?.scale === 'rating-1-to-7'
+  ? answer.rating : answer.percent;
 
 // This checks that evidence is present and internally consistent; reviewing the
 // published source and its permission to reuse remains a human research task.
@@ -20,6 +24,11 @@ export function validateSurveyQuestion(q) {
     for (const field of ['publisher', 'fieldwork', 'population', 'sampleNote', 'sourceQuestion', 'metric', 'coverage'])
       if (!nonempty(s[field])) errors.push(name + ': missing survey ' + field);
     if (s.sampleSize !== null && (!Number.isInteger(s.sampleSize) || s.sampleSize <= 0)) errors.push(name + ': invalid survey sample size');
+    if (s.scale !== undefined && s.scale !== 'rating-1-to-7') errors.push(name + ': unknown survey scale');
+    if (s.licenseUrl !== undefined) {
+      try { if (new URL(s.licenseUrl).protocol !== 'https:') throw new Error(); }
+      catch { errors.push(name + ': invalid license URL'); }
+    }
     try { if (new URL(s.url).protocol !== 'https:') throw new Error(); }
     catch { errors.push(name + ': invalid survey URL'); }
   }
@@ -31,15 +40,18 @@ export function validateSurveyQuestion(q) {
     }
     if (ids.has(a.id)) errors.push(name + ': duplicate answer ' + a.id);
     ids.add(a.id);
-    if (!Number.isFinite(a.percent) || a.percent <= 0 || a.percent > 100) errors.push(name + '/' + a.id + ': invalid published percentage');
-    else values.add(a.percent);
+    const value = surveyValue(q, a);
+    if (!Number.isFinite(value) || (s?.scale === 'rating-1-to-7'
+      ? value < 1 || value > 7 || a.percent !== undefined
+      : value <= 0 || value > 100 || a.rating !== undefined)) errors.push(name + '/' + a.id + ': invalid measured value');
+    else values.add(value);
     for (const label of [a.label, ...a.aliases]) for (const form of answerForms(label)) {
       if (!form) errors.push(name + ': empty answer alias');
       if (names.has(form) && names.get(form) !== a.id) errors.push(name + ': ambiguous alias ' + label);
       names.set(form, a.id);
     }
   }
-  if (values.size < 2) errors.push(name + ': at least two distinct published percentages are needed');
+  if (values.size < 2) errors.push(name + ': at least two distinct measured values are needed');
   return errors;
 }
 
@@ -57,8 +69,8 @@ export function validateSurveyBank(bank) {
   return errors;
 }
 
-// Relative rank is calculated only among the percentages the source published.
-// Identical percentages always receive identical scores; no unreported value
+// Relative rank uses only measured values from this question's survey.
+// Identical values always receive identical scores; no unreported value
 // is inferred. Scores are game points, not probabilities or respondent counts.
 export function surveyTier(question, answerId) {
   return surveyTiers(question).get(answerId) ?? null;
@@ -69,9 +81,9 @@ export function surveyTiers(question) {
 }
 
 function tiersFor(question) {
-  const values = [...new Set(question.answers.map(a => a.percent))].sort((a, b) => b - a);
+  const values = [...new Set(question.answers.map(a => surveyValue(question, a)))].sort((a, b) => b - a);
   const ranks = new Map(values.map((value, rank) => [value, SURVEY_TIERS[Math.floor(rank * (SURVEY_TIERS.length - 1) / (values.length - 1))]]));
-  return new Map(question.answers.map(answer => [answer.id, ranks.get(answer.percent)]));
+  return new Map(question.answers.map(answer => [answer.id, ranks.get(surveyValue(question, answer))]));
 }
 
 export function prepareSurveyBank(raw) {

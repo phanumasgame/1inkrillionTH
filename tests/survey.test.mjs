@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createSession, matchAnswer, selectDaily, settleRound, TIERS } from '../src/game.js';
 import { emptySave, prepareSaveForBank, readSave, writeSave } from '../src/storage.js';
-import { isSurveySession, MIN_PLAYABLE_ANSWERS, prepareSurveyBank, surveyTier, validateSurveyBank } from '../src/survey.js';
+import { BROAD_ANSWER_TARGET, isSurveySession, MIN_PLAYABLE_ANSWERS, prepareSurveyBank, surveyTier, surveyValue, validateSurveyBank } from '../src/survey.js';
 
 const raw = JSON.parse(await readFile(new URL('../data/survey-bank.json', import.meta.url), 'utf8'));
 const bank = prepareSurveyBank(raw);
@@ -35,12 +35,32 @@ test('active answers have survey metadata, published percentages and exact sourc
   const iceCream=raw.questions.find(q=>q.id==='world-ice-cream-flavors-idfa-2024');
   assert.equal(iceCream.answers.length,40);
   assert.equal(iceCream.answers.find(a=>a.id==='vanilla').percent,38);
-  const games=raw.questions.find(q=>q.id==='world-game-genres-pew-2008');
-  assert.equal(games.survey.sampleSize,1064);
-  assert.equal(games.answers.find(a=>a.id==='racing').percent,74);
-  assert.equal(games.survey.translationNotice,'Pew Research Center has published the original content in English but has not reviewed or approved this translation.');
   assert.ok(raw.questions.every(q=>!q.survey.url.includes('verasight')));
   assert.ok(raw.questions.every(q=>q.answers.every(a=>!('count' in a) && !('tier' in a))));
+});
+
+test('broader questions score named items on the original survey scale', () => {
+  const find = id => raw.questions.find(q=>q.id===id);
+  for (const retired of ['th-nhes-sweets-and-snacks','th-etda-devices-2022','world-home-tech-dcms-2025'])
+    assert.equal(find(retired),undefined);
+  const snacks=find('th-acfs-named-snacks');
+  const vegetables=find('th-acfs-market-vegetables');
+  const home=find('th-tunorms-household-objects');
+  const pokemon=find('world-favourite-pokemon-reddit-2019');
+  for (const q of [snacks,vegetables,home,pokemon]) assert.ok(q.answers.length>=BROAD_ANSWER_TARGET);
+  assert.equal(matchAnswer(snacks,'ขนมชั้น').answer.percent,22.7);
+  assert.equal(matchAnswer(snacks,'ปอกกี้').answer.percent,12.9);
+  assert.equal(matchAnswer(vegetables,'กะเพรา').answer.percent,72.7);
+  const remote=matchAnswer(home,'รีโมท').answer;
+  assert.equal(remote.label,'รีโมต');
+  assert.ok(surveyValue(home,remote)>=1 && surveyValue(home,remote)<=7);
+  assert.equal(remote.percent,undefined);
+  assert.equal(matchAnswer(pokemon,'ปิกาจู').answer.id,'pikachu');
+  assert.equal(pokemon.answers.length,805);
+  const broken=structuredClone(raw);
+  const rating=broken.questions.find(q=>q.id===home.id).answers[0];
+  rating.percent=rating.rating;
+  assert.ok(validateSurveyBank(broken).some(error=>error.includes('invalid measured value')));
 });
 
 test('playable prompts use everyday language and accepted names resolve to their published group', () => {
