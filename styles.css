@@ -14,7 +14,11 @@ a{color:inherit;text-decoration:none}
 button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--gold);outline-offset:5px}
 button{color:inherit}
 .thai{font-family:Sarabun,sans-serif;letter-spacing:0;line-height:1.65}
-#world{position:fixed;inset:0;overflow:hidden;pointer-events:none;background:#081a2b;isolation:isolate}
+#world{position:fixed;inset:0;overflow:hidden;pointer-events:none;background:#081a2b;isolation:isolate;transition:filter .35s ease}
+#world:before{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;opacity:0;background:radial-gradient(circle at 50% 44%,rgba(75,222,244,.22),transparent 62%);transition:opacity .45s ease}
+#world.is-diving:before{opacity:.7}
+#world.is-diving[data-tier="deepcut"]:before{opacity:.88;background:radial-gradient(circle at 50% 44%,rgba(245,83,136,.24),rgba(75,222,244,.12) 48%,transparent 72%)}
+#world.is-diving[data-tier="krillion"]:before{opacity:1;background:radial-gradient(circle at 50% 44%,rgba(255,227,135,.28),rgba(75,222,244,.16) 46%,transparent 74%)}
 #sky{position:absolute;inset:0;background:radial-gradient(ellipse 145px 28px at 18% 11%,#e8f9fdb0,transparent 94%),radial-gradient(ellipse 105px 22px at 76% 16%,#effeff90,transparent 95%),linear-gradient(180deg,#75b9d4,#b8e8ea 34%,#d6ede1 61%,#235471 62%,#081a2b)}
 #world:after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,transparent 48%,#02091566 76%,#020914ed 100%);pointer-events:none;z-index:1}
 #life{position:absolute;inset:0;width:100%;height:100%}
@@ -307,6 +311,7 @@ button{color:inherit}
 .colorblind .prompt-tag,.colorblind .category-hint,.colorblind .results-sub{color:#c0d5e6}
 .low-power .dive-wake i:nth-child(n+10){display:none}
 .low-power #boat,.low-power .friend{animation:none}
+.low-power #world:before{display:none}
 .low-power .overlay{backdrop-filter:none}
 @keyframes boat{0%,100%{transform:translateY(1px) rotate(-1deg)}50%{transform:translateY(-2px) rotate(2deg)}}
 @keyframes friend{0%,100%{margin-top:0}50%{margin-top:-9px}}

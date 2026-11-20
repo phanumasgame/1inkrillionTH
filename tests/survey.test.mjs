@@ -9,9 +9,9 @@ const raw = JSON.parse(await readFile(new URL('../data/survey-bank.json', import
 const bank = prepareSurveyBank(raw);
 const make = () => createSession({mode:'daily',bank,questions:selectDaily(bank,'2026-11-17'),date:'2026-11-17',now:1000});
 
-test('v1.0.9 rebalanced 120-question bank has 45k+ answers, 20 new categories, 12 1000+ pools, and calibrated rarities', () => {
+test('v1.0.10 unified 120-question bank has 46k+ answers, consolidated rail stations, Thai malls, and calibrated tiers', () => {
   assert.deepEqual(validateSurveyBank(raw), []);
-  assert.equal(raw.version, '1.0.9');
+  assert.equal(raw.version, '1.0.10');
   assert.equal(raw.scoringMethod, HYBRID_SCORING);
   assert.equal(raw.questions.length, 120);
   assert.equal(raw.questions.filter(q => q.scope === 'thai').length, 60);
@@ -20,10 +20,62 @@ test('v1.0.9 rebalanced 120-question bank has 45k+ answers, 20 new categories, 1
   const curatedQuestions = raw.questions.filter(q => q.curated);
   assert.equal(surveyQuestions.length, 6);
   assert.equal(curatedQuestions.length, 114);
-  assert.ok(raw.questions.reduce((sum, q) => sum + q.answers.length, 0) >= 45_000);
-  assert.ok(raw.questions.filter(q => q.answers.length >= BROAD_ANSWER_TARGET).length >= 110);
+  assert.ok(raw.questions.reduce((sum, q) => sum + q.answers.length, 0) >= 46_000);
+  assert.ok(raw.questions.filter(q => q.answers.length >= BROAD_ANSWER_TARGET).length >= 112);
   assert.ok(raw.questions.filter(q => q.answers.length >= 1000).length >= 12);
   assert.ok(raw.questions.every(q => q.answers.length >= MIN_PLAYABLE_ANSWERS));
+
+  // Verify split BTS/MRT prompts were consolidated into th-rail-stations and th-shopping-malls maintains 60/60 parity
+  assert.equal(raw.questions.find(q => q.id === 'th-bts-stations'), undefined);
+  assert.equal(raw.questions.find(q => q.id === 'th-mrt-blue'), undefined);
+  const rail = raw.questions.find(q => q.id === 'th-rail-stations');
+  assert.ok(rail && rail.answers.length >= 175, 'Unified rail stations should cover all lines');
+  for (const station of [
+    'อโศก', 'สยาม', 'สามย่าน', 'สถานีสวนจตุจักร', 'จตุจักร', 'หมอชิต', 'หมอชิด',
+    'ตลาดพลู', 'เจริญนคร', 'ตลาดบางใหญ่', 'ลาดพร้าว 71', 'อิมแพ็ค เมืองทองธานี',
+    'สุวรรณภูมิ', 'กรุงเทพอภิวัฒน์',
+  ]) {
+    assert.equal(matchAnswer(rail, station).kind, 'exact', 'Station missing: ' + station);
+  }
+  const malls = raw.questions.find(q => q.id === 'th-shopping-malls');
+  assert.ok(malls && malls.answers.length >= 170);
+  for (const mall of ['สยามพารากอน', 'MBK', 'เดอะคอมมอนส์', 'เซ็นทรัล เวสต์เกต']) {
+    assert.equal(matchAnswer(malls, mall).kind, 'exact', 'Mall missing: ' + mall);
+  }
+
+  // Verify v1.0.10 researched Postgres daily-analysis additions & aliases
+  for (const [qid, input, expectedTier] of [
+    ['th-temples', 'วัดราชบพิธ', 'schooler'],
+    ['th-temples', 'วัดราชนัดดาราม', 'schooler'],
+    ['th-temples', 'โลหะปราสาท', 'schooler'],
+    ['th-temples', 'วัดกู้', 'rare'],
+    ['th-temples', 'วัดบวรนิเวศวิหาร', 'plankton'],
+    ['th-temples', 'วัดพระเชตุพนวิมลมังคลาราม', 'plankton'],
+    ['world-zoo-animals', 'ช้างเอเชีย', 'plankton'],
+    ['world-zoo-animals', 'ช้างแอฟริกา', 'plankton'],
+    ['world-zoo-animals', 'ระมั้ง', 'rare'],
+    ['th-instruments', 'ฆ้องมอญวงเล็ก', 'deepcut'],
+    ['world-coffee-orders', 'อเมริกาโน่ส้ม', 'plankton'],
+    ['world-coffee-orders', 'อเมริกาโน่น้ำผึ้ง', 'plankton'],
+    ['world-coffee-orders', 'อเมริกาโน่มะพร้าว', 'plankton'],
+    ['world-coffee-orders', 'อเมริกาโน่โทนิค', 'schooler'],
+    ['world-coffee-orders', 'อเมริกาโน่พีช', 'rare'],
+    ['world-coffee-orders', 'อเมริกาโน่เสาวรส', 'rare'],
+    ['th-home-creatures', 'หนอน', 'schooler'],
+    ['world-famous-movies', 'WALL-E', 'plankton'],
+    ['world-famous-movies', 'วอลล์อี', 'plankton'],
+    ['world-famous-cities', 'คุมาโมโต้', 'rare'],
+    ['world-cartoon-characters', 'ไจแอนท์', 'schooler'],
+    ['world-cartoon-characters', 'ไจเอ้น', 'schooler'],
+    ['world-sushi', 'ซาบะ', 'schooler'],
+    ['world-cat-breeds', 'ไทย', 'plankton'],
+    ['th-freshwater-fish', 'ปลาบู่ทอง', null],
+  ]) {
+    const q = raw.questions.find(x => x.id === qid);
+    const m = matchAnswer(q, input);
+    assert.equal(m.kind, 'exact', `Expected ${input} in ${qid}`);
+    if (expectedTier) assert.equal(m.answer.tier, expectedTier, `${qid}:${input} tier`);
+  }
 
   // Tier calibration invariants: no curated pool hands out excessive 100-pt Krillions,
   // and well-known household/classic items stay in familiar tiers.

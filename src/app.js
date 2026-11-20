@@ -8,7 +8,7 @@ import { OceanScene } from './scene.js';
 import { descentDuration, PIXELS_PER_METER, METERS_PER_POINT } from './descent.js';
 import { focusAnswer } from './input.js';
 
-const APP_VERSION = '1.0.9';
+const APP_VERSION = '1.0.10';
 const app = document.getElementById('app');
 const modalRoot = document.getElementById('modal-root');
 let bank, audio, scene;
@@ -295,7 +295,7 @@ function syncScene() {
     const startedAt = Number.isFinite(result.answeredAt)
       ? result.answeredAt : session.phaseUntil - descentDuration(result.points);
     scene.setDescent(session.depth - result.points * METERS_PER_POINT, session.depth,
-      startedAt, session.phaseUntil, save.settings.lowPower);
+      startedAt, session.phaseUntil, save.settings.lowPower, result.tier);
   } else scene.set(view === 'home' ? 0 : session?.depth || 0, view !== 'home', save.settings.lowPower);
 }
 function updateDescent(frame) {
@@ -377,6 +377,7 @@ function transition(updated, answerSelection = null) {
     }
     if (session.phase === 'reveal') {
       const tier = session.results.at(-1).tier;
+      if (tier) scene.pulseTier?.(tier);
       if (tier === 'krillion') audio.play('krillion');
       else if (!landed && session.results.at(-1).points) audio.play(session.results.at(-1).points >= 60 ? 'land_big' : 'land_small');
     }
@@ -647,8 +648,48 @@ function sendTelemetryIfNeeded(doneSession) {
 function getPatchHistory(totalAnswers, megaCount) {
   return [
     {
-      version: '1.0.9',
+      version: '1.0.10',
       badge: 'ล่าสุด',
+      headline: 'มีอะไรใหม่ในอัปเดต v1.0.10 (V10)',
+      subtitle: 'รวมสถานีรถไฟฟ้าทุกสายเป็นข้อเดียว เพิ่มโจทย์เดินห้าง เติมคำตอบใหม่ และอัปเกรดภาพฉากหลังใต้ทะเล',
+      stats: [
+        { value: number(bank.questions.length), label: 'โจทย์ไทย & ทั่วไป (60/60)' },
+        { value: number(totalAnswers), label: 'คำตอบทั้งหมดในคลัง' },
+        { value: number(megaCount), label: 'หมวดใหญ่ 1,000+ คำ' },
+      ],
+      cards: [
+        {
+          tag: 'VISUALS',
+          tagClass: 'is-new',
+          title: 'ฉากหลังใต้ทะเลตื่นตาตื่นใจและตอบสนองตามความลึกยิ่งขึ้น',
+          bullets: [
+            'เพิ่มรายละเอียดสิ่งมีชีวิตและแสงสีตามระดับความลึก ทั้งลำแสงผิวน้ำ ฝูงปลา ปลากระเบน เต่าทะเล วาฬ แมงกะพรุนเรืองแสง ปลาหมึกยักษ์ และแสงล่อเหยื่อในเขตน้ำลึก',
+            'เพิ่มเส้นแรงดันน้ำและคลื่นแสงสะท้อนระหว่างดำดิ่งตอบคำถาม โดยเอฟเฟกต์จะเด่นชัดขึ้นตามระดับคะแนนตั้งแต่ <strong>Rare, Deep Cut ไปจนถึง Krillion</strong>',
+          ],
+        },
+        {
+          tag: 'CONSOLIDATED',
+          tagClass: 'is-gold',
+          title: 'รวมสถานีรถไฟฟ้าทุกสายในไทยเป็นข้อเดียว & เพิ่มโจทย์ใหม่',
+          bullets: [
+            'รวมข้อ BTS และ MRT เดิมเข้าด้วยกันเป็น <strong>“สถานีรถไฟฟ้าในกรุงเทพฯ และปริมณฑล”</strong> ครอบคลุมครบทุกสาย ทั้ง BTS สีเขียว/สีทอง, MRT สีน้ำเงิน/ม่วง/เหลือง/ชมพู, Airport Rail Link และสายสีแดง (181 สถานี)',
+            'เพิ่มโจทย์ไทยใหม่ <strong>“ห้างสรรพสินค้าและศูนย์การค้าในไทย”</strong> (179 แห่ง) เพื่อรักษาสัดส่วนโจทย์ไทย–ทั่วไป 60/60 และขยายหมวด 100+ คำตอบเพิ่มเป็น 112 ข้อ',
+          ],
+        },
+        {
+          tag: 'EXPANDED',
+          tagClass: '',
+          title: 'เติมคำตอบใหม่และชื่อเรียกพ้องตามที่ผู้เล่นนึกถึงจริง',
+          bullets: [
+            'เพิ่มคำตอบใหม่และปรับระดับความหายากให้แม่นยำขึ้น เช่น <strong>อเมริกาโน่โทนิค/พีช/เสาวรส, ช้างเอเชีย/แอฟริกา, วัดราชบพิธฯ, วัดราชนัดดาราม (โลหะปราสาท), วัดกู้, ฆ้องมอญวงเล็ก, หนอน และ วอลล์อี (WALL-E)</strong>',
+            'เพิ่มชื่อเรียกและตัวสะกดยอดนิยมเข้ากับคำตอบเดิม เช่น <strong>อเมริกาโน่ส้ม, อเมริกาโน่น้ำผึ้ง, อเมริกาโน่มะพร้าว, คุมาโมโต้, ไจแอนท์ (ไจเอ้น), ซาบะ, ปลาบู่ทอง, แมวไทย</strong> และ <strong>ระมั้ง</strong>',
+          ],
+        },
+      ],
+    },
+    {
+      version: '1.0.9',
+      badge: '',
       headline: 'มีอะไรใหม่ในอัปเดต v1.0.9',
       subtitle: 'เพิ่มโจทย์ใหม่อีก 20 หมวด (รวม 120 โจทย์) ปรับสมดุลความหายากใหม่ทั้งคลัง และอ่านย้อนหลังได้',
       stats: [

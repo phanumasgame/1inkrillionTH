@@ -33,16 +33,169 @@ test('checkBankCoverage distinguishes covered, close, missing, and unknown quest
   assert.equal(unknownQ.status, 'unknown_question');
 });
 
+const fixtureCurated = {
+  basis: 'test',
+  coverage: 'test',
+  tierReasons: { plankton: 'test', schooler: 'test', rare: 'test', deepcut: 'test', krillion: 'test' },
+};
+const padAnswers = (list, prefix) => {
+  const out = [...list];
+  while (out.length < 21) out.push({ id: `${prefix}-pad-${out.length}`, label: `รายการเสริม${prefix}${out.length}`, aliases: [], tier: 'rare' });
+  return out;
+};
+const fixtureBank = {
+  version: 'fixture-1.0',
+  scoringMethod: 'hybrid-survey-and-curated-v1',
+  questions: [
+    {
+      id: 'th-isaan-food',
+      scope: 'thai',
+      theme: 'food',
+      prompt: 'ตั้งวงอาหารอีสาน สั่งอะไรดี?',
+      hint: 'เช่น ส้มตำ',
+      curated: fixtureCurated,
+      answers: padAnswers([
+        { id: 'is1', label: 'ซอยจุ๊', aliases: [], tier: 'plankton' },
+        { id: 'is2', label: 'ลาบหมู', aliases: [], tier: 'plankton' },
+        { id: 'is3', label: 'อู๋เพี้ย', aliases: [], tier: 'deepcut' },
+        { id: 'is4', label: 'ต้มแซ่บ', aliases: [], tier: 'schooler' },
+        { id: 'is5', label: 'หมกฮวก', aliases: [], tier: 'krillion' },
+      ], 'is'),
+    },
+    {
+      id: 'th-temples',
+      scope: 'thai',
+      theme: 'places',
+      prompt: 'นึกชื่อวัดในไทยสักวัด!',
+      hint: 'เช่น วัดพระแก้ว',
+      curated: fixtureCurated,
+      answers: padAnswers([
+        { id: 'tm1', label: 'วัดบวรนิเวศ', aliases: ['วัดบวรนิเวศราชวรวิหาร'], tier: 'plankton' },
+        { id: 'tm2', label: 'วัดโพธิ์', aliases: [], tier: 'plankton' },
+        { id: 'tm3', label: 'วัดอรุณ', aliases: [], tier: 'schooler' },
+        { id: 'tm4', label: 'วัดมหาบุศย์', aliases: [], tier: 'rare' },
+        { id: 'tm5', label: 'วัดถ้ำผาปล่อง', aliases: [], tier: 'krillion' },
+      ], 'tm'),
+    },
+    {
+      id: 'world-sushi',
+      scope: 'world',
+      theme: 'food',
+      prompt: 'ไปร้านซูชิ สั่งคำไหนดี?',
+      hint: 'เช่น แซลมอน',
+      curated: fixtureCurated,
+      answers: padAnswers([
+        { id: 'su1', label: 'ปลาซาบะ', aliases: [], tier: 'schooler' },
+        { id: 'su2', label: 'แซลมอน', aliases: [], tier: 'plankton' },
+        { id: 'su3', label: 'ทูน่า', aliases: [], tier: 'plankton' },
+        { id: 'su4', label: 'อุนิ', aliases: [], tier: 'rare' },
+        { id: 'su5', label: 'เอนกาวะ', aliases: [], tier: 'krillion' },
+      ], 'su'),
+    },
+    {
+      id: 'world-coffee-orders',
+      scope: 'world',
+      theme: 'food',
+      prompt: 'เข้าร้านกาแฟ สั่งเมนูอะไรดี?',
+      hint: 'เช่น ลาเต้',
+      curated: fixtureCurated,
+      answers: padAnswers([
+        { id: 'cf1', label: 'อเมริกาโน่', aliases: [], tier: 'plankton' },
+        { id: 'cf2', label: 'ลาเต้', aliases: [], tier: 'plankton' },
+        { id: 'cf3', label: 'คาปูชิโน่', aliases: [], tier: 'schooler' },
+        { id: 'cf4', label: 'เอสเปรสโซ่', aliases: [], tier: 'rare' },
+        { id: 'cf5', label: 'เดอร์ตี้', aliases: [], tier: 'krillion' },
+      ], 'cf'),
+    },
+    {
+      id: 'world-cat-breeds',
+      scope: 'world',
+      theme: 'animals',
+      prompt: 'นึกชื่อพันธุ์แมวสักพันธุ์!',
+      hint: 'เช่น เปอร์เซีย',
+      curated: fixtureCurated,
+      answers: padAnswers([
+        { id: 'ct1', label: 'เปอร์เซีย', aliases: [], tier: 'plankton' },
+        { id: 'ct2', label: 'วิเชียรมาศ', aliases: [], tier: 'schooler' },
+        { id: 'ct3', label: 'สกอตติชโฟลด์', aliases: [], tier: 'rare' },
+        { id: 'ct4', label: 'เบงกอล', aliases: [], tier: 'deepcut' },
+        { id: 'ct5', label: 'ขาวมณี', aliases: [], tier: 'krillion' },
+      ], 'ct'),
+    },
+    {
+      id: 'world-famous-movies',
+      scope: 'world',
+      theme: 'screen',
+      prompt: 'นึกชื่อหนังดังสักเรื่อง!',
+      hint: 'เช่น Titanic',
+      curated: fixtureCurated,
+      answers: padAnswers([
+        { id: 'mv1', label: 'Titanic', aliases: [], tier: 'plankton' },
+        { id: 'mv2', label: 'Inception', aliases: [], tier: 'plankton' },
+        { id: 'mv3', label: 'Avatar', aliases: [], tier: 'schooler' },
+        { id: 'mv4', label: 'Interstellar', aliases: [], tier: 'rare' },
+        { id: 'mv5', label: 'Parasite', aliases: [], tier: 'krillion' },
+      ], 'mv'),
+    },
+    {
+      id: 'world-famous-cities',
+      scope: 'world',
+      theme: 'places',
+      prompt: 'นึกชื่อเมืองดังทั่วโลกสักเมือง!',
+      hint: 'เช่น โตเกียว',
+      curated: fixtureCurated,
+      answers: padAnswers([
+        { id: 'ci1', label: 'คูมาโมโตะ', aliases: ['Kumamoto'], tier: 'deepcut' },
+        { id: 'ci2', label: 'โตเกียว', aliases: [], tier: 'plankton' },
+        { id: 'ci3', label: 'ปารีส', aliases: [], tier: 'plankton' },
+        { id: 'ci4', label: 'ลอนดอน', aliases: [], tier: 'schooler' },
+        { id: 'ci5', label: 'ซัปโปโร', aliases: [], tier: 'krillion' },
+      ], 'ci'),
+    },
+    {
+      id: 'world-cartoon-characters',
+      scope: 'world',
+      theme: 'screen',
+      prompt: 'นึกชื่อตัวการ์ตูนสักตัว!',
+      hint: 'เช่น โดราเอมอน',
+      curated: fixtureCurated,
+      answers: padAnswers([
+        { id: 'cc1', label: 'โกดะ ทาเคชิ', aliases: ['Takeshi Goda'], tier: 'rare' },
+        { id: 'cc2', label: 'โดราเอมอน', aliases: [], tier: 'plankton' },
+        { id: 'cc3', label: 'โนบิตะ', aliases: [], tier: 'plankton' },
+        { id: 'cc4', label: 'ปิกาจู', aliases: [], tier: 'schooler' },
+        { id: 'cc5', label: 'ลูฟี่', aliases: [], tier: 'krillion' },
+      ], 'cc'),
+    },
+    {
+      id: 'world-animation-films',
+      scope: 'world',
+      theme: 'screen',
+      prompt: 'เลือกหนังแอนิเมชันมาดูสักเรื่อง',
+      hint: 'เช่น Toy Story',
+      curated: fixtureCurated,
+      answers: padAnswers([
+        { id: 'af1', label: 'วอลล์อี', aliases: ['WALL-E', 'wall e'], tier: 'plankton' },
+        { id: 'af2', label: 'Toy Story', aliases: [], tier: 'plankton' },
+        { id: 'af3', label: 'Spirited Away', aliases: [], tier: 'schooler' },
+        { id: 'af4', label: 'Up', aliases: [], tier: 'rare' },
+        { id: 'af5', label: 'Kubo', aliases: [], tier: 'krillion' },
+      ], 'af'),
+    },
+  ],
+};
+const fixtureById = new Map(fixtureBank.questions.map(q => [q.id, q]));
+
 test('findAliasTargetInQuestion and buildAdditionPlan cleanly separate New Answers vs New Aliases', () => {
-  const templeAlias = findAliasTargetInQuestion(byId.get('th-temples'), 'วัดบวรนิเวศวิหาร');
+  const templeAlias = findAliasTargetInQuestion(fixtureById.get('th-temples'), 'วัดบวรนิเวศวิหาร');
   assert.equal(templeAlias?.answer?.label, 'วัดบวรนิเวศ');
 
-  const prefixAlias = findAliasTargetInQuestion(byId.get('world-sushi'), 'ซาบะ');
+  const prefixAlias = findAliasTargetInQuestion(fixtureById.get('world-sushi'), 'ซาบะ');
   assert.equal(prefixAlias?.answer?.label, 'ปลาซาบะ');
 
   const plan = buildAdditionPlan(
-    bank,
-    byId,
+    fixtureBank,
+    fixtureById,
     [
       { question_id: 'th-temples', sample_answer: 'วัดบวรนิเวศวิหาร', total_count: 1, today_count: 1, latest_version: '1.0.9', notes: '' },
       { question_id: 'world-coffee-orders', sample_answer: 'อเมริกาโน่น้ำผึ้ง', total_count: 2, today_count: 2, latest_version: '1.0.9', notes: '' },
@@ -132,7 +285,7 @@ test('generateDailyAnalysis queries all tables and cross-checks against live ban
     },
   };
 
-  const report = await generateDailyAnalysis(fakeSql, bank, { date: '2026-11-20', ensure: async () => {} });
+  const report = await generateDailyAnalysis(fakeSql, fixtureBank, { date: '2026-11-20', ensure: async () => {} });
   assert.equal(report.date, '2026-11-20');
   assert.equal(report.sessions.overview.today_sessions, 2);
   assert.equal(report.suggestions.covered.length, 1);
@@ -259,7 +412,7 @@ test('suggestTierFromMetrics and researchRecommendations promote redirects and c
     },
   };
 
-  const researched = await researchRecommendations(mockReport, bank, { fetchFn: fakeFetch });
+  const researched = await researchRecommendations(mockReport, fixtureBank, { fetchFn: fakeFetch });
   // Redirect and canonical Wikidata match auto-promote to New Aliases
   assert.equal(researched.recommendations.newAliases.some(a => a.alias === 'ไจเอ้น' && a.targetLabel === 'โกดะ ทาเคชิ'), true);
   assert.equal(researched.recommendations.newAliases.some(a => a.alias === 'คุมาโมโต้' && a.targetLabel === 'คูมาโมโตะ'), true);
