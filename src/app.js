@@ -8,7 +8,7 @@ import { OceanScene } from './scene.js';
 import { descentDuration, PIXELS_PER_METER, METERS_PER_POINT } from './descent.js';
 import { focusAnswer } from './input.js';
 
-const APP_VERSION = '1.0.8';
+const APP_VERSION = '1.0.9';
 const app = document.getElementById('app');
 const modalRoot = document.getElementById('modal-root');
 let bank, audio, scene;
@@ -644,52 +644,203 @@ function sendTelemetryIfNeeded(doneSession) {
     telemetryInFlight.delete(doneSession.id);
   });
 }
-function patchNotesDialog() {
+function getPatchHistory(totalAnswers, megaCount) {
+  return [
+    {
+      version: '1.0.9',
+      badge: 'ล่าสุด',
+      headline: 'มีอะไรใหม่ในอัปเดต v1.0.9',
+      subtitle: 'เพิ่มโจทย์ใหม่อีก 20 หมวด (รวม 120 โจทย์) ปรับสมดุลความหายากใหม่ทั้งคลัง และอ่านย้อนหลังได้',
+      stats: [
+        { value: number(bank.questions.length), label: 'โจทย์ไทย & ทั่วไป (60/60)' },
+        { value: number(totalAnswers), label: 'คำตอบทั้งหมดในคลัง' },
+        { value: number(megaCount), label: 'หมวดใหญ่ 1,000+ คำ' },
+      ],
+      cards: [
+        {
+          tag: 'NEW',
+          tagClass: 'is-new',
+          title: 'เพิ่มโจทย์ใหม่อีก 20 หมวด (60 โจทย์ไทย + 60 โจทย์ทั่วไป)',
+          bullets: [
+            '<strong>10 โจทย์ไทยใหม่:</strong> สุภาษิต/สำนวนไทย, ผีไทยและตำนานพื้นบ้าน, วรรณคดีไทย, ต้นไม้ในไทย, มื้อเช้าในไทย, ร้านอาหารและคาเฟ่ในไทย, ถนนในกรุงเทพฯ, แม่น้ำ/ลำคลองในไทย, มหาวิทยาลัยในไทย และคลังเพลงไทย (936 เพลง)',
+            '<strong>10 โจทย์ทั่วไปใหม่:</strong> แลนด์มาร์กโลก, บุคคลสำคัญในประวัติศาสตร์, เทพเจ้าและสัตว์ในตำนาน, แบรนด์แฟชั่น, อัญมณีและแร่, เครื่องเขียน, ปรากฏการณ์ธรรมชาติ, อวัยวะร่างกาย, หนังสือ/นิยายระดับโลก และเพลงสากล',
+          ],
+        },
+        {
+          tag: 'BALANCED',
+          tagClass: 'is-gold',
+          title: 'ปรับสมดุลความยาก & ระดับ Krillion (100 PTS) ทั้งคลัง',
+          bullets: [
+            'จัดลำดับความคุ้นเคยใหม่จากความนิยมจริงแทนการเรียงตัวอักษร แก้ไขคำตอบที่คนรู้จักดีที่เคยหลุดไปอยู่ระดับลึก (เช่น <strong>เทควันโด, สตรอว์เบอร์รี, โบ สุนิตา, เกาะเกร็ด, ปีบ, ประดู่, ทีรามิสุ, Steam Deck, กีตาร์โปร่ง</strong>) ให้ได้คะแนนตามความคุ้นเคยจริง',
+            'กระชับสัดส่วนระดับ <strong>1 in Krillion</strong> ให้เหลือเฉพาะคำตอบสายลึกจริง ๆ (ไม่เกิน ~9% ต่อหมวด จากเดิมบางหมวดสูงกว่า 30–40%) เพื่อให้การเก็บแต้มเต็มท้าทายและสมดุลขึ้น',
+          ],
+        },
+        {
+          tag: 'UI',
+          tagClass: '',
+          title: 'เปิดอ่าน Patch Notes ย้อนหลังได้ทุกเวอร์ชัน',
+          bullets: [
+            'เพิ่มแถบสลับเวอร์ชันด้านบนหน้าต่าง <strong>Patch Notes</strong> สำหรับย้อนดูรายการปรับปรุงคอนเทนต์ตั้งแต่เวอร์ชันก่อนหน้าได้ทุกเมื่อ',
+          ],
+        },
+      ],
+    },
+    {
+      version: '1.0.8',
+      badge: '',
+      headline: 'มีอะไรใหม่ในอัปเดต v1.0.8',
+      subtitle: 'อัปเกรดหน้าต่างเสนอคำตอบหลังจบเกมให้ใช้งานง่ายขึ้นแบบการ์ดติดแท็กทีละข้อ',
+      stats: [
+        { value: '100', label: 'โจทย์ไทย & ทั่วไป (50/50)' },
+        { value: '40,708', label: 'คำตอบทั้งหมดในคลัง' },
+        { value: '12', label: 'หมวดใหญ่ 1,000+ คำ' },
+      ],
+      cards: [
+        {
+          tag: 'SURVEY',
+          tagClass: 'is-new',
+          title: 'Survey เสนอคำตอบเพิ่มแบบการ์ดติดแท็กทีละข้อ',
+          bullets: [
+            'จบเกม 7 ข้อแล้วแสดงครบทุกข้อในหน้าเดียว พิมพ์คำตอบที่อยากให้มีแล้วกด <strong>Enter</strong> เพื่อติดแท็กเป็นแบดจ์ได้ทันที',
+            'มีชิปคำตอบที่พิมพ์ไม่ผ่านด่านในรอบนั้นให้กดเลือกเสนอเข้าคลังได้ไวขึ้น พร้อมโควตาส่งต่อครั้งที่ชัดเจน',
+          ],
+        },
+        {
+          tag: 'UI',
+          tagClass: '',
+          title: 'หน้าต่าง Patch Notes ก่อนเข้าเล่น',
+          bullets: [
+            'แสดงสรุปการอัปเดตคอนเทนต์อัตโนมัติเมื่อเข้าเกมครั้งแรกของเวอร์ชันใหม่ พร้อมปุ่มเปิดดูได้จากหน้าแรก',
+          ],
+        },
+      ],
+    },
+    {
+      version: '1.0.7',
+      badge: '',
+      headline: 'มีอะไรใหม่ในอัปเดต v1.0.7',
+      subtitle: 'ยกเครื่องคลังคำถามและคำตอบครั้งใหญ่เป็น 100 โจทย์ กว่า 40,000 คำตอบ',
+      stats: [
+        { value: '100', label: 'โจทย์ไทย & ทั่วไป (50/50)' },
+        { value: '40,708', label: 'คำตอบทั้งหมดในคลัง' },
+        { value: '12', label: 'หมวดใหญ่ 1,000+ คำ' },
+      ],
+      cards: [
+        {
+          tag: 'NEW',
+          tagClass: 'is-new',
+          title: 'เพิ่มโจทย์ใหม่ & ขยายหมวดบันเทิงทะลุพันคำตอบ',
+          bullets: [
+            'แยกโจทย์ <strong>อนิเมะญี่ปุ่น (2,735 เรื่อง)</strong> และเพิ่ม <strong>ละครไทย/ซีรีส์ไทย (1,705+ เรื่อง)</strong>',
+            'ขยายหมวดยอดฮิตทะลุพันคำตอบ ทั้งซีรีส์ต่างประเทศ หนังต่างประเทศ หนังไทย ศิลปินต่างประเทศ นักร้องเดี่ยวไทย วิดีโอเกม เมืองดังทั่วโลก ตัวการ์ตูน และแอนิเมชัน',
+          ],
+        },
+        {
+          tag: 'EXPANDED',
+          tagClass: 'is-gold',
+          title: 'จัดเต็มอาหารอีสาน & หมวดรอบตัว 100+ คำตอบ',
+          bullets: [
+            'ขยายหมวด <strong>อาหารอีสาน</strong> เป็น <strong>273 เมนู</strong> ครบทั้งส้มตำ ลาบ ก้อย ซอยจุ๊ อู๋เพี้ย หมก แกงอ่อม ป่น แจ่วบอง ฯลฯ',
+            'ขยายหมวดสัตว์รอบโลก (1,257 ชนิด) และสัตว์รอบบ้านไทย (เพิ่ม จิ้งจก ตุ๊กแก ตัวเงินตัวทอง) พร้อมขยายหมวดปลายเปิดให้เกิน 100 คำตอบแทบทุกข้อ',
+          ],
+        },
+      ],
+    },
+    {
+      version: '1.0.6',
+      badge: '',
+      headline: 'มีอะไรใหม่ในอัปเดต v1.0.6',
+      subtitle: 'ปรับโทนคำถามและเติมคำตอบที่คนไทยนึกออกได้จริง',
+      stats: [
+        { value: '60', label: 'โจทย์ไทย & ทั่วไป' },
+        { value: '30 Thai', label: 'โจทย์บริบทไทย' },
+        { value: '30 World', label: 'โจทย์สากล' },
+      ],
+      cards: [
+        {
+          tag: 'REFINED',
+          tagClass: '',
+          title: 'คัดโจทย์ที่เฉพาะทางเกินไปออก & เติมคำตอบใกล้ตัว',
+          bullets: [
+            'ตัดโจทย์สายวิชาการหรือเจาะจงพื้นที่เกินไป (เช่น โจทย์ผีเสื้อเฉพาะถิ่น) เหลือเฉพาะโจทย์ใกล้ตัวที่เล่นสนุก',
+            'เพิ่มชื่อสัตว์รอบตัวและอาหารไทยที่คนนึกออกทันทีแต่ขาดไปในชุดก่อนหน้า',
+          ],
+        },
+      ],
+    },
+    {
+      version: '1.0.5',
+      badge: '',
+      headline: 'เปิดตัวรุ่นแรก v1.0.5',
+      subtitle: 'เกมดำน้ำตอบคำถาม 5 ระดับความลึก พร้อมระบบตรวจคำตอบไทย–อังกฤษ',
+      stats: [
+        { value: '5 Tiers', label: 'Plankton → Krillion' },
+        { value: '2 Modes', label: 'Daily & Endless' },
+        { value: 'TH / EN', label: 'รองรับสองภาษา' },
+      ],
+      cards: [
+        {
+          tag: 'LAUNCH',
+          tagClass: 'is-gold',
+          title: 'ระบบการเล่นหลักครบชุด',
+          bullets: [
+            'เปิดเล่นโหมด <strong>Daily Dive (7 ข้อประจำวัน)</strong> และ <strong>Endless Dive (ดำน้ำต่อเนื่องไม่จำกัดรอบ)</strong>',
+            'รองรับคำตอบทั้งภาษาไทย อังกฤษ ชื่อย่อ และการแก้คำสะกดคลาดเคลื่อนเล็กน้อย',
+          ],
+        },
+      ],
+    },
+  ];
+}
+function patchNotesDialog(selectedVer = APP_VERSION) {
   const totalAnswers = bank.questions.reduce((sum, q) => sum + q.answers.length, 0);
   const megaCount = bank.questions.filter(q => q.answers.length >= 1000).length;
-  openModal('patchnotes', 'Patch Notes v' + APP_VERSION,
+  const history = getPatchHistory(totalAnswers, megaCount);
+  const renderTabs = curVer => history.map(entry =>
+    '<button type="button" role="tab" aria-selected="' + (entry.version === curVer) + '" class="patch-tab' + (entry.version === curVer ? ' is-active' : '') + '" data-patch-ver="' + esc(entry.version) + '">v' + esc(entry.version) + (entry.badge ? ' · ' + esc(entry.badge) : '') + '</button>'
+  ).join('');
+  const renderEntryBody = entry =>
+    '<div class="patch-stats">' + entry.stats.map(st =>
+      '<div class="patch-stat"><strong>' + esc(st.value) + '</strong><span>' + esc(st.label) + '</span></div>'
+    ).join('') + '</div>' +
+    '<div class="patch-list">' + entry.cards.map(c =>
+      '<article class="patch-card"><div class="patch-card-head"><span class="patch-tag' + (c.tagClass ? ' ' + c.tagClass : '') + '">' + esc(c.tag) + '</span> ' + esc(c.title) + '</div><ul>' +
+      c.bullets.map(b => '<li>' + b + '</li>').join('') +
+      '</ul></article>'
+    ).join('') + '</div>';
+
+  const active = history.find(h => h.version === selectedVer) || history[0];
+  openModal('patchnotes', 'Patch Notes v' + active.version,
     '<header class="modal-hero">' +
-      '<div class="modal-eyebrow">PATCH NOTES <span class="version-pill">v' + APP_VERSION + '</span></div>' +
-      '<h3>มีอะไรใหม่ในอัปเดตนี้</h3>' +
-      '<p>ยกเครื่องคลังคำถามและคำตอบครั้งใหญ่ ให้เล่นสนุก กว้าง ครอบคลุม และตรงใจคนไทยมากขึ้นครับ</p>' +
+      '<div class="modal-eyebrow">PATCH NOTES <span class="version-pill" id="patch-hero-pill">v' + esc(active.version) + '</span></div>' +
+      '<h3 id="patch-hero-title">' + esc(active.headline) + '</h3>' +
+      '<p id="patch-hero-sub">' + esc(active.subtitle) + '</p>' +
     '</header>' +
-    '<div class="patch-scroll">' +
-      '<div class="patch-stats">' +
-        '<div class="patch-stat"><strong>' + number(bank.questions.length) + '</strong><span>โจทย์ไทย &amp; ทั่วไป</span></div>' +
-        '<div class="patch-stat"><strong>' + number(totalAnswers) + '</strong><span>คำตอบทั้งหมดในคลัง</span></div>' +
-        '<div class="patch-stat"><strong>' + number(megaCount) + '</strong><span>หมวดใหญ่ 1,000+ คำ</span></div>' +
-      '</div>' +
-      '<div class="patch-list">' +
-        '<article class="patch-card">' +
-          '<div class="patch-card-head"><span class="patch-tag is-new">NEW</span> เพิ่มโจทย์ใหม่ &amp; ขยายหมวดบันเทิงเป็นหลักพัน</div>' +
-          '<ul>' +
-            '<li>แยกโจทย์ <strong>อนิเมะญี่ปุ่น (2,735 เรื่อง)</strong> และเพิ่ม <strong>ละครไทย/ซีรีส์ไทย (1,705 เรื่อง)</strong></li>' +
-            '<li>ขยายหมวดยอดฮิตทะลุพันคำตอบ: <strong>ซีรีส์ต่างประเทศ (2,553)</strong>, <strong>หนังต่างประเทศ (2,295)</strong>, <strong>ศิลปินต่างประเทศ (2,116)</strong>, <strong>วิดีโอเกม (2,048)</strong>, <strong>นักร้องเดี่ยวไทย (1,519)</strong>, <strong>หนังไทย (1,516)</strong>, <strong>เมืองดังทั่วโลก (1,391)</strong>, <strong>ตัวการ์ตูน (1,199)</strong> และ <strong>หนังแอนิเมชัน (1,175)</strong></li>' +
-          '</ul>' +
-        '</article>' +
-        '<article class="patch-card">' +
-          '<div class="patch-card-head"><span class="patch-tag is-gold">EXPANDED</span> จัดเต็มอาหารอีสาน &amp; หมวดรอบตัว 100+ ทุกข้อ</div>' +
-          '<ul>' +
-            '<li>ขยายหมวด <strong>อาหารอีสาน</strong> เป็น <strong>273 เมนู</strong> ครบทั้งส้มตำทุกตำรับ ลาบ ก้อย ซอยจุ๊ เสือร้องไห้ แกงอ่อม แกงเปรอะ หมก ป่น แจ่วบอง ฯลฯ</li>' +
-            '<li>ขยายทุกหมวดปลายเปิดให้เกิน 100 คำตอบ ทั้งผลไม้ รสไอศกรีม อาหารตามสั่ง ขนมไทย เครื่องดื่ม สี เครื่องมือ เครื่องดนตรี เสื้อผ้า กีฬา วัดไทย และอุทยานแห่งชาติ</li>' +
-          '</ul>' +
-        '</article>' +
-        '<article class="patch-card">' +
-          '<div class="patch-card-head"><span class="patch-tag">REFINED</span> ขยายหมวดสัตว์ &amp; คัดตัดโจทย์ที่เจาะจงเกินไป</div>' +
-          '<ul>' +
-            '<li>ขยายหมวด <strong>สัตว์ (1,257 ชนิด)</strong> และ <strong>สัตว์รอบบ้านไทย (110 ชนิด)</strong> เพิ่มสัตว์ใกล้ตัวอย่าง จิ้งจก ตุ๊กแก ตัวเงินตัวทอง ครบถ้วน</li>' +
-            '<li>ถอดโจทย์เฉพาะทางหรือวิชาการที่ยากเกินไปออก เหลือเฉพาะโจทย์ใกล้ตัวที่ชวนนึกคำตอบได้จริง</li>' +
-          '</ul>' +
-        '</article>' +
-        '<article class="patch-card">' +
-          '<div class="patch-card-head"><span class="patch-tag is-new">SURVEY</span> ปุ่มเสนอคำตอบเพิ่มหลังจบเกม</div>' +
-          '<ul>' +
-            '<li>เล่นครบ 7 ข้อแล้วสามารถกดเสนอคำตอบที่นึกออกแต่ยังไม่มีในคลังได้ทันทีแบบติดแท็กทีละข้อ เพื่อนำไปอัปเดตเพิ่มในรอบถัดไป</li>' +
-          '</ul>' +
-        '</article>' +
-      '</div>' +
-    '</div>' +
+    '<div class="patch-tabs" role="tablist" aria-label="ประวัติเวอร์ชัน Patch Notes">' + renderTabs(active.version) + '</div>' +
+    '<div class="patch-scroll" id="patch-scroll-body">' + renderEntryBody(active) + '</div>' +
     '<footer class="patch-footer"><button type="button" class="primary-button survey-submit" data-action="close">เข้าใจแล้ว ลุยดำน้ำเลย →</button></footer>');
+
+  const tabsEl = modalRoot.querySelector('.patch-tabs');
+  const scrollBody = modalRoot.querySelector('#patch-scroll-body');
+  const heroPill = modalRoot.querySelector('#patch-hero-pill');
+  const heroTitle = modalRoot.querySelector('#patch-hero-title');
+  const heroSub = modalRoot.querySelector('#patch-hero-sub');
+  const dlgTitle = modalRoot.querySelector('#dialog-title');
+  tabsEl?.addEventListener('click', e => {
+    const btn = e.target.closest('[data-patch-ver]');
+    if (!btn) return;
+    const next = history.find(h => h.version === btn.dataset.patchVer);
+    if (!next) return;
+    if (heroPill) heroPill.textContent = 'v' + next.version;
+    if (heroTitle) heroTitle.textContent = next.headline;
+    if (heroSub) heroSub.textContent = next.subtitle;
+    if (dlgTitle) dlgTitle.textContent = 'Patch Notes v' + next.version;
+    tabsEl.innerHTML = renderTabs(next.version);
+    if (scrollBody) {
+      scrollBody.innerHTML = renderEntryBody(next);
+      scrollBody.scrollTop = 0;
+    }
+  });
 }
 function surveyDialog(initialIndex = null) {
   if (!session?.questions?.length) return;

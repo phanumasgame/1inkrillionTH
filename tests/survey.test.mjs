@@ -9,21 +9,77 @@ const raw = JSON.parse(await readFile(new URL('../data/survey-bank.json', import
 const bank = prepareSurveyBank(raw);
 const make = () => createSession({mode:'daily',bank,questions:selectDaily(bank,'2026-11-17'),date:'2026-11-17',now:1000});
 
-test('v1.0.8 mega hybrid bank has 100 questions, 40k+ answers, 12 1000+ pools, and rich Isan food & animal coverage', () => {
+test('v1.0.9 rebalanced 120-question bank has 45k+ answers, 20 new categories, 12 1000+ pools, and calibrated rarities', () => {
   assert.deepEqual(validateSurveyBank(raw), []);
-  assert.equal(raw.version, '1.0.8');
+  assert.equal(raw.version, '1.0.9');
   assert.equal(raw.scoringMethod, HYBRID_SCORING);
-  assert.equal(raw.questions.length, 100);
-  assert.equal(raw.questions.filter(q => q.scope === 'thai').length, 50);
-  assert.equal(raw.questions.filter(q => q.scope === 'world').length, 50);
+  assert.equal(raw.questions.length, 120);
+  assert.equal(raw.questions.filter(q => q.scope === 'thai').length, 60);
+  assert.equal(raw.questions.filter(q => q.scope === 'world').length, 60);
   const surveyQuestions = raw.questions.filter(q => q.survey);
   const curatedQuestions = raw.questions.filter(q => q.curated);
   assert.equal(surveyQuestions.length, 6);
-  assert.equal(curatedQuestions.length, 94);
-  assert.ok(raw.questions.reduce((sum, q) => sum + q.answers.length, 0) >= 40_000);
-  assert.ok(raw.questions.filter(q => q.answers.length >= BROAD_ANSWER_TARGET).length >= 90);
+  assert.equal(curatedQuestions.length, 114);
+  assert.ok(raw.questions.reduce((sum, q) => sum + q.answers.length, 0) >= 45_000);
+  assert.ok(raw.questions.filter(q => q.answers.length >= BROAD_ANSWER_TARGET).length >= 110);
   assert.ok(raw.questions.filter(q => q.answers.length >= 1000).length >= 12);
   assert.ok(raw.questions.every(q => q.answers.length >= MIN_PLAYABLE_ANSWERS));
+
+  // Tier calibration invariants: no curated pool hands out excessive 100-pt Krillions,
+  // and well-known household/classic items stay in familiar tiers.
+  for (const q of curatedQuestions) {
+    const kCount = q.answers.filter(a => a.tier === 'krillion').length;
+    assert.ok(kCount / q.answers.length <= 0.11, `${q.id} krillion ratio too high: ${kCount}/${q.answers.length}`);
+  }
+  const notKrillionChecks = [
+    ['th-ssa-sports-played-2025', 'เทควันโด'],
+    ['th-solo-singers', 'โบ สุนิตา'],
+    ['th-islands', 'เกาะเกร็ด'],
+    ['th-flowers', 'ปีบ'],
+    ['th-childhood-cartoons', 'ปังปอนด์'],
+    ['th-snack-brands', 'คารามูโจ้'],
+    ['th-childhood-games', 'โพงพาง'],
+    ['world-banks-connell-musical-instrument', 'กีตาร์โปร่ง'],
+    ['world-ice-cream-flavors-idfa-2024', 'สตรอว์เบอร์รี'],
+    ['world-cake', 'ทีรามิสุ'],
+    ['world-game-consoles', 'Steam Deck'],
+    ['world-banks-connell-tool', 'แว่นขยาย'],
+    ['world-banks-connell-tool', 'ตลับเมตร'],
+  ];
+  for (const [qid, label] of notKrillionChecks) {
+    const q = raw.questions.find(x => x.id === qid);
+    const m = matchAnswer(q, label);
+    assert.equal(m.kind, 'exact', `Expected ${label} in ${qid}`);
+    assert.ok(['plankton', 'schooler'].includes(m.answer.tier), `${qid}:${label} was ${m.answer.tier}`);
+  }
+
+  // Spot-check the 20 new v1.0.9 Thai & World questions
+  for (const [qid, probe] of [
+    ['th-proverbs', 'ขี่ช้างจับตั๊กแตน'],
+    ['th-ghosts-folklore', 'แม่นาคพระโขนง'],
+    ['th-literary', 'พระอภัยมณี'],
+    ['th-trees', 'ต้นมะม่วง'],
+    ['th-breakfast', 'ปาท่องโก๋'],
+    ['th-restaurant-chains', 'สุกี้ตี๋น้อย'],
+    ['th-bkk-roads', 'สุขุมวิท'],
+    ['th-rivers', 'เจ้าพระยา'],
+    ['th-universities', 'จุฬา'],
+    ['th-songs', 'แสงสุดท้าย'],
+    ['world-landmarks', 'หอไอเฟล'],
+    ['world-historical-figures', 'ไอน์สไตน์'],
+    ['world-mythology', 'ซุส'],
+    ['world-fashion-brands', 'Nike'],
+    ['world-gems-minerals', 'ไพลิน'],
+    ['world-stationery', 'ลิควิด'],
+    ['world-weather-nature', 'แสงเหนือ'],
+    ['world-body-parts', 'ไส้ติ่ง'],
+    ['world-books', 'Harry Potter'],
+    ['world-songs', 'Bohemian Rhapsody'],
+  ]) {
+    const q = raw.questions.find(x => x.id === qid);
+    assert.ok(q && q.answers.length >= 100, `Missing or undersized new question: ${qid}`);
+    assert.equal(matchAnswer(q, probe).kind, 'exact', `Missing probe ${probe} in ${qid}`);
+  }
 
   const districts = raw.questions.find(q => q.id === 'th-nso-bangkok-districts-census-2010');
   assert.equal(districts.answers.length, 50);
