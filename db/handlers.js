@@ -58,40 +58,61 @@ export async function handleCreateSuggestions(body, sql, { ensure = ensureSchema
   if (!body || typeof body !== 'object') {
     return { status: 400, body: { ok: false, error: 'Invalid JSON payload' } };
   }
-  const questionId = cleanStr(body.questionId, 80);
-  if (!questionId) {
-    return { status: 400, body: { ok: false, error: 'Missing questionId' } };
-  }
-  const items = splitSuggestedAnswers(body.suggestions ?? body.suggestedAnswer ?? '');
-  if (!items.length) {
-    return { status: 400, body: { ok: false, error: 'กรุณาพิมพ์คำตอบที่ต้องการเสนออย่างน้อย 1 รายการ' } };
-  }
 
-  const questionPrompt = cleanStr(body.questionPrompt, 240);
-  const note = cleanStr(body.note, 400);
-  const source = ['survey', 'rejected-chip'].includes(body.source) ? body.source : 'survey';
   const bankVersion = cleanStr(body.bankVersion, 40);
   const mode = ['daily', 'endless'].includes(body.mode) ? body.mode : 'daily';
   const sessionId = cleanStr(body.sessionId, 120);
   const clientId = cleanStr(body.clientId, 80);
+  const globalNote = cleanStr(body.note, 400);
+
+  const rawBatches = Array.isArray(body.items)
+    ? body.items.slice(0, 7)
+    : [{
+        questionId: body.questionId,
+        questionPrompt: body.questionPrompt,
+        suggestions: body.suggestions ?? body.suggestedAnswer ?? '',
+        note: body.note,
+        source: body.source,
+      }];
+
+  const entries = [];
+  let questionsWithItems = 0;
+  for (const batch of rawBatches) {
+    if (!batch || typeof batch !== 'object') continue;
+    const questionId = cleanStr(batch.questionId, 80);
+    if (!questionId) continue;
+    const items = splitSuggestedAnswers(batch.suggestions ?? batch.suggestedAnswer ?? '');
+    if (!items.length) continue;
+    questionsWithItems++;
+    const questionPrompt = cleanStr(batch.questionPrompt, 240);
+    const note = cleanStr(batch.note ?? globalNote, 400);
+    const source = ['survey', 'rejected-chip'].includes(batch.source) ? batch.source : 'survey';
+    for (const item of items) {
+      entries.push({ questionId, questionPrompt, label: item.label, normalized: item.normalized, note, source });
+    }
+  }
+
+  if (!entries.length) {
+    return { status: 400, body: { ok: false, error: 'กรุณาพิมพ์คำตอบที่ต้องการเสนออย่างน้อย 1 รายการ' } };
+  }
 
   await ensure(sql);
 
   const inserted = [];
-  for (const item of items) {
+  for (const entry of entries.slice(0, 50)) {
     const rows = await sql.query(
       `INSERT INTO answer_suggestions
         (question_id, question_prompt, suggested_answer, normalized_answer, note, source, bank_version, mode, session_id, client_id)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
        RETURNING id, created_at, question_id, suggested_answer, normalized_answer`,
-      [questionId, questionPrompt, item.label, item.normalized, note, source, bankVersion, mode, sessionId, clientId]
+      [entry.questionId, entry.questionPrompt, entry.label, entry.normalized, entry.note, entry.source, bankVersion, mode, sessionId, clientId]
     );
-    inserted.push(rows[0] || { question_id: questionId, suggested_answer: item.label, normalized_answer: item.normalized });
+    inserted.push(rows[0] || { question_id: entry.questionId, suggested_answer: entry.label, normalized_answer: entry.normalized });
   }
 
   return {
     status: 201,
-    body: { ok: true, saved: inserted.length, items: inserted },
+    body: { ok: true, saved: inserted.length, questionsSaved: questionsWithItems, items: inserted },
   };
 }
 

@@ -181,6 +181,22 @@ test('handleCreateSuggestions validates input and stores normalized suggestions 
   assert.equal(fake.tables.answer_suggestions.length, 2);
   assert.equal(fake.tables.answer_suggestions[0].suggested_answer, 'ก้อยไข่มดแดง');
   assert.equal(fake.tables.answer_suggestions[0].note, 'เมนูอีสานยอดฮิต');
+
+  const batch = await handleCreateSuggestions({
+    items: [
+      { questionId: 'th-isaan-food', questionPrompt: 'ตั้งวงอาหารอีสาน', suggestions: ['ตำบักหุ่ง', 'หมกฮวก'], source: 'survey' },
+      { questionId: 'world-anime', questionPrompt: 'นึกชื่ออนิเมะ', suggestions: ['Monster'], source: 'rejected-chip' },
+    ],
+    note: 'ข้อเสนอจากหลายข้อ',
+    bankVersion: '1.0.8',
+    mode: 'endless',
+    sessionId: 'endless:2026-11-20:2:2000',
+    clientId: 'c_test123',
+  }, fake, { ensure: async () => {} });
+  assert.equal(batch.status, 201);
+  assert.equal(batch.body.saved, 3);
+  assert.equal(batch.body.questionsSaved, 2);
+  assert.equal(fake.tables.answer_suggestions.length, 5);
 });
 
 test('handleRecordTelemetry stores dive, rounds, rejected guesses and deduplicates session_id', async () => {

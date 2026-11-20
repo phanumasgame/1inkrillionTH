@@ -8,6 +8,7 @@ import { OceanScene } from './scene.js';
 import { descentDuration, PIXELS_PER_METER, METERS_PER_POINT } from './descent.js';
 import { focusAnswer } from './input.js';
 
+const APP_VERSION = '1.0.8';
 const app = document.getElementById('app');
 const modalRoot = document.getElementById('modal-root');
 let bank, audio, scene;
@@ -61,6 +62,7 @@ async function load() {
     applySettings();
     restoreCurrent();
     render();
+    if (view === 'home' && save.seenPatchVersion !== APP_VERSION) patchNotesDialog();
     setInterval(pulse, 100);
     document.addEventListener('pointerdown', () => audio.unlock(), { passive:true });
     document.addEventListener('keydown', () => audio.unlock(), { passive:true });
@@ -145,7 +147,8 @@ function landing() {
     '<li>SEVEN PROMPTS. A SHARED DAILY CHALLENGE.</li><li>25 SECONDS. TYPE ONE ANSWER THAT FITS.</li>' +
     '<li>LOWER OR RARER RANKS CAN SINK DEEPER.</li><li>ONLY ANSWERS IN THIS DIVE’S BANK CAN SCORE.</li>' +
     '<li>ONE POINT = 10 METRES. AIM FOR 7,000M.</li><li>ONE DAILY ATTEMPT. ENDLESS DIVES ANYTIME.</li></ol></details>' +
-    '<div class="landing-credits"><button class="small-link" data-action="about">About this dive</button><span>' + bank.questions.length + ' คำถาม · ไทยและเรื่องทั่วไป</span></div>' +
+    '<div class="landing-credits"><button class="small-link" data-action="about">About this dive</button>' +
+    '<button class="landing-patch-btn" data-action="patchnotes">✦ Patch Notes · v' + APP_VERSION + '</button></div>' +
     (mode === 'daily' ? '<button class="discovery-card" data-action="endless"><span class="discovery-tag">DIVE AFTER DIVE</span><img src="' +
       sprite('schooler') + '" alt=""><span>ENDLESS DIVE</span><small>∞</small></button>' : '') +
     '<button class="begin" data-action="begin">▼ ' + label + ' ▼</button>' +
@@ -443,7 +446,7 @@ function toast(text) {
 function openModal(kind, title, content, drawer = false) {
   modalRestoreFocus = document.activeElement;
   modalKind = kind;
-  modalRoot.innerHTML = '<div class="overlay' + (drawer ? ' drawer-overlay' : '') + '"><section class="dialog' +
+  modalRoot.innerHTML = '<div class="overlay' + (drawer ? ' drawer-overlay' : '') + '"><section class="dialog dialog-' + esc(kind) +
     (drawer ? ' drawer' : '') + '" role="dialog" aria-modal="true" aria-labelledby="dialog-title"><button class="close-dialog" data-action="close" aria-label="Close ' +
     esc(title) + '">×</button>' + (drawer ? '<div class="brand-label">KRILLION TH</div>' : '') + '<h2 id="dialog-title">' +
     esc(title) + '</h2>' + content + '</section></div>';
@@ -451,6 +454,10 @@ function openModal(kind, title, content, drawer = false) {
   document.body.style.overflow = 'hidden';
 }
 function closeModal() {
+  if (modalKind === 'patchnotes' && save.seenPatchVersion !== APP_VERSION) {
+    save.seenPatchVersion = APP_VERSION;
+    persist();
+  }
   modalRoot.innerHTML = ''; modalKind = null; document.body.style.overflow = '';
   if (modalRestoreFocus?.isConnected) modalRestoreFocus.focus({preventScroll:true});
   else document.getElementById('answer')?.focus({preventScroll:true});
@@ -475,6 +482,7 @@ function menuDialog() {
     '<button data-action="daily"' + (mode === 'daily' ? ' class="selected"' : '') + '>Daily dive</button>' +
     '<button data-action="endless"' + (mode === 'endless' ? ' class="selected"' : '') + '>∞ Unlimited</button>' +
     '<button data-action="history">⟲ Dive log</button><button data-action="wardrobe">Wardrobe</button>' +
+    '<button data-action="patchnotes">✦ Patch Notes <span>v' + APP_VERSION + '</span></button>' +
     '<button data-action="settings">Settings</button><button data-action="about">About & sources</button></nav>' +
     '<div class="drawer-bottom">one in a krillion.<br><span style="font-size:13px;letter-spacing:1px">A THAI KNOWLEDGE DIVE.</span></div>', true);
 }
@@ -636,119 +644,320 @@ function sendTelemetryIfNeeded(doneSession) {
     telemetryInFlight.delete(doneSession.id);
   });
 }
+function patchNotesDialog() {
+  const totalAnswers = bank.questions.reduce((sum, q) => sum + q.answers.length, 0);
+  const megaCount = bank.questions.filter(q => q.answers.length >= 1000).length;
+  openModal('patchnotes', 'Patch Notes v' + APP_VERSION,
+    '<header class="modal-hero">' +
+      '<div class="modal-eyebrow">PATCH NOTES <span class="version-pill">v' + APP_VERSION + '</span></div>' +
+      '<h3>มีอะไรใหม่ในอัปเดตนี้</h3>' +
+      '<p>ยกเครื่องคลังคำถามและคำตอบครั้งใหญ่ ให้เล่นสนุก กว้าง ครอบคลุม และตรงใจคนไทยมากขึ้นครับ</p>' +
+    '</header>' +
+    '<div class="patch-scroll">' +
+      '<div class="patch-stats">' +
+        '<div class="patch-stat"><strong>' + number(bank.questions.length) + '</strong><span>โจทย์ไทย &amp; ทั่วไป</span></div>' +
+        '<div class="patch-stat"><strong>' + number(totalAnswers) + '</strong><span>คำตอบทั้งหมดในคลัง</span></div>' +
+        '<div class="patch-stat"><strong>' + number(megaCount) + '</strong><span>หมวดใหญ่ 1,000+ คำ</span></div>' +
+      '</div>' +
+      '<div class="patch-list">' +
+        '<article class="patch-card">' +
+          '<div class="patch-card-head"><span class="patch-tag is-new">NEW</span> เพิ่มโจทย์ใหม่ &amp; ขยายหมวดบันเทิงเป็นหลักพัน</div>' +
+          '<ul>' +
+            '<li>แยกโจทย์ <strong>อนิเมะญี่ปุ่น (2,735 เรื่อง)</strong> และเพิ่ม <strong>ละครไทย/ซีรีส์ไทย (1,705 เรื่อง)</strong></li>' +
+            '<li>ขยายหมวดยอดฮิตทะลุพันคำตอบ: <strong>ซีรีส์ต่างประเทศ (2,553)</strong>, <strong>หนังต่างประเทศ (2,295)</strong>, <strong>ศิลปินต่างประเทศ (2,116)</strong>, <strong>วิดีโอเกม (2,048)</strong>, <strong>นักร้องเดี่ยวไทย (1,519)</strong>, <strong>หนังไทย (1,516)</strong>, <strong>เมืองดังทั่วโลก (1,391)</strong>, <strong>ตัวการ์ตูน (1,199)</strong> และ <strong>หนังแอนิเมชัน (1,175)</strong></li>' +
+          '</ul>' +
+        '</article>' +
+        '<article class="patch-card">' +
+          '<div class="patch-card-head"><span class="patch-tag is-gold">EXPANDED</span> จัดเต็มอาหารอีสาน &amp; หมวดรอบตัว 100+ ทุกข้อ</div>' +
+          '<ul>' +
+            '<li>ขยายหมวด <strong>อาหารอีสาน</strong> เป็น <strong>273 เมนู</strong> ครบทั้งส้มตำทุกตำรับ ลาบ ก้อย ซอยจุ๊ เสือร้องไห้ แกงอ่อม แกงเปรอะ หมก ป่น แจ่วบอง ฯลฯ</li>' +
+            '<li>ขยายทุกหมวดปลายเปิดให้เกิน 100 คำตอบ ทั้งผลไม้ รสไอศกรีม อาหารตามสั่ง ขนมไทย เครื่องดื่ม สี เครื่องมือ เครื่องดนตรี เสื้อผ้า กีฬา วัดไทย และอุทยานแห่งชาติ</li>' +
+          '</ul>' +
+        '</article>' +
+        '<article class="patch-card">' +
+          '<div class="patch-card-head"><span class="patch-tag">REFINED</span> ขยายหมวดสัตว์ &amp; คัดตัดโจทย์ที่เจาะจงเกินไป</div>' +
+          '<ul>' +
+            '<li>ขยายหมวด <strong>สัตว์ (1,257 ชนิด)</strong> และ <strong>สัตว์รอบบ้านไทย (110 ชนิด)</strong> เพิ่มสัตว์ใกล้ตัวอย่าง จิ้งจก ตุ๊กแก ตัวเงินตัวทอง ครบถ้วน</li>' +
+            '<li>ถอดโจทย์เฉพาะทางหรือวิชาการที่ยากเกินไปออก เหลือเฉพาะโจทย์ใกล้ตัวที่ชวนนึกคำตอบได้จริง</li>' +
+          '</ul>' +
+        '</article>' +
+        '<article class="patch-card">' +
+          '<div class="patch-card-head"><span class="patch-tag is-new">SURVEY</span> ปุ่มเสนอคำตอบเพิ่มหลังจบเกม</div>' +
+          '<ul>' +
+            '<li>เล่นครบ 7 ข้อแล้วสามารถกดเสนอคำตอบที่นึกออกแต่ยังไม่มีในคลังได้ทันทีแบบติดแท็กทีละข้อ เพื่อนำไปอัปเดตเพิ่มในรอบถัดไป</li>' +
+          '</ul>' +
+        '</article>' +
+      '</div>' +
+    '</div>' +
+    '<footer class="patch-footer"><button type="button" class="primary-button survey-submit" data-action="close">เข้าใจแล้ว ลุยดำน้ำเลย →</button></footer>');
+}
 function surveyDialog(initialIndex = null) {
   if (!session?.questions?.length) return;
-  const defaultIdx = Number.isInteger(initialIndex) && initialIndex >= 0 && initialIndex < session.questions.length
-    ? initialIndex
-    : (() => {
-        const withRej = session.results.findIndex(r => Array.isArray(r.rejectedInputs) && r.rejectedInputs.length > 0);
-        if (withRej >= 0) return withRej;
-        const missed = session.results.findIndex(r => !r.tier);
-        return missed >= 0 ? missed : 0;
-      })();
-  const optionsHtml = session.questions.map((q, i) => {
+  const cardTags = session.questions.map(() => []);
+  const usedChipsByCard = session.questions.map(() => false);
+  const submittedCards = new Set();
+
+  const cardsHtml = session.questions.map((q, i) => {
     const r = session.results[i];
-    const rejCount = Array.isArray(r?.rejectedInputs) ? r.rejectedInputs.length : 0;
-    const tag = !r?.tier ? ' · ไม่ได้แต้ม' : rejCount ? ' · พิมพ์ไม่พบ ' + rejCount + ' คำ' : '';
-    return '<option value="' + i + '"' + (i === defaultIdx ? ' selected' : '') + '>ข้อ ' + (i + 1) + ': ' + esc(q.prompt) + tag + '</option>';
+    const color = r?.tier ? tierColor(r.tier) : '#f45388';
+    const outcomeText = r?.tier ? (r.label ? r.label + ' · ' + r.points : r.points + ' PTS') : (r?.reason === 'timeout' ? 'หมดเวลา' : 'ข้ามข้อ');
+    const rej = Array.isArray(r?.rejectedInputs) ? r.rejectedInputs : [];
+    const chipsHtml = rej.length
+      ? '<div class="survey-chips-wrap"><span class="survey-chips-label">พิมพ์แล้วไม่พบในคลัง (แตะเพื่อเพิ่มเป็นแท็ก):</span>' +
+        rej.map(word => '<button type="button" class="survey-chip" data-chip-card="' + i + '" data-chip="' + esc(word) + '">+ ' + esc(word) + '</button>').join('') +
+        '</div>'
+      : '';
+    return '<article class="survey-card" data-survey-card="' + i + '">' +
+      '<div class="survey-card-head">' +
+        '<div class="survey-card-title">' +
+          '<span class="survey-num">' + String(i + 1).padStart(2, '0') + '</span>' +
+          '<div class="survey-prompt">' + esc(q.prompt) + '</div>' +
+        '</div>' +
+        '<span class="survey-outcome" style="--tier:' + color + '">' + esc(outcomeText) + '</span>' +
+      '</div>' +
+      chipsHtml +
+      '<div class="tag-box" data-tag-box="' + i + '">' +
+        '<div class="tag-input-row">' +
+          '<input type="text" class="tag-input" data-tag-input="' + i + '" maxlength="120" autocomplete="off" placeholder="พิมพ์คำตอบที่ควรมีแล้วกด Enter...">' +
+          '<button type="button" class="tag-add-btn" data-tag-add="' + i + '">+ เพิ่ม</button>' +
+        '</div>' +
+      '</div>' +
+    '</article>';
   }).join('');
 
-  openModal('survey', 'Pool Survey · เสนอคำตอบเพิ่ม',
-    '<div class="body-copy"><p>เจอคำตอบที่นึกออกแต่ยังไม่มีในคลังใช่ไหม? ส่งมาได้เลย ทีมงานจะนำไปวิเคราะห์และเติมเข้าคลังรุ่นถัดไปครับ</p>' +
-    '<form class="survey-form" id="survey-form">' +
-    '<label class="survey-field">เลือกโจทย์จากรอบที่เพิ่งเล่น<select id="survey-question">' + optionsHtml + '</select></label>' +
-    '<div id="survey-chips-box"></div>' +
-    '<label class="survey-field">คำตอบที่ควรมีในข้อนี้ (ใส่หลายคำได้ คั่นด้วย , หรือขึ้นบรรทัดใหม่)<textarea id="survey-answers" required placeholder="เช่น ซอยจุ๊, อู๋เพี้ย, หมกฮวก"></textarea></label>' +
-    '<label class="survey-field">หมายเหตุหรือชื่อเรียกอื่น (ไม่บังคับ)<input id="survey-note" type="text" maxlength="400" placeholder="เช่น ชื่อภาษาอังกฤษ หรือทำไมควรอยู่ในข้อนี้"></label>' +
-    '<p class="survey-status" id="survey-status" role="status"></p>' +
-    '<button type="submit" class="primary-button survey-submit" id="survey-submit">ส่งข้อเสนอเข้าคลัง →</button>' +
-    '</form><div class="survey-sent-list" id="survey-sent-list" hidden></div></div>');
+  openModal('survey', 'Pool Survey',
+    '<header class="modal-hero">' +
+      '<div class="modal-eyebrow">POOL SURVEY <span class="version-pill">7 PROMPTS</span></div>' +
+      '<h3>เสนอคำตอบที่ควรมีเพิ่มในคลัง</h3>' +
+      '<p>พิมพ์คำตอบในข้อที่ต้องการแล้วกด <strong>Enter</strong> เพื่อติดแท็ก เสนอหลายข้อพร้อมกันได้ในครั้งเดียวครับ</p>' +
+    '</header>' +
+    '<form id="survey-form" style="display:contents">' +
+      '<div class="survey-scroll" id="survey-scroll">' +
+        cardsHtml +
+        '<div class="survey-note-box">' +
+          '<label for="survey-note">หมายเหตุเพิ่มเติมหรือชื่อเรียกอื่น (ไม่บังคับ)</label>' +
+          '<input id="survey-note" type="text" maxlength="400" placeholder="เช่น ชื่อภาษาอังกฤษ หรือข้อเสนอแนะเพิ่มเติมสำหรับรอบนี้">' +
+        '</div>' +
+      '</div>' +
+      '<footer class="survey-footer">' +
+        '<div class="survey-footer-meta">' +
+          '<span class="survey-counter" id="survey-counter">ยังไม่ได้เพิ่มคำตอบ</span>' +
+          '<p class="survey-status" id="survey-status" role="status"></p>' +
+        '</div>' +
+        '<button type="submit" class="primary-button survey-submit" id="survey-submit">ส่งข้อเสนอทั้งหมด →</button>' +
+      '</footer>' +
+    '</form>');
 
   const form = document.getElementById('survey-form');
-  const selectEl = document.getElementById('survey-question');
-  const chipsBox = document.getElementById('survey-chips-box');
-  const answersEl = document.getElementById('survey-answers');
+  const scrollBox = document.getElementById('survey-scroll');
   const noteEl = document.getElementById('survey-note');
+  const counterEl = document.getElementById('survey-counter');
   const statusEl = document.getElementById('survey-status');
   const submitBtn = document.getElementById('survey-submit');
-  const sentList = document.getElementById('survey-sent-list');
-  const submittedItems = [];
-  let usedChip = false;
+  const normKey = s => String(s || '').trim().replace(/\s+/g, ' ').toLowerCase();
 
-  function renderChips() {
-    const idx = Number(selectEl.value);
-    const rej = session.results[idx]?.rejectedInputs || [];
-    if (!rej.length) { chipsBox.innerHTML = ''; return; }
-    chipsBox.innerHTML = '<div class="survey-chips-wrap"><span class="survey-chips-label">คำที่คุณลองพิมพ์ในข้อนี้แต่ยังไม่พบในคลัง (แตะเพื่อเติมอัตโนมัติ):</span>' +
-      '<div class="survey-chips">' + rej.map(word => '<button type="button" class="survey-chip" data-chip="' + esc(word) + '">+ ' + esc(word) + '</button>').join('') + '</div></div>';
+  function updateCounter() {
+    const totalTags = cardTags.reduce((sum, list) => sum + list.length, 0);
+    const activeCards = cardTags.filter(list => list.length > 0).length;
+    if (!totalTags) {
+      counterEl.innerHTML = 'พิมพ์คำตอบในข้อที่ต้องการแล้วกด <strong>Enter</strong>';
+      submitBtn.textContent = 'ส่งข้อเสนอทั้งหมด →';
+    } else {
+      counterEl.innerHTML = 'พร้อมส่ง <strong>' + totalTags + ' คำตอบ</strong> จาก <strong>' + activeCards + ' ข้อ</strong>';
+      submitBtn.textContent = 'ส่งข้อเสนอทั้งหมด (' + totalTags + ') →';
+    }
   }
-  renderChips();
-  selectEl.addEventListener('change', () => { usedChip = false; statusEl.textContent = ''; renderChips(); });
-  chipsBox.addEventListener('click', e => {
+
+  function renderCardTags(idx) {
+    const box = scrollBox.querySelector('[data-tag-box="' + idx + '"]');
+    const inputRow = box.querySelector('.tag-input-row');
+    for (const el of [...box.querySelectorAll('.answer-tag')]) el.remove();
+    const list = cardTags[idx];
+    for (let t = 0; t < list.length; t++) {
+      const span = document.createElement('span');
+      span.className = 'answer-tag';
+      span.innerHTML = esc(list[t]) + '<button type="button" data-tag-remove="' + idx + ':' + t + '" aria-label="ลบ ' + esc(list[t]) + '">×</button>';
+      box.insertBefore(span, inputRow);
+    }
+    const card = scrollBox.querySelector('[data-survey-card="' + idx + '"]');
+    card.classList.toggle('is-active', list.length > 0);
+    for (const chip of card.querySelectorAll('[data-chip]')) {
+      const used = list.some(v => normKey(v) === normKey(chip.dataset.chip));
+      chip.classList.toggle('is-used', used);
+    }
+    updateCounter();
+  }
+
+  function addTagsToCard(idx, rawText, fromChip = false) {
+    const parts = String(rawText || '').split(/[\n,;،]+/).map(s => s.trim().replace(/\s+/g, ' ')).filter(Boolean);
+    if (!parts.length) return 0;
+    let added = 0;
+    const list = cardTags[idx];
+    for (const p of parts) {
+      if (list.length >= 10) break;
+      const val = p.slice(0, 120);
+      if (list.some(item => normKey(item) === normKey(val))) continue;
+      list.push(val);
+      added++;
+    }
+    if (fromChip && added > 0) usedChipsByCard[idx] = true;
+    if (added > 0) {
+      statusEl.textContent = '';
+      renderCardTags(idx);
+    }
+    return added;
+  }
+
+  scrollBox.addEventListener('click', e => {
+    const rem = e.target.closest('[data-tag-remove]');
+    if (rem) {
+      const [idx, t] = rem.dataset.tagRemove.split(':').map(Number);
+      cardTags[idx].splice(t, 1);
+      renderCardTags(idx);
+      scrollBox.querySelector('[data-tag-input="' + idx + '"]')?.focus();
+      return;
+    }
+    const addBtn = e.target.closest('[data-tag-add]');
+    if (addBtn) {
+      const idx = Number(addBtn.dataset.tagAdd);
+      const input = scrollBox.querySelector('[data-tag-input="' + idx + '"]');
+      if (input && input.value.trim()) {
+        addTagsToCard(idx, input.value);
+        input.value = '';
+      }
+      input?.focus();
+      return;
+    }
     const chip = e.target.closest('[data-chip]');
-    if (!chip) return;
-    const word = chip.dataset.chip;
-    const current = answersEl.value.trim();
-    const parts = current ? current.split(/[\n,]+/).map(s => s.trim()).filter(Boolean) : [];
-    if (!parts.includes(word)) parts.push(word);
-    answersEl.value = parts.join(', ');
-    usedChip = true;
-    answersEl.focus();
+    if (chip) {
+      const idx = Number(chip.dataset.chipCard);
+      const word = chip.dataset.chip;
+      const existingIdx = cardTags[idx].findIndex(v => normKey(v) === normKey(word));
+      if (existingIdx >= 0) {
+        cardTags[idx].splice(existingIdx, 1);
+        renderCardTags(idx);
+      } else {
+        addTagsToCard(idx, word, true);
+      }
+      return;
+    }
+    const box = e.target.closest('[data-tag-box]');
+    if (box && !e.target.closest('button')) {
+      box.querySelector('.tag-input')?.focus();
+    }
   });
+
+  scrollBox.addEventListener('keydown', e => {
+    const input = e.target.closest('[data-tag-input]');
+    if (!input) return;
+    const idx = Number(input.dataset.tagInput);
+    if (e.isComposing || e.keyCode === 229) return;
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      if (input.value.trim()) {
+        addTagsToCard(idx, input.value);
+        input.value = '';
+      }
+    } else if (e.key === 'Backspace' && !input.value && cardTags[idx].length) {
+      cardTags[idx].pop();
+      renderCardTags(idx);
+    }
+  });
+
+  scrollBox.addEventListener('paste', e => {
+    const input = e.target.closest('[data-tag-input]');
+    if (!input) return;
+    const text = e.clipboardData?.getData('text') || '';
+    if (/[\n,;]/.test(text)) {
+      e.preventDefault();
+      addTagsToCard(Number(input.dataset.tagInput), text);
+    }
+  });
+
+  if (Number.isInteger(initialIndex) && initialIndex >= 0 && initialIndex < session.questions.length) {
+    const targetCard = scrollBox.querySelector('[data-survey-card="' + initialIndex + '"]');
+    requestAnimationFrame(() => {
+      targetCard?.scrollIntoView({ block: 'center', behavior: 'instant' });
+      targetCard?.querySelector('.tag-input')?.focus();
+    });
+  }
+  updateCounter();
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
-    const idx = Number(selectEl.value);
-    const q = session.questions[idx];
-    const rawText = answersEl.value.trim();
-    if (!rawText) {
+    // Flush any uncommitted text in inputs into tags automatically
+    for (const input of scrollBox.querySelectorAll('[data-tag-input]')) {
+      if (input.value.trim()) {
+        addTagsToCard(Number(input.dataset.tagInput), input.value);
+        input.value = '';
+      }
+    }
+    const items = [];
+    for (let i = 0; i < session.questions.length; i++) {
+      if (!cardTags[i].length) continue;
+      items.push({
+        questionId: session.questions[i].id,
+        questionPrompt: session.questions[i].prompt,
+        suggestions: [...cardTags[i]],
+        source: usedChipsByCard[i] ? 'rejected-chip' : 'survey',
+      });
+    }
+    if (!items.length) {
       statusEl.className = 'survey-status is-error';
-      statusEl.textContent = 'กรุณาพิมพ์คำตอบที่ต้องการเสนออย่างน้อย 1 รายการ';
-      answersEl.focus();
+      statusEl.textContent = 'กรุณาพิมพ์คำตอบอย่างน้อย 1 ข้อแล้วกด Enter ครับ';
+      scrollBox.querySelector('[data-tag-input="0"]')?.focus();
       return;
     }
+
     submitBtn.disabled = true;
     submitBtn.textContent = 'กำลังบันทึก...';
     statusEl.className = 'survey-status';
     statusEl.textContent = '';
+
     try {
       const res = await fetch('/api/suggestions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          questionId: q.id,
-          questionPrompt: q.prompt,
-          suggestedAnswer: rawText,
+          items,
           note: noteEl.value.trim(),
-          source: usedChip ? 'rejected-chip' : 'survey',
           bankVersion: session.bankVersion || bank.version,
           mode: session.mode,
           sessionId: session.id,
-          clientId: ensureClientId(save)
-        })
+          clientId: ensureClientId(save),
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.ok) {
         throw new Error(data.error || 'บันทึกไม่สำเร็จ (รหัส ' + res.status + ')');
       }
-      const savedLabels = (data.items || []).map(it => it.suggested_answer).filter(Boolean);
-      submittedItems.unshift({ prompt: q.prompt, labels: savedLabels.length ? savedLabels : [rawText] });
-      answersEl.value = '';
+      for (let i = 0; i < session.questions.length; i++) {
+        if (!cardTags[i].length) continue;
+        submittedCards.add(i);
+        cardTags[i] = [];
+        usedChipsByCard[i] = false;
+        renderCardTags(i);
+        const card = scrollBox.querySelector('[data-survey-card="' + i + '"]');
+        card.classList.add('is-submitted');
+        const head = card.querySelector('.survey-card-head');
+        if (!head.querySelector('.survey-card-sent')) {
+          const badge = document.createElement('span');
+          badge.className = 'survey-card-sent';
+          badge.textContent = '✓ ส่งแล้ว';
+          head.appendChild(badge);
+        }
+      }
       noteEl.value = '';
-      usedChip = false;
       statusEl.className = 'survey-status';
-      statusEl.textContent = 'บันทึกแล้ว ' + (data.saved || savedLabels.length) + ' รายการ ขอบคุณที่ช่วยขยายคลังครับ!';
-      sentList.hidden = false;
-      sentList.innerHTML = '<strong>ข้อเสนอที่ส่งในรอบนี้:</strong>' + submittedItems.map(item =>
-        '<div>✓ ' + esc(item.labels.join(', ')) + ' <span style="color:#6f90aa">(' + esc(item.prompt) + ')</span></div>').join('');
-      toast('ส่งคำตอบที่เสนอลงฐานข้อมูลแล้ว');
+      statusEl.textContent = 'บันทึกแล้ว ' + data.saved + ' คำตอบ (' + (data.questionsSaved || items.length) + ' ข้อ) ขอบคุณมากครับ!';
+      toast('ส่งคำตอบที่เสนอ ' + data.saved + ' รายการเรียบร้อยแล้ว');
       audio?.play('spare');
     } catch (err) {
       statusEl.className = 'survey-status is-error';
-      statusEl.textContent = err.message || 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง';
+      statusEl.textContent = err.message || 'ส่งไม่สำเร็จในขณะนี้ กรุณาลองใหม่อีกครั้ง';
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = 'ส่งข้อเสนอเข้าคลัง →';
+      updateCounter();
     }
   });
 }
@@ -785,6 +994,7 @@ document.addEventListener('click', async event => {
     case 'menu': menuDialog(); break;
     case 'settings': settingsDialog(); break;
     case 'about': aboutDialog(); break;
+    case 'patchnotes': patchNotesDialog(); break;
     case 'wardrobe': wardrobeDialog(); break;
     case 'history': historyDialog(); break;
     case 'close': closeModal(); break;
