@@ -2,7 +2,7 @@ import { answerForms } from './answers.js';
 
 export const SURVEY_SCORING = 'published-survey-relative-rank-v1';
 export const SURVEY_TIERS = Object.freeze(['plankton', 'schooler', 'rare', 'deepcut', 'krillion']);
-export const MIN_PLAYABLE_ANSWERS = 9;
+export const MIN_PLAYABLE_ANSWERS = 21;
 export const BROAD_ANSWER_TARGET = 100;
 const nonempty = value => typeof value === 'string' && value.trim().length > 0;
 
@@ -61,6 +61,8 @@ export function validateSurveyBank(bank) {
   const errors = [], ids = new Set();
   for (const q of bank.questions) {
     errors.push(...validateSurveyQuestion(q));
+    if (Array.isArray(q?.answers) && q.answers.length < MIN_PLAYABLE_ANSWERS)
+      errors.push(q.id + ': playable questions need at least ' + MIN_PLAYABLE_ANSWERS + ' measured answers');
     if (ids.has(q?.id)) errors.push('Duplicate question: ' + q.id);
     ids.add(q?.id);
   }

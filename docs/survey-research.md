@@ -1,6 +1,6 @@
 # บันทึกการคัดโจทย์จากผลสำรวจ
 
-คลัง `2026.11.19-survey.4` มี 40 โจทย์ ไทย 20 และทั่วไป 20 คำตอบที่คิดคะแนนได้รวม 2,505 รายการ เพิ่มจาก 661 รายการ รุ่นนี้มี 8 ข้อที่ผ่านเป้าหมาย 100 คำตอบต่อข้อ ส่วนข้อจำนวนต่ำกว่านั้นยังอยู่ในชุดหมุนเวียน Daily และ Endless จัดอย่างน้อย 4 ข้อจากชุดที่มีคำตอบหลักร้อย
+คลัง `2026.11.19-survey.5` มี 40 โจทย์ ไทย 20 และทั่วไป 20 คำตอบที่คิดคะแนนได้รวม 4,086 รายการ (21–805 รายการต่อข้อ) เพิ่มจาก 2,505 รายการ รุ่นนี้มี 13 ข้อที่ผ่านเป้าหมาย 100 คำตอบต่อข้อ (ไทย 6, ทั่วไป 7) และไม่มีโจทย์ที่มีคำตอบต่ำกว่า 21 รายการ Daily และ Endless จัดอย่างน้อย 4 ข้อจากชุดที่มีคำตอบหลักร้อย
 
 ## วิธีที่ใช้เทียบกับ Krillion.io
 
@@ -8,30 +8,39 @@
 
 รุ่นนี้นำแนวคิดชื่อจริงและชื่อเรียกอื่นมาปรับใช้ แยกขนาดคลังจากหลักฐานการคิดแต้ม และเปิดค้นคำตอบหลังจบด่านทีละ 100 รายการ แทนการโชว์รายการก่อนตอบ
 
-| โจทย์รุ่นใหม่ | แหล่งข้อมูลและสิ่งที่วัด | คำตอบ |
+| โจทย์ชุดหลักร้อย | แหล่งข้อมูลและสิ่งที่วัด | คำตอบ |
 | --- | --- | ---: |
 | ขนมและของกินเล่น | [มกอช. ตาราง 4.17](https://www.m-society.go.th/ewtadmin/ewt/mso_web/article_attach/19305/20675.pdf#page=335): ร้อยละผู้ที่บริโภค | 143 |
 | ผักและเห็ดที่ตลาด | [มกอช. ตาราง 4.17](https://www.m-society.go.th/ewtadmin/ewt/mso_web/article_attach/19305/20675.pdf#page=338): ร้อยละผู้ที่บริโภค | 109 |
+| พืชทำอาหารแถวยโสธร | [Piyaporn Saensouk และคณะ, Biology 14(9), 1264](https://doi.org/10.3390/biology14091264): Relative Frequency of Citation × 100 จากผู้ให้ข้อมูล 100 คน ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)) | 147 |
+| ผีเสื้อน้ำตกเขาใหญ่–ปางสีดา | [สุกัญญา ลาภกระโทก, มทส.](https://sutir.sut.ac.th/jspui/handle/123456789/5939): ร้อยละจากจำนวนผีเสื้อที่นับพบ 37,584 ตัว | 254 |
 | ของใช้ในบ้าน | [Alan James Benjamin Clarke, TUNorms](https://doi.org/10.17605/osf.io/npj4u): ค่าเฉลี่ยความถี่ที่พบคำในแบบสอบถาม 1–7 คัดคำและปรับการสะกดไทยจากข้อมูล [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) | 244 |
 | นกที่พบในเขาใหญ่ | [สำรวจของสมาคมอนุรักษ์นกฯ หน้า 12–18](https://web.archive.org/web/20230121202526/https://www.bcst.or.th/wp-content/uploads/2018/06/Khao-Yai-Census-2021.pdf#page=12): ร้อยละจากจำนวนที่นับพบ 2,834 ตัว | 171 |
 | โปเกมอนเจ็ดเจเนอเรชันแรก | [โหวตชุมชน r/pokemon](https://www.reddit.com/r/pokemon/comments/c0w4s0/favourite_pok%C3%A9mon_survey_results/): จำนวนโหวตหารด้วย 52,725 ใช้ชื่อที่ได้คะแนนบวก | 805 |
 | สัตว์ | [Briony Banks และ Louise Connell](https://doi.org/10.3758/s13428-021-01787-z): จำนวนผู้เอ่ยแต่ละชื่อหารด้วยผู้ตอบข้อนี้ 20 คน แปลชื่อและกรองรายการ [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) | 133 |
 | ของว่างที่หากินได้ในสหรัฐฯ | [CDC/USDA NHANES](https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2021/DataFiles/DR1IFF_L.htm): ร้อยละผู้ที่รายงานว่ากิน ถ่วงน้ำหนักตามตัวอย่าง | 139 |
 | อาชีพที่พบได้ในสหรัฐฯ | [BLS OEWS](https://www.bls.gov/news.release/ocwage.t01.htm): ค่าประมาณการจ้างงานเป็นร้อยละของตำแหน่งงานรวม | 193 |
+| ภาพยนตร์ (State of Devs) | [Devographics State of Devs 2025](https://2025.stateofdevs.com/en-US/hobbies/#favorite_movies): ร้อยละจากจำนวนผู้กล่าวถึงต่อผู้ตอบข้อนี้ 3,129 คน | 104 |
+| ศิลปินเพลง (State of Devs) | [Devographics State of Devs 2025](https://2025.stateofdevs.com/en-US/hobbies/#favorite_musical_artists): ร้อยละจากจำนวนผู้กล่าวถึงต่อผู้ตอบข้อนี้ 4,889 คน | 182 |
+| บ้านเกิดผู้ย้ายถิ่นในสหรัฐฯ | [U.S. Census Bureau ACS B05006](https://data.census.gov/table/ACSDT1Y2024.B05006): ร้อยละจากสัดส่วนประชากรเกิดนอกสหรัฐฯ | 127 |
 
-ตัวอย่างการแก้โจทย์: ตัดโจทย์ “ต่อเน็ตด้วยอะไรได้บ้าง” ซึ่งอาจหมายถึง Wi-Fi หรือสาย LAN และถอดโจทย์อุปกรณ์ IT จากผลสำรวจกลุ่มแคบ ของใช้ในบ้านชุดใหม่รับ “รีโมท” จากข้อมูลที่วัดจริง แต่ยังไม่มี “หุ่นยนต์ดูดฝุ่น” ในแหล่งนั้น โจทย์ขนมใช้ชื่ออย่าง “ขนมชั้น” และ “ขนมครก” พร้อมเก็บชื่อเรียกที่อยู่ในกลุ่มเดิมของต้นทาง ตัวอย่างเช่น ทองหยิบ ทองหยอด และฝอยทองเป็นค่าที่ต้นทางสำรวจรวม จึงเป็นหนึ่งรายการที่คิดคะแนน
+ตัวอย่างการแก้โจทย์: ตัดโจทย์ “ต่อเน็ตด้วยอะไรได้บ้าง” ซึ่งอาจหมายถึง Wi-Fi หรือสาย LAN และถอดโจทย์อุปกรณ์ IT จากผลสำรวจกลุ่มแคบ ของใช้ในบ้านชุดใหม่รับ “รีโมท” จากข้อมูลที่วัดจริง แต่ยังไม่มี “หุ่นยนต์ดูดฝุ่น” ในแหล่งนั้น โจทย์ขนมใช้ชื่ออย่าง “ขนมชั้น” และ “ขนมครก” พร้อมเก็บชื่อเรียกที่อยู่ในกลุ่มเดิมของต้นทาง ตัวอย่างเช่น ทองหยิบ ทองหยอด และฝอยทองเป็นค่าที่ต้นทางสำรวจรวม จึงเป็นหนึ่งรายการที่คิดคะแนน ส่วนชุดที่เพิ่มใหม่ในรุ่นนี้แทนที่โจทย์ที่มี 9–20 คำตอบครบทั้ง 25 ข้อ เพื่อให้ทุกข้อมีคำตอบที่วัดค่าได้ตั้งแต่ 21 รายการขึ้นไป
 
-## แหล่งอื่นที่ยังอยู่ในคลัง
+## แหล่งอื่นที่ยังอยู่ในคลัง (21–94 คำตอบ)
 
 | แหล่งสำรวจตัวอย่าง | ขอบเขตที่นำมาเขียนโจทย์ | จำนวนคำตอบ |
 | --- | --- | ---: |
-| [ศูนย์พยากรณ์เศรษฐกิจและธุรกิจ มหาวิทยาลัยหอการค้าไทย](https://cebf.utcc.ac.th/upload/poll_file/file_th_196d03y2025.pdf#page=8) | สิ่งแรกที่นึกถึงเมื่อพูดถึงสงกรานต์ | 11 |
-| [การท่องเที่ยวแห่งประเทศไทย; สำนักงานสถิติแห่งชาติเผยแพร่ในรายงานสถิติรายปี 2568](https://www.nso.go.th/public/e-book/Statistical-Yearbook/SYB-2025_webPage/File%20SYB/2025/17/T%2017.6%202025.pdf) | กิจกรรมระหว่างเที่ยวในไทย | 18 |
-| [นิด้าโพล สถาบันบัณฑิตพัฒนบริหารศาสตร์](https://nidapoll.nida.ac.th/data/survey/uploads/FILE-1694230432246.pdf) | นักแสดงหญิงในบริบทโทรทัศน์ไทยยุคที่สำรวจ | 12 |
-| [สำนักงานพัฒนาธุรกรรมทางอิเล็กทรอนิกส์ (ETDA)](https://www.etda.or.th/getattachment/78750426-4a58-4c36-85d3-d1c11c3db1f3/IUB-2022-Final.pdf.aspx#page=64) | เหตุผลที่ซื้อของออนไลน์ | 15 |
-| [U.S. Department of Commerce, National Travel and Tourism Office](https://www.trade.gov/sites/default/files/2026-05/SIAT-2025-Annual-B1-All-Overseas-OUTBOUND.xlsx) | ประเทศหรือจุดหมายในเอเชียที่ผู้เดินทางทางอากาศจากสหรัฐฯ ไปจริง | 14 |
-| [Troy Press / Researchscape International](https://troypress.com/most-played-board-games-and-card-games/) | เกมกระดานที่เคยเล่น | 22 |
-| [Troy Press / Researchscape International](https://troypress.com/most-played-board-games-and-card-games/) | เกมไพ่ที่เคยเล่น | 25 |
+| [มกอช. ตาราง 4.17](https://www.m-society.go.th/ewtadmin/ewt/mso_web/article_attach/19305/20675.pdf#page=342) | ผลไม้สด เนื้อ/อาหารทะเล ข้าว/เส้น และเครื่องดื่ม | 29–82 |
+| [Surapon Saensouk และคณะ, Ethnobotany Research and Applications 33:33](https://ethnobotanyjournal.org/index.php/era/article/view/7827) | พืชอาหารที่ขายในตลาดของป่าหนองหมื่นถ่าน จ.ร้อยเอ็ด (RFC × 100 จาก 30 คน) | 88 |
+| [สำนักงานสถิติแห่งชาติ](https://catalogapi.nso.go.th/api/index?table=OS_01_00013_01_BKK&format=csv) | เขตในกรุงเทพฯ ตามสัดส่วนประชากรสำมะโน / จังหวัดค้างคืน / กิจกรรมประจำวัน | 28–76 |
+| [สำนักงานปลัดกระทรวงการท่องเที่ยวและกีฬา (บัญชีประชาชาติด้านการกีฬา)](https://www.mots.go.th/images/v2022_17640582795404Lij4Liy4Lii4LiH4Liy4LiZ4LiJ4Lia4Lix4Lia4Liq4Lih4Lia4Li54Lij4LiT4LmMIChGaW5hbCBSZXBvcnQpIFNTQSDguJvguKPguLDguIjguLPguJvguLUgMjU2OC5wZGY%3D.pdf) | ชนิดกีฬาที่คนไทยเลือกเล่นและรับชมการแข่งขัน | 45 |
+| [สำนักงาน กสทช. และสำนักงานสถิติแห่งชาติ](https://datacatalog.nbtc.go.th/dataset/suborg53_5) | ช่องทีวีดิจิทัลไทยที่มีผู้ชม | 21 |
+| [วารสารแก่นเกษตร](https://ag2.kku.ac.th/kaj/PDF.cfm?filename=23_Fis321.pdf&id=3994&keeptrack=9#page=5) | ปลาน้ำจืดที่สำรวจพบในแหล่งน้ำป่าสาคู อ.เมืองนครศรีธรรมราช | 25 |
+| [Alan James Benjamin Clarke, TUNorms](https://doi.org/10.17605/osf.io/npj4u) | คำขึ้นต้นด้วย ก และคำขึ้นต้นด้วย “ความ” ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)) | 50–62 |
+| [Briony Banks และ Louise Connell](https://doi.org/10.3758/s13428-021-01787-z) | เครื่องแต่งกาย เครื่องมือ ยานพาหนะ สี ดอกไม้ และเครื่องดนตรี ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)) | 41–94 |
+| [Devographics State of Devs 2025](https://2025.stateofdevs.com/en-US/hobbies/#favorite_tv) | ซีรีส์และวิดีโอเกม | 83–89 |
+| [Troy Press / Researchscape International](https://troypress.com/most-played-board-games-and-card-games/) | เกมกระดานและเกมไพ่ที่เคยเล่น | 22–25 |
+| [U.S. Department of Commerce (SIAT)](https://www.trade.gov/sites/default/files/2026-05/SIAT-2025-Annual-B1-All-Overseas-INBOUND.xlsx) / [IDFA](https://www.idfa.org/wordpress/wp-content/uploads/2024/05/2404080_topline_IDFA_US_Adults.pdf) / [USDA](https://ageconsearch.umn.edu/record/312166/files/mrr1019.pdf) | รัฐในสหรัฐฯ รสไอศกรีม และผักที่ใช้ในครัวเรือนสหรัฐฯ | 26–49 |
 
 - ตรวจร้อยละของแต่ละคำตอบจากรายงานหรือตารางที่เผยแพร่ เลือกฐานเดียวกันภายในข้อ ระบุเมื่อฐานย่อยหรือขนาดตัวอย่างไม่ปรากฏในตาราง และไม่ย้อนคำนวณจำนวนผู้ตอบจากร้อยละที่ปัดเศษแล้ว
 - เก็บชื่อย่อ คำเรียกทั่วไป และการสะกดไทยหรืออังกฤษเมื่อเป็นคำตอบเดียวกัน เช่น “ส่งฟรี” หรือ “ญาญ่า” คำเรียกเหล่านี้ใช้ร้อยละเดียวกับหมวดต้นทาง ไม่เพิ่มคำตอบที่ไม่มีข้อมูล

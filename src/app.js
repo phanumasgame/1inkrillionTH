@@ -146,7 +146,7 @@ function landing() {
     (mode === 'daily' ? '<button class="discovery-card" data-action="endless"><span class="discovery-tag">DIVE AFTER DIVE</span><img src="' +
       sprite('schooler') + '" alt=""><span>ENDLESS DIVE</span><small>∞</small></button>' : '') +
     '<button class="begin" data-action="begin">▼ ' + label + ' ▼</button>' +
-    '<div class="landing-nav"><span>' + (mode === 'daily' ? 'DIVE · ' + today : 'ENDLESS DIVE #' + (save.run + 1)) + '</span>' +
+    '<div class="landing-nav"><span>' + (mode === 'daily' ? 'DIVE · ' + today : 'ENDLESS DIVE #' + (canResume ? saved.run : save.run + 1)) + '</span>' +
     '<div><button data-action="history">DIVE LOG ⟲</button><button data-action="' + (mode === 'daily' ? 'endless' : 'daily') + '">' +
     (mode === 'daily' ? 'UNLIMITED ∞' : 'TODAY’S DIVE') + '</button></div></div></section>' +
     '<div class="reference-footer">KRILLION TH · LOCAL EDITION</div></main>';
