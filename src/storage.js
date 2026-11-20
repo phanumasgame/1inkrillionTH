@@ -6,15 +6,55 @@ export function emptySave() {
   return { version: 1, settings: { ...DEFAULT_SETTINGS }, daily: {}, endless: null, endlessByBank: {},
     history: [], seen: [], run: 0, character: 'krillion', currentBankVersion: null, resumeSessionId: null };
 }
-export function readSave(storage = globalThis.localStorage) {
+function slimQuestionSnapshot(question, matchedIds) {
+  const picked = [];
+  const seen = new Set();
+  const add = answer => {
+    if (!answer || seen.has(answer.id)) return;
+    seen.add(answer.id);
+    picked.push(answer);
+  };
+  for (const answer of question.answers) if (matchedIds.has(answer.id)) add(answer);
+  if (question.curated) {
+    add(question.answers.find(a => a.tier === 'plankton'));
+    add(question.answers.find(a => a.tier === 'krillion'));
+  } else {
+    const val = a => question.survey?.scale === 'rating-1-to-7' ? a.rating : a.percent;
+    let hi = question.answers[0], lo = question.answers[0];
+    for (const a of question.answers) {
+      if (val(a) > val(hi)) hi = a;
+      if (val(a) < val(lo)) lo = a;
+    }
+    add(hi); add(lo);
+  }
+  for (const answer of question.answers) {
+    if (picked.length >= 5) break;
+    add(answer);
+  }
+  return { ...question, answers: picked };
+}
+
+export function readSave(storage = globalThis.localStorage, bank = null) {
   try {
     const data = JSON.parse(storage.getItem(STORAGE_KEY));
     if (!data || data.version !== 1 || !data.daily || typeof data.daily !== 'object' ||
       Array.isArray(data.daily) || !Array.isArray(data.history)) return emptySave();
     if (data.snapshotEncoding) {
       if (data.snapshotEncoding !== 'question-table-v1' || !Array.isArray(data.questionSnapshots)) return emptySave();
+      const bankById = bank?.questions ? new Map(bank.questions.map(q => [q.id, q])) : null;
+      const resolveSnapshot = index => {
+        if (!Number.isInteger(index)) return undefined;
+        const entry = data.questionSnapshots[index];
+        if (!entry) return undefined;
+        if (entry.$bankRef) {
+          if (bankById && bank.version === entry.bankVersion && bankById.has(entry.$bankRef))
+            return structuredClone(bankById.get(entry.$bankRef));
+          return entry.fallback;
+        }
+        return entry;
+      };
       const expand = session => !session || !Array.isArray(session.questions) ? session : {
-        ...session, questions: session.questions.map(index => Number.isInteger(index) ? data.questionSnapshots[index] : undefined)
+        ...session, questions: session.questions.map(resolveSnapshot)
       };
       data.daily=Object.fromEntries(Object.entries(data.daily).map(([key,session])=>[key,expand(session)]));
       data.endless=expand(data.endless);
@@ -59,13 +99,43 @@ export function savedSessions(saved) {
   return [...new Map([...Object.values(saved.daily),...Object.values(saved.endlessByBank||{})]
     .filter(validSession).map(session=>[session.id,session])).values()];
 }
-export function writeSave(save, storage = globalThis.localStorage) {
+export function writeSave(save, storage = globalThis.localStorage, bank = null) {
   try {
-    // Store each immutable question snapshot once, rather than copying hundreds
-    // of accepted answers into every Daily, Endless and history entry.
+    // Store each immutable question snapshot once, and compact live-bank
+    // questions into lightweight bank references with a minimal fallback so
+    // thousand-answer categories never exceed browser localStorage limits.
+    const bankById = bank?.questions ? new Map(bank.questions.map(q => [q.id, q])) : null;
+    const matchedByQuestion = new Map();
+    const recordMatches = session => {
+      if (!validSession(session)) return;
+      for (const result of session.results || []) {
+        if (!result?.questionId || !result?.answerId) continue;
+        if (!matchedByQuestion.has(result.questionId)) matchedByQuestion.set(result.questionId, new Set());
+        matchedByQuestion.get(result.questionId).add(result.answerId);
+      }
+    };
+    for (const s of Object.values(save.daily || {})) recordMatches(s);
+    recordMatches(save.endless);
+    for (const s of Object.values(save.endlessByBank || {})) recordMatches(s);
+    for (const s of save.history || []) recordMatches(s);
+
     const questionSnapshots=[], references=new Map();
     const pack = session => !validSession(session) ? session : {
       ...session, questions:session.questions.map(question=>{
+        const bankQ = bankById && session.bankVersion === bank.version ? bankById.get(question.id) : null;
+        if (bankQ && bankQ.prompt === question.prompt && bankQ.answers.length === question.answers.length &&
+          bankQ.questionVersion === question.questionVersion) {
+          const refKey = '$bankRef:' + bank.version + ':' + question.id;
+          if (!references.has(refKey)) {
+            references.set(refKey, questionSnapshots.length);
+            questionSnapshots.push({
+              $bankRef: question.id,
+              bankVersion: bank.version,
+              fallback: slimQuestionSnapshot(question, matchedByQuestion.get(question.id) || new Set())
+            });
+          }
+          return references.get(refKey);
+        }
         const text=JSON.stringify(question);
         if(!references.has(text)) {
           references.set(text,questionSnapshots.length);questionSnapshots.push(question);

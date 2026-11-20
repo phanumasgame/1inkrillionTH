@@ -1,7 +1,7 @@
 import { ANSWER_MS, PREVIEW_MS, TIME_ZONE, TIERS, TIER_ORDER, dayKey, selectDaily, selectEndless,
   createSession, tickSession, submitAnswer, confirmCorrection, skipRound, nextRound, shareText } from './game.js';
-import { readSave, writeSave, validSession, dailySlot, prepareSaveForBank, currentSavedSession, savedSessions } from './storage.js';
-import { isSurveySession, prepareSurveyBank, starterExample, surveyTiers, surveyValue } from './survey.js';
+import { readSave, writeSave, emptySave, validSession, dailySlot, prepareSaveForBank, currentSavedSession, savedSessions } from './storage.js';
+import { curatedReason, isSurveySession, prepareSurveyBank, starterExample, surveyTiers, surveyValue } from './survey.js';
 import { answerForms } from './answers.js';
 import { DiveAudio } from './audio.js';
 import { OceanScene } from './scene.js';
@@ -11,7 +11,7 @@ import { focusAnswer } from './input.js';
 const app = document.getElementById('app');
 const modalRoot = document.getElementById('modal-root');
 let bank, audio, scene;
-let save = readSave(), mode = location.pathname.startsWith('/unlimited') ? 'endless' : 'daily';
+let save = emptySave(), mode = location.pathname.startsWith('/unlimited') ? 'endless' : 'daily';
 let session = null, view = 'home', composing = false, lastTick = -1, lastTierLine = null, landed = false, inputSaveTimer, toastTimer;
 let modalRestoreFocus = null, modalKind = null;
 let depthDisplay = null, displayedDepth = null, descentView = null;
@@ -44,8 +44,8 @@ async function load() {
     if (results[0].status !== 'fulfilled') throw results[0].reason;
     if (results[1].status !== 'fulfilled') throw results[1].reason;
     bank = prepareSurveyBank(results[0].value);
-    save=prepareSaveForBank(save,bank);
-    writeSave(save);
+    save = prepareSaveForBank(readSave(globalThis.localStorage, bank), bank);
+    writeSave(save, globalThis.localStorage, bank);
     audio = new DiveAudio(results[1].value, save.settings.muted);
     scene = new OceanScene((depth, frame) => {
       if (depthDisplay && displayedDepth !== depth) {
@@ -95,6 +95,7 @@ function restoreCurrent() {
   } else scene.set(0, false, save.settings.lowPower, true);
 }
 function persist() {
+  if (!bank) return;
   if (session && view !== 'history-result') {
     if (session.mode === 'daily') save.daily[dailySlot(session.date,session.bankVersion)] = session;
     else {
@@ -113,7 +114,7 @@ function persist() {
   }
   const dates = Object.keys(save.daily).filter(key => surveySession(save.daily[key])).sort();
   for (const date of dates.slice(0, Math.max(0, dates.length - 35))) delete save.daily[date];
-  if (!writeSave(save)) toast('บันทึกในเบราว์เซอร์ไม่ได้ กรุณาตรวจพื้นที่จัดเก็บหรือโหมดส่วนตัว');
+  if (!writeSave(save, globalThis.localStorage, bank)) toast('บันทึกในเบราว์เซอร์ไม่ได้ กรุณาตรวจพื้นที่จัดเก็บหรือโหมดส่วนตัว');
 }
 function controls(active = false) {
   return '<button class="icon-btn menu-button" data-action="menu" aria-label="Open menu">' + icon('menu') + '</button>' +
@@ -573,8 +574,9 @@ function explainDialog(index) {
     const refs = curated.references?.length
       ? '<br>อ้างอิง: ' + curated.references.map(r => '<a href="' + safeUrl(r.url) + '" target="_blank" rel="noopener noreferrer">' + esc(r.label) + ' ↗</a>').join(' · ')
       : '';
+    const reasonText = answer ? curatedReason(q, answer, answerTier) : '';
     provenance = (answer ? '<p>คำตอบของคุณ: <strong>' + esc(answer.label) + '</strong> · ' + esc(TIERS[answerTier].name) + ' (' + TIERS[answerTier].score + ' PTS)' +
-      (answer.reason ? '<br><small style="color:#9eb8cc">' + esc(answer.reason) + '</small>' : '') + '</p>' : '') +
+      (reasonText ? '<br><small style="color:#9eb8cc">' + esc(reasonText) + '</small>' : '') + '</p>' : '') +
       '<div class="method-info">แหล่งที่มา: คลังคัดสรรตามความคุ้นเคย (Curated Familiarity · ไม่ใช่ผลสำรวจความถี่จากผู้ตอบ)<br>เกณฑ์จัดระดับ: ' +
       esc(curated.basis) + '<br>ขอบเขตคลัง: ' + esc(curated.coverage) +
       (curated.note ? '<br>' + esc(curated.note) : '') + refs + '</div>' +

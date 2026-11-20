@@ -22,6 +22,10 @@ export function starterExample(question) {
   return question.answers.reduce((best, answer) => surveyValue(question, answer) > surveyValue(question, best) ? answer : best);
 }
 
+export function curatedReason(question, answer, tier) {
+  return answer?.reason || question?.curated?.tierReasons?.[tier || answer?.tier] || '';
+}
+
 // Validates that either published-survey or curated-familiarity provenance is
 // complete and internally consistent. Reviewing source accuracy/permissions
 // remains a human research task.
@@ -48,6 +52,11 @@ export function validateSurveyQuestion(q) {
     const c = q.curated;
     for (const field of ['basis', 'coverage'])
       if (!nonempty(c[field])) errors.push(name + ': missing curated ' + field);
+    if (c.tierReasons !== undefined) {
+      if (!c.tierReasons || typeof c.tierReasons !== 'object' || Array.isArray(c.tierReasons) ||
+        Object.entries(c.tierReasons).some(([k, v]) => !VALID_TIERS.has(k) || !nonempty(v)))
+        errors.push(name + ': invalid curated tierReasons');
+    }
     if (c.references !== undefined) {
       if (!Array.isArray(c.references) || c.references.some(ref => !nonempty(ref?.label) || !isHttps(ref?.url)))
         errors.push(name + ': invalid curated references');
@@ -70,7 +79,7 @@ export function validateSurveyQuestion(q) {
     } else if (hasCurated) {
       if (!VALID_TIERS.has(a.tier)) errors.push(name + '/' + a.id + ': invalid curated tier');
       else tiers.add(a.tier);
-      if (!nonempty(a.reason)) errors.push(name + '/' + a.id + ': missing curated reason');
+      if (!nonempty(a.reason) && !nonempty(q.curated?.tierReasons?.[a.tier])) errors.push(name + '/' + a.id + ': missing curated reason');
       if (a.percent !== undefined || a.rating !== undefined) errors.push(name + '/' + a.id + ': curated answer cannot include survey metrics');
     }
     for (const label of [a.label, ...a.aliases]) for (const form of answerForms(label)) {

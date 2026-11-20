@@ -3,52 +3,62 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createSession, matchAnswer, selectDaily, settleRound, TIERS } from '../src/game.js';
 import { emptySave, prepareSaveForBank, readSave, writeSave } from '../src/storage.js';
-import { BROAD_ANSWER_TARGET, HYBRID_SCORING, isSurveySession, MIN_PLAYABLE_ANSWERS, prepareSurveyBank, starterExample, SURVEY_TIERS, surveyTier, surveyValue, validateSurveyBank } from '../src/survey.js';
+import { BROAD_ANSWER_TARGET, curatedReason, HYBRID_SCORING, isSurveySession, MIN_PLAYABLE_ANSWERS, prepareSurveyBank, starterExample, SURVEY_TIERS, surveyTier, surveyValue, validateSurveyBank } from '../src/survey.js';
 
 const raw = JSON.parse(await readFile(new URL('../data/survey-bank.json', import.meta.url), 'utf8'));
 const bank = prepareSurveyBank(raw);
 const make = () => createSession({mode:'daily',bank,questions:selectDaily(bank,'2026-11-17'),date:'2026-11-17',now:1000});
 
-test('v1.0.6 hybrid bank has 100 everyday questions with clean provenance and broad animal coverage', () => {
+test('v1.0.7 mega hybrid bank has 100 questions, 40k+ answers, 12 1000+ pools, and rich Isan food & animal coverage', () => {
   assert.deepEqual(validateSurveyBank(raw), []);
-  assert.equal(raw.version, '1.0.6');
+  assert.equal(raw.version, '1.0.7');
   assert.equal(raw.scoringMethod, HYBRID_SCORING);
   assert.equal(raw.questions.length, 100);
   assert.equal(raw.questions.filter(q => q.scope === 'thai').length, 50);
   assert.equal(raw.questions.filter(q => q.scope === 'world').length, 50);
   const surveyQuestions = raw.questions.filter(q => q.survey);
   const curatedQuestions = raw.questions.filter(q => q.curated);
-  assert.equal(surveyQuestions.length, 18);
-  assert.equal(curatedQuestions.length, 82);
-  assert.equal(raw.questions.reduce((sum, q) => sum + q.answers.length, 0), 6540);
+  assert.equal(surveyQuestions.length, 6);
+  assert.equal(curatedQuestions.length, 94);
+  assert.ok(raw.questions.reduce((sum, q) => sum + q.answers.length, 0) >= 40_000);
+  assert.ok(raw.questions.filter(q => q.answers.length >= BROAD_ANSWER_TARGET).length >= 90);
+  assert.ok(raw.questions.filter(q => q.answers.length >= 1000).length >= 12);
   assert.ok(raw.questions.every(q => q.answers.length >= MIN_PLAYABLE_ANSWERS));
 
-  const fruit = raw.questions.find(q => q.id === 'th-acfs-fresh-fruit');
-  assert.equal(fruit.survey.sampleSize, 7267);
-  assert.equal(fruit.answers.find(a => a.id === 'acfs-191').percent, 67.9);
   const districts = raw.questions.find(q => q.id === 'th-nso-bangkok-districts-census-2010');
   assert.equal(districts.answers.length, 50);
   assert.equal(matchAnswer(districts, 'จตุจักร').answer.id, 'bkk-district-30');
   const tv = raw.questions.find(q => q.id === 'th-nbtc-digital-tv-channels-2025');
   assert.equal(tv.answers.length, 21);
   assert.equal(matchAnswer(tv, 'ช่อง 3').answer.id, 'ch3');
-  const sports = raw.questions.find(q => q.id === 'th-ssa-sports-watched-2025');
-  assert.equal(sports.survey.sampleSize, 6047);
-  assert.equal(matchAnswer(sports, 'บอล').answer.percent, 64.92);
-  const iceCream = raw.questions.find(q => q.id === 'world-ice-cream-flavors-idfa-2024');
-  assert.equal(iceCream.answers.length, 40);
-  assert.equal(iceCream.answers.find(a => a.id === 'vanilla').percent, 38);
+
+  const isaan = raw.questions.find(q => q.id === 'th-isaan-food');
+  assert.ok(isaan.answers.length >= 250);
+  for (const dish of ['ส้มตำไทย', 'ตำปูปลาร้า', 'ซอยจุ๊', 'เสือร้องไห้', 'อู๋เพี้ย', 'หมกฮวก', 'ผัดหมี่โคราช', 'แกงเปรอะ', 'ตับหวาน']) {
+    assert.equal(matchAnswer(isaan, dish).kind, 'exact', 'Isan dish missing: ' + dish);
+  }
+
+  const anime = raw.questions.find(q => q.id === 'world-anime');
+  assert.ok(anime.answers.length >= 2000);
+  for (const title of ['วันพีซ', 'Attack on Titan', 'ผ่าพิภพไททัน', 'Frieren', 'Jujutsu Kaisen']) {
+    assert.equal(matchAnswer(anime, title).kind, 'exact', 'Anime missing: ' + title);
+  }
+  assert.ok(raw.questions.find(q => q.id === 'world-famous-movies').answers.length >= 2000);
+  assert.ok(raw.questions.find(q => q.id === 'world-famous-series').answers.length >= 2000);
+  assert.ok(raw.questions.find(q => q.id === 'th-thai-films').answers.length >= 1000);
+  assert.ok(raw.questions.find(q => q.id === 'th-thai-dramas').answers.length >= 1000);
+  assert.ok(raw.questions.find(q => q.id === 'world-animation-films').answers.length >= 1000);
 
   const animals = raw.questions.find(q => q.id === 'world-animals');
-  assert.equal(animals.answers.length, 307);
-  assert.equal(matchAnswer(animals, 'จิ้งจก').answer.id, 'animal-020');
+  assert.ok(animals.answers.length >= 1000);
+  assert.equal(matchAnswer(animals, 'จิ้งจก').kind, 'exact');
   const homeCreatures = raw.questions.find(q => q.id === 'th-home-creatures');
-  assert.equal(homeCreatures.answers.length, 47);
-  assert.equal(matchAnswer(homeCreatures, 'จิ้งจก').answer.id, 'home-critter-001');
+  assert.ok(homeCreatures.answers.length >= 100);
+  assert.equal(matchAnswer(homeCreatures, 'จิ้งจก').kind, 'exact');
 
   assert.ok(surveyQuestions.every(q => !q.survey.url.includes('verasight')));
   assert.ok(surveyQuestions.every(q => q.answers.every(a => !('count' in a) && !('tier' in a))));
-  assert.ok(curatedQuestions.every(q => q.answers.every(a => SURVEY_TIERS.includes(a.tier) && !('percent' in a) && !('rating' in a))));
+  assert.ok(curatedQuestions.every(q => q.answers.every(a => SURVEY_TIERS.includes(a.tier) && !('percent' in a) && !('rating' in a) && Boolean(curatedReason(q, a)))));
 });
 
 test('overly specific prompts were retired and broader survey + curated questions score cleanly', () => {
@@ -59,8 +69,8 @@ test('overly specific prompts were retired and broader survey + curated question
     'world-devographics-2025-movies',
     'world-devographics-2025-music',
     'world-butterflies',
-    'world-banks-connell-fish',
-    'world-banks-connell-bird',
+    'world-banks-connell-flower',
+    'th-ssa-sports-watched-2025',
     'th-nhes-sweets-and-snacks',
     'th-etda-devices-2022',
     'world-home-tech-dcms-2025'
@@ -84,15 +94,15 @@ test('overly specific prompts were retired and broader survey + curated question
   assert.equal(remote.label, 'รีโมต');
   assert.ok(surveyValue(home, remote) >= 1 && surveyValue(home, remote) <= 7);
   assert.equal(remote.percent, undefined);
-  assert.equal(matchAnswer(khwam, 'ความรัก').answer.id, 'khwam-001');
+  assert.equal(matchAnswer(khwam, 'ความรัก').kind, 'exact');
   assert.equal(matchAnswer(pokemon, 'ปิกาจู').answer.id, 'pikachu');
   assert.equal(pokemon.answers.length, 805);
   assert.equal(find('th-province-trips').answers.length, 77);
   assert.equal(countries.answers.length, 196);
   assert.equal(find('world-us-states').answers.length, 50);
-  assert.equal(find('world-board-games').answers.length, 44);
-  assert.equal(find('world-card-games').answers.length, 34);
-  assert.equal(starterExample(find('th-acfs-fresh-fruit')).id, 'acfs-205');
+  assert.ok(find('world-planets-space').answers.length >= 150);
+  assert.ok(find('th-national-parks').answers.length >= 150);
+  assert.equal(starterExample(snacks).percent >= 22.7, true);
   assert.equal(starterExample(find('world-animals')).tier, 'plankton');
   const broken = structuredClone(raw);
   const rating = broken.questions.find(q => q.id === home.id).answers[0];
@@ -138,7 +148,7 @@ test('missing provenance or percentage cannot receive a fabricated score or star
     assert.ok(validateSurveyBank(invalid).length);
     assert.throws(()=>prepareSurveyBank(invalid));
     assert.throws(()=>createSession({mode:'daily',bank:invalid,questions:invalid.questions.slice(0,7),now:1000}));
-    const s=make();s.phase='answer';modify(s.questions[0]);
+    const s=make();s.phase='answer';s.questions[0]=structuredClone(raw.questions[0]);modify(s.questions[0]);
     assert.equal(isSurveySession(s),false);
     assert.equal(settleRound(s,s.questions[0].answers[0],'x','correct',5000),s);
     assert.equal(s.score,0);
@@ -170,7 +180,8 @@ test('curated familiarity questions validate strictly and score + save through h
   for (const modify of [
     q => { delete q.curated.basis; },
     q => { delete q.curated.coverage; },
-    q => { delete q.answers[0].reason; },
+    q => { delete q.answers[0].reason; delete q.curated.tierReasons; },
+    q => { q.curated.tierReasons = { invalid: 'x' }; },
     q => { q.answers[0].percent = 50; },
     q => { q.answers.forEach(a => { if (a.tier === 'krillion') a.tier = 'rare'; }); },
     q => { q.survey = structuredClone(raw.questions[0].survey); }

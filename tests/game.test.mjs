@@ -49,18 +49,32 @@ test('daily date uses New York calendar and handles daylight saving',()=>{
   assert.equal(dayKey(Date.parse('2026-07-17T03:59:59Z')),'2026-07-16');
   assert.equal(dayKey(Date.parse('2026-07-17T04:00:00Z')),'2026-07-17');
 });
-test('endless alternates evenly and rotates broad and shorter questions without early repeats within each group',()=>{
+test('endless alternates evenly and rotates questions without early repeats within each scope',()=>{
   let seen=[],pair=[];
+  const usesSplit = ['thai','world'].every(scope => {
+    const broadCount = bank.questions.filter(q=>q.scope===scope && q.answers.length>=BROAD_ANSWER_TARGET).length;
+    const shortCount = bank.questions.filter(q=>q.scope===scope && q.answers.length<BROAD_ANSWER_TARGET).length;
+    return broadCount >= 2 && shortCount >= 15;
+  });
   for(let i=0;i<20;i++){
     const before=seen,draw=selectEndless(bank,seen,()=>.42,i+1);
     seen=draw.seen;pair.push(...draw.questions);
     assert.equal(new Set(draw.questions.map(q=>q.id)).size,7);
+    assert.ok(draw.questions.filter(q=>q.answers.length>=BROAD_ANSWER_TARGET).length>=4);
     for(const scope of ['thai','world']) {
-      for(const wide of [true,false]) {
-        const hasGroup=q=>q.scope===scope && (q.answers.length>=BROAD_ANSWER_TARGET)===wide;
+      if (usesSplit) {
+        for(const wide of [true,false]) {
+          const hasGroup=q=>q.scope===scope && (q.answers.length>=BROAD_ANSWER_TARGET)===wide;
+          const picked=draw.questions.filter(hasGroup);
+          const remaining=bank.questions.filter(q=>hasGroup(q)&&!before.includes(q.id));
+          if(wide) assert.equal(picked.length,2);
+          if(remaining.length>=picked.length) assert.ok(picked.every(q=>!before.includes(q.id)));
+          else assert.ok(remaining.every(q=>picked.some(item=>item.id===q.id)));
+        }
+      } else {
+        const hasGroup=q=>q.scope===scope;
         const picked=draw.questions.filter(hasGroup);
         const remaining=bank.questions.filter(q=>hasGroup(q)&&!before.includes(q.id));
-        if(wide) assert.equal(picked.length,2);
         if(remaining.length>=picked.length) assert.ok(picked.every(q=>!before.includes(q.id)));
         else assert.ok(remaining.every(q=>picked.some(item=>item.id===q.id)));
       }
@@ -120,7 +134,8 @@ test('unknown entries preserve the deadline, support retries, and obey clear set
 });
 test('correction must be confirmed before deadline and toggle can accept directly',()=>{
   const original=answering();
-  const fixture={...original.questions[0],...q,answers:q.answers.map((a,i)=>({...a,percent:5-i}))};
+  const surveyBase=bank.questions.find(item=>item.survey && !item.survey.scale);
+  const fixture={...surveyBase,...q,answers:q.answers.map((a,i)=>({...a,percent:5-i}))};
   const s={...original,questions:[fixture,...original.questions.slice(1)]};
   const corrected=submitAnswer(s,'Nakhon Ratchasimx',{corrections:true},now+4000);
   assert.equal(corrected.phase,'correction');assert.equal(corrected.results.length,0);
@@ -227,4 +242,22 @@ test('storage deduplicates broad answer snapshots and restores every old or new 
   assert.deepEqual(readSave(store),saved);
   packed.history[0].questions[0]=999999;raw=JSON.stringify(packed);
   assert.equal(readSave(store).history.length,39);
+});
+
+test('bank-referenced storage keeps thousand-answer sessions compact and falls back across bank versions',()=>{
+  const megaQuestions = bank.questions.filter(q=>q.answers.length>=1000).slice(0,7);
+  assert.equal(megaQuestions.length, 7);
+  const session = createSession({mode:'endless',bank,questions:megaQuestions,date,now});
+  const saved = prepareSaveForBank(emptySave(), bank);
+  saved.endless = session;
+  saved.endlessByBank[bank.version] = session;
+  let raw = '';
+  const store = { getItem: () => raw, setItem: (_, value) => { raw = value; } };
+  assert.equal(writeSave(saved, store, bank), true);
+  assert.ok(raw.length < 40_000, 'Expected compact bank-ref payload < 40KB, got ' + raw.length);
+  const restored = readSave(store, bank);
+  assert.deepEqual(restored, saved);
+  const fallbackOnly = readSave(store, { ...bank, version: 'future-bank' });
+  assert.equal(validSession(fallbackOnly.endless), true);
+  assert.ok(fallbackOnly.endless.questions.every(q => q.answers.length >= 5));
 });

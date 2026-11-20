@@ -132,9 +132,11 @@ export function selectEndless(bank, seen = [], rng = Math.random, run = 1) {
   const available = [], required = [];
   const nextSeen = [...seen];
   const targets = scopeTargetsForRound(run);
-  const quota = Object.keys(targets).every(scope => bank.questions.filter(q=>q.scope===scope && q.answers.length>=BROAD_ANSWER_TARGET).length>=2 &&
-    bank.questions.filter(q=>q.scope===scope && q.answers.length<BROAD_ANSWER_TARGET).length>=targets[scope]-2)
-    ? { thai:2, world:2 } : null;
+  const quota = Object.keys(targets).every(scope => {
+    const broadCount = bank.questions.filter(q=>q.scope===scope && q.answers.length>=BROAD_ANSWER_TARGET).length;
+    const shortCount = bank.questions.filter(q=>q.scope===scope && q.answers.length<BROAD_ANSWER_TARGET).length;
+    return broadCount >= 2 && shortCount >= Math.max(targets[scope] - 2, 15);
+  }) ? { thai:2, world:2 } : null;
   // Cycle broad and smaller sets separately, so the broad set isn't exhausted
   // in the first few dives and every short set still gets a turn.
   for (const [scope, target] of Object.entries(targets)) {
