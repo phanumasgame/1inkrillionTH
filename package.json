@@ -13,6 +13,7 @@
     "check": "node scripts/validate-data.mjs",
     "db:init": "node scripts/init-db.mjs",
     "export-suggestions": "node scripts/export-suggestions.mjs",
+    "daily-report": "node scripts/daily-analysis.mjs",
     "refresh-data": "node scripts/refresh-evidence.mjs",
     "analyze-reference": "node scripts/analyze-reference.mjs"
   },
