@@ -1,6 +1,6 @@
 {
   "name": "krillion-th",
-  "version": "1.0.10",
+  "version": "1.0.10-hf1",
   "private": true,
   "type": "module",
   "description": "A Thai rare-answer dive, inspired by Krillion.io.",

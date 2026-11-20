@@ -9,21 +9,39 @@ const raw = JSON.parse(await readFile(new URL('../data/survey-bank.json', import
 const bank = prepareSurveyBank(raw);
 const make = () => createSession({mode:'daily',bank,questions:selectDaily(bank,'2026-11-17'),date:'2026-11-17',now:1000});
 
-test('v1.0.10 unified 120-question bank has 46k+ answers, consolidated rail stations, Thai malls, and calibrated tiers', () => {
+test('v1.0.10-hf1 unified 130-question bank has 66k+ answers, 22 1000+ mega pools, consolidated rail stations, and calibrated tiers', () => {
   assert.deepEqual(validateSurveyBank(raw), []);
-  assert.equal(raw.version, '1.0.10');
+  assert.equal(raw.version, '1.0.10-hf1');
   assert.equal(raw.scoringMethod, HYBRID_SCORING);
-  assert.equal(raw.questions.length, 120);
-  assert.equal(raw.questions.filter(q => q.scope === 'thai').length, 60);
-  assert.equal(raw.questions.filter(q => q.scope === 'world').length, 60);
+  assert.equal(raw.questions.length, 130);
+  assert.equal(raw.questions.filter(q => q.scope === 'thai').length, 65);
+  assert.equal(raw.questions.filter(q => q.scope === 'world').length, 65);
   const surveyQuestions = raw.questions.filter(q => q.survey);
   const curatedQuestions = raw.questions.filter(q => q.curated);
   assert.equal(surveyQuestions.length, 6);
-  assert.equal(curatedQuestions.length, 114);
-  assert.ok(raw.questions.reduce((sum, q) => sum + q.answers.length, 0) >= 46_000);
-  assert.ok(raw.questions.filter(q => q.answers.length >= BROAD_ANSWER_TARGET).length >= 112);
-  assert.ok(raw.questions.filter(q => q.answers.length >= 1000).length >= 12);
+  assert.equal(curatedQuestions.length, 124);
+  assert.ok(raw.questions.reduce((sum, q) => sum + q.answers.length, 0) >= 66_000);
+  assert.ok(raw.questions.filter(q => q.answers.length >= BROAD_ANSWER_TARGET).length >= 122);
+  assert.ok(raw.questions.filter(q => q.answers.length >= 1000).length >= 22);
   assert.ok(raw.questions.every(q => q.answers.length >= MIN_PLAYABLE_ANSWERS));
+
+  // Verify all 10 new 1,000+ mega categories (5 Thai + 5 World)
+  for (const [qid, probe] of [
+    ['th-actors', 'ณเดชน์'],
+    ['th-schools', 'สวนกุหลาบ'],
+    ['th-thai-athletes', 'บัวขาว'],
+    ['th-historical-icons', 'สุนทรภู่'],
+    ['th-companies', 'ปตท.'],
+    ['world-actors-directors', 'ทอม ครูซ'],
+    ['world-athletes', 'เมสซี'],
+    ['world-manga', 'วันพีซ'],
+    ['world-football-clubs', 'แมนยู'],
+    ['world-global-companies', 'Apple'],
+  ]) {
+    const q = raw.questions.find(x => x.id === qid);
+    assert.ok(q && q.answers.length >= 1000, `Expected 1000+ answers in ${qid}, got ${q?.answers.length}`);
+    assert.equal(matchAnswer(q, probe).kind, 'exact', `Expected exact match for ${probe} in ${qid}`);
+  }
 
   // Verify split BTS/MRT prompts were consolidated into th-rail-stations and th-shopping-malls maintains 60/60 parity
   assert.equal(raw.questions.find(q => q.id === 'th-bts-stations'), undefined);
