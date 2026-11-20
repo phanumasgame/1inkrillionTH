@@ -616,12 +616,20 @@ export function formatDailyReportMarkdown(report) {
 
   lines.push(`\n### หมวด A: คำตอบหลักใหม่ (New Answer) — ${rec.newAnswers.length} รายการ`);
   if (rec.newAnswers.length) {
-    lines.push('| โจทย์ | คำตอบหลัก (`label`) | Alias แนะนำ | ระดับแนะนำ | ที่มา | หมายเหตุ |');
+    lines.push('| โจทย์ | คำตอบหลัก (`label`) | Alias แนะนำ | ระดับแนะนำ | ที่มา | หลักฐาน / หมายเหตุ |');
     lines.push('| --- | --- | --- | --- | --- | --- |');
     for (const a of rec.newAnswers) {
       const aliasCol = a.suggestedAliases.length ? a.suggestedAliases.join(', ') : '-';
-      const noteCol = a.crossMatch ? `อ้างอิงจาก ${a.crossMatch}` : (a.notes || '-');
-      lines.push(`| \`${a.questionId}\` | **${a.label}** | ${aliasCol} | \`${a.suggestedTier}\` | ${a.sources} | ${noteCol} |`);
+      const tierCol = a.researchedTier ? `${a.researchedTier} (วิจัย)` : a.suggestedTier;
+      const ev = a.evidenceSummary;
+      const evParts = [];
+      if (ev?.wpTitle) evParts.push(`THWP:${ev.wpTitle}(pv:${ev.wpPv})`);
+      if (ev?.wdSitelinks) evParts.push(`WD:${ev.wdQid}(sl:${ev.wdSitelinks})`);
+      if (ev?.needsWebVerify) evParts.push('ต้องค้นเว็บเพิ่ม');
+      if (a.crossMatch) evParts.push(`อ้างอิง ${a.crossMatch}`);
+      else if (a.notes) evParts.push(a.notes);
+      const noteCol = evParts.length ? evParts.join(' · ') : '-';
+      lines.push(`| \`${a.questionId}\` | **${a.label}** | ${aliasCol} | \`${tierCol}\` | ${a.sources} | ${noteCol} |`);
     }
   } else {
     lines.push('_ไม่มีคำตอบหลักใหม่ค้างเพิ่ม_');
@@ -629,10 +637,11 @@ export function formatDailyReportMarkdown(report) {
 
   lines.push(`\n### หมวด B: คำเรียกอื่น / Alias ของคำเดิม (New Alias) — ${rec.newAliases.length} รายการ`);
   if (rec.newAliases.length) {
-    lines.push('| โจทย์ | Alias ใหม่ | ผูกกับคำหลักในคลัง (`label`) | เหตุผล | ที่มา |');
+    lines.push('| โจทย์ | Alias ใหม่ | ผูกกับคำหลักในคลัง (`label`) | เหตุผล / หลักฐาน | ที่มา |');
     lines.push('| --- | --- | --- | --- | --- |');
     for (const al of rec.newAliases) {
-      lines.push(`| \`${al.questionId}\` | **${al.alias}** | ${al.targetLabel} (\`${al.targetTier}\`) | ${al.reason} | ${al.sources} |`);
+      const wpNote = al.evidenceSummary?.wpTitle ? ` [THWP: ${al.evidenceSummary.wpTitle}]` : '';
+      lines.push(`| \`${al.questionId}\` | **${al.alias}** | ${al.targetLabel} (\`${al.targetTier}\`) | ${al.reason}${wpNote} | ${al.sources} |`);
     }
   } else {
     lines.push('_ไม่มี alias ใหม่ค้างเพิ่ม_');

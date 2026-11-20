@@ -9,6 +9,7 @@ import {
   formatDailyReportMarkdown,
   generateDailyAnalysis,
 } from '../db/analytics.js';
+import { researchRecommendations, suggestTierFromMetrics } from '../db/research.js';
 import { prepareSurveyBank } from '../src/survey.js';
 
 const rawBank = JSON.parse(await readFile(new URL('../data/survey-bank.json', import.meta.url), 'utf8'));
@@ -144,4 +145,126 @@ test('generateDailyAnalysis queries all tables and cross-checks against live ban
   assert.match(md, /answer_suggestions/);
   assert.match(md, /rejected_guesses/);
   assert.match(md, /ซาบะ/);
+});
+
+test('suggestTierFromMetrics and researchRecommendations promote redirects and calibrate tiers', async () => {
+  assert.equal(suggestTierFromMetrics('thai', { thPv: 8000, hasArticle: true }), 'plankton');
+  assert.equal(suggestTierFromMetrics('thai', { thPv: 2000, hasArticle: true }), 'schooler');
+  assert.equal(suggestTierFromMetrics('world', { wdSitelinks: 75, thPv: 500, hasArticle: true }), 'plankton');
+  assert.equal(suggestTierFromMetrics('world', { wdSitelinks: 18, thPv: 100, hasArticle: true }), 'rare');
+
+  const fakeFetch = async rawUrl => {
+    const url = decodeURIComponent(rawUrl);
+    if (url.includes('th.wikipedia.org') && url.includes('redirects=1')) {
+      const qs = new URL(rawUrl).searchParams.get('titles') || '';
+      if (qs.includes('ไจเอ้น')) {
+        return {
+          ok: true,
+          async json() {
+            return {
+              query: {
+                redirects: [{ from: 'ไจเอ้น', to: 'โกดะ ทาเคชิ' }],
+                pages: {
+                  101: { pageid: 101, title: 'โกดะ ทาเคชิ', pageviews: { '2026-11-19': 2500 }, langlinkscount: 18, description: 'ตัวละครการ์ตูน' },
+                },
+              },
+            };
+          },
+        };
+      }
+      if (qs.includes('คุมาโมโต้')) {
+        return {
+          ok: true,
+          async json() {
+            return {
+              query: {
+                pages: {
+                  202: { pageid: 202, title: 'คุมาโมโตะ', pageviews: { '2026-11-19': 1800 }, langlinkscount: 72, description: 'นครในประเทศญี่ปุ่น' },
+                },
+              },
+            };
+          },
+        };
+      }
+      if (qs.includes('วอลล์อี')) {
+        return {
+          ok: true,
+          async json() {
+            return {
+              query: {
+                pages: {
+                  303: { pageid: 303, title: 'วอลล์-อี', pageviews: { '2026-11-19': 5500 }, langlinkscount: 97, description: 'ภาพยนตร์แอนิเมชัน' },
+                },
+              },
+            };
+          },
+        };
+      }
+      return { ok: true, async json() { return { query: { pages: { '-1': { missing: '' } } } }; } };
+    }
+    if (url.includes('wikidata.org') && url.includes('wbsearchentities')) {
+      if (url.includes('คุมาโมโต้')) {
+        return { ok: true, async json() { return { search: [{ id: 'Q199889', label: 'คุมาโมโตะ', description: 'city in Japan' }] }; } };
+      }
+      if (url.includes('วอลล์อี')) {
+        return { ok: true, async json() { return { search: [{ id: 'Q104905', label: 'วอลล์อี', description: '2008 animated film' }] }; } };
+      }
+      return { ok: true, async json() { return { search: [] }; } };
+    }
+    if (url.includes('wikidata.org') && url.includes('wbgetentities')) {
+      if (url.includes('Q104905')) {
+        return {
+          ok: true,
+          async json() {
+            return {
+              entities: {
+                Q104905: {
+                  labels: { th: { value: 'วอลล์อี' }, en: { value: 'WALL-E' } },
+                  descriptions: { en: { value: '2008 animated film' } },
+                  sitelinks: Object.fromEntries(Array.from({ length: 97 }, (_, i) => [`w${i}`, {}])),
+                },
+              },
+            };
+          },
+        };
+      }
+      return {
+        ok: true,
+        async json() {
+          return {
+            entities: {
+              Q199889: {
+                labels: { th: { value: 'คุมาโมโตะ' }, en: { value: 'Kumamoto' } },
+                descriptions: { en: { value: 'city in Kumamoto prefecture, Japan' } },
+                sitelinks: Object.fromEntries(Array.from({ length: 72 }, (_, i) => [`w${i}`, {}])),
+              },
+            },
+          };
+        },
+      };
+    }
+    return { ok: true, async json() { return {}; } };
+  };
+
+  const mockReport = {
+    recommendations: {
+      newAnswers: [
+        { questionId: 'world-cartoon-characters', prompt: 'ตัวการ์ตูน', label: 'ไจเอ้น', submittedText: 'ไจเอ้น', suggestedAliases: [], suggestedTier: 'rare', sources: 'rejected(1)' },
+        { questionId: 'world-famous-cities', prompt: 'เมืองดัง', label: 'คุมาโมโต้', submittedText: 'คุมาโมโต้', suggestedAliases: [], suggestedTier: 'rare', sources: 'rejected(1)' },
+        { questionId: 'world-famous-movies', prompt: 'หนังต่างประเทศ', label: 'วอลล์อี', submittedText: 'วอลล์อี', suggestedAliases: [], suggestedTier: 'rare', sources: 'rejected(1)' },
+        { questionId: 'world-coffee-orders', prompt: 'กาแฟ', label: 'อเมริกาโน่ส้ม', submittedText: 'อเมริกาโน่ส้ม', suggestedAliases: [], suggestedTier: 'rare', sources: 'survey(1)' },
+      ],
+      newAliases: [],
+      reviewOrSkip: [],
+    },
+  };
+
+  const researched = await researchRecommendations(mockReport, bank, { fetchFn: fakeFetch });
+  // Redirect and canonical Wikidata match auto-promote to New Aliases
+  assert.equal(researched.recommendations.newAliases.some(a => a.alias === 'ไจเอ้น' && a.targetLabel === 'โกดะ ทาเคชิ'), true);
+  assert.equal(researched.recommendations.newAliases.some(a => a.alias === 'คุมาโมโต้' && a.targetLabel === 'คูมาโมโตะ'), true);
+  const wallE = researched.recommendations.newAnswers.find(a => a.label === 'วอลล์อี');
+  assert.equal(wallE?.researchedTier, 'plankton');
+  const orangeCoffee = researched.recommendations.newAnswers.find(a => a.label === 'อเมริกาโน่ส้ม');
+  assert.equal(orangeCoffee?.evidenceSummary?.needsWebVerify, true);
 });

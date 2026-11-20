@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { getSql, isDatabaseConfigured } from '../db/client.js';
 import { bangkokDateString, formatDailyReportMarkdown, generateDailyAnalysis } from '../db/analytics.js';
+import { researchRecommendations } from '../db/research.js';
 import { prepareSurveyBank } from '../src/survey.js';
 
 for (const envFile of ['.env.local', '.env']) {
@@ -25,13 +26,17 @@ const args = Object.fromEntries(
 const date = args.date && /^\d{4}-\d{2}-\d{2}$/.test(args.date) ? args.date : bangkokDateString();
 const topLimit = Math.min(200, Math.max(5, Number(args.limit || 40) || 40));
 const format = args.format === 'json' || args.json === 'true' ? 'json' : 'markdown';
+const withResearch = args.research === 'true';
 const out = args.out || '';
 
 const rawBank = JSON.parse(fs.readFileSync(new URL('../data/survey-bank.json', import.meta.url), 'utf8'));
 const bank = prepareSurveyBank(rawBank);
 const sql = getSql();
 
-const report = await generateDailyAnalysis(sql, bank, { date, topLimit });
+let report = await generateDailyAnalysis(sql, bank, { date, topLimit });
+if (withResearch) {
+  report = await researchRecommendations(report, bank);
+}
 const outputText = format === 'json'
   ? JSON.stringify(report, null, 2)
   : formatDailyReportMarkdown(report);
