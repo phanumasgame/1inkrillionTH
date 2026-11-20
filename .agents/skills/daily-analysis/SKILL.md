@@ -3,12 +3,13 @@ name: daily-analysis
 description: >-
   Run and analyze the Krillion TH Postgres database daily report whenever the user
   types "วิเคราะห์รายวัน" or asks to summarize gameplay sessions, round difficulty,
-  player suggestions, and rejected guesses across all database tables.
+  player suggestions, and rejected guesses across all database tables, always
+  separating qualifying additions into New Answers vs New Aliases.
 ---
 
 # วิเคราะห์รายวัน (Krillion TH Daily Database Analysis)
 
-Use this skill immediately whenever the user says **`วิเคราะห์รายวัน`** (optionally with a specific date like `วิเคราะห์รายวัน 2026-11-20` or `วิเคราะห์รายวัน ย้อนหลัง`).
+Use this skill immediately whenever the user says **`วิเคราะห์รายวัน`** (optionally with a specific date like `วิเคราะห์รายวัน 2026-11-20`).
 
 ## Steps
 
@@ -17,14 +18,22 @@ Use this skill immediately whenever the user says **`วิเคราะห์
    npm run daily-report -- --format=json
    ```
    - To inspect a specific Thailand date (`Asia/Bangkok`), pass `--date=YYYY-MM-DD`.
-   - For direct human-readable Markdown output, run `npm run daily-report`.
+   - For direct Markdown output, run `npm run daily-report`.
 
 2. Never read, print, or expose `DATABASE_URL` or `ADMIN_TOKEN` from `.env.local`.
 
-3. Summarize **all database tables** (`dive_sessions`, `round_attempts`, `answer_suggestions`, `rejected_guesses`) clearly in Thai using four sections:
-   - **1. ภาพรวมรอบเล่น (`dive_sessions` & `round_attempts`)**: Today's sessions vs all-time, unique `client_id` players, Daily vs Endless split, avg/max score, avg depth, Krillion rate, skips/timeouts, avg answer time (`ms`), and breakdown by `bank_version`.
-   - **2. ข้อเสนอคำตอบจาก Survey (`answer_suggestions`)**: Total vs unique suggestions, cross-checked against current `data/survey-bank.json` (`MISSING` vs `CLOSE` vs `COVERED`). Highlight top `MISSING` items ready to add to the next bank release.
-   - **3. คำที่ผู้เล่นพิมพ์แล้วไม่ผ่าน (`rejected_guesses`)**: Most frequent rejected guesses, identifying whether players meant an alias (`CLOSE`), a new answer (`MISSING`), or a cross-category confusion (e.g. an animated movie guessed in general movies).
-   - **4. สรุปวิเคราะห์ & ข้อเสนอแนะ (Insights & Action Plan)**: Actionable recommendations for game balance (too-easy Krillions or high-timeout questions), aliases to add, and new answers to curate.
+3. Review the `recommendations` (`newAnswers`, `newAliases`, `reviewOrSkip`) semantically before presenting them:
+   - Check if any item placed in `newAnswers` is actually a **phonetic/colloquial nickname alias** of an existing answer in that question (for example `ไจเอ้น` → alias of `โกดะ ทาเคชิ` in `world-cartoon-characters`, `สลิด` → `แมวลายสลิด`, etc.) — if so, move it to **New Alias** in your summary!
+   - Check if any item violates the question's strict boundary (for example `หมอชิต` / `หมอชิด` is BTS, NOT MRT Blue Line in `th-mrt-blue`) — move off-topic / invalid items to **ไม่เข้าเกณฑ์ (Skip/Out of scope)** rather than adding bad data!
+   - If the user asks to apply approved items later, apply them cleanly into `data/survey-bank.json` and the builder scripts.
 
-4. Only report numbers, prompts, and statuses directly observed in the script output for that run.
+4. Summarize **all database tables** (`dive_sessions`, `round_attempts`, `answer_suggestions`, `rejected_guesses`) clearly in Thai using four required sections:
+   - **1. ภาพรวมการเล่น & สมดุลความยาก (`dive_sessions` & `round_attempts`)**: Today vs all-time sessions, unique `client_id` players, Daily vs Endless split, avg/max score, avg depth, Krillion count & rate, skips/timeouts, avg answer time (`ms`), and breakdown by `bank_version`.
+   - **2. สรุปสถิติข้อมูลดิบ (`answer_suggestions` & `rejected_guesses`)**: Total vs unique rows, how many are already covered in the current `survey-bank.json` vs missing.
+   - **3. รายการคำที่เข้าเกณฑ์ควรเพิ่ม — แยกเป็น Answer กับ Alias (REQUIRED EVERY RUN)**:
+     - **หมวด A · คำตอบหลักใหม่ (`New Answer`)**: ตารางระบุ `question_id`, `label` ที่แนะนำ, `aliases` พ่วง, `tier` แนะนำ และที่มา (`survey` / `rejected`)
+     - **หมวด B · คำเรียกอื่น (`New Alias`)**: ตารางระบุ `question_id`, `alias ใหม่`, `ผูกกับคำหลักเดิม (label · tier)` และเหตุผล (`ตัดคำนำหน้า`, `ชื่อย่อวัด`, `คำสะกด/ชื่อเรียกยอดนิยม`)
+     - **หมวด C · รายการคัดออก / ไม่เข้าเกณฑ์ (`Skip / Review`)**: ตัวอักษรเดี่ยว, คำพิมพ์ซ้ำ/พิมพ์ผิด, หรือคำผิดสาย/ผิดหมวด พร้อมเหตุผลสั้น ๆ
+   - **4. ข้อค้นพบและคำแนะนำเชิงวิเคราะห์ (Insights & Next Actions)**: Actionable balance, UX, and curation recommendations.
+
+5. Only report numbers, prompts, and database statuses directly observed in the current run.

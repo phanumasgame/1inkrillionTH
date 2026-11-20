@@ -1,7 +1,42 @@
 import { ensureSchema } from './schema.js';
+import { normalize } from '../src/answers.js';
 import { matchAnswer } from '../src/game.js';
 
 export const DEFAULT_TZ = 'Asia/Bangkok';
+
+const CATEGORY_PREFIXES = [
+  'ปลา', 'ต้น', 'ดอก', 'แม่น้ำ', 'คลอง', 'ถนน', 'ซอย', 'เกาะ', 'หาด', 'น้ำตก',
+  'อุทยานแห่งชาติ', 'วัด', 'แมว', 'นก', 'สุนัข', 'ภาษา', 'สี', 'กีฬา',
+];
+const TEMPLE_SUFFIX_RE = /(?:ราชวรมหาวิหาร|ราชวรวิหาร|วรมหาวิหาร|วรวิหาร|มหาวิหาร|วิหาร|ฯ)+$/g;
+
+const compactKey = s => normalize(s).replace(/[-.\s·()'"!?]/g, '');
+
+function templeStem(s) {
+  let out = normalize(s).replace(/\s+/g, '');
+  if (!out.startsWith('วัด')) return '';
+  out = out.slice(3).replace(TEMPLE_SUFFIX_RE, '');
+  return out;
+}
+
+function editDistanceAtMost2(a, b) {
+  if (Math.abs(a.length - b.length) > 2) return false;
+  if (a === b) return true;
+  const dp = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    let prev = dp[0];
+    dp[0] = i;
+    let rowMin = dp[0];
+    for (let j = 1; j <= b.length; j++) {
+      const cur = dp[j];
+      dp[j] = a[i - 1] === b[j - 1] ? prev : 1 + Math.min(prev, dp[j], dp[j - 1]);
+      prev = cur;
+      if (dp[j] < rowMin) rowMin = dp[j];
+    }
+    if (rowMin > 2) return false;
+  }
+  return dp[b.length] <= 2;
+}
 
 export function bangkokDateString(date = new Date()) {
   const parts = new Intl.DateTimeFormat('en-CA', {
@@ -12,6 +47,71 @@ export function bangkokDateString(date = new Date()) {
   }).formatToParts(date);
   const get = type => parts.find(p => p.type === type)?.value || '';
   return `${get('year')}-${get('month')}-${get('day')}`;
+}
+
+export function findAliasTargetInQuestion(question, rawText) {
+  if (!question?.answers) return null;
+  const m = matchAnswer(question, String(rawText ?? ''));
+  if (m.kind === 'exact') return { kind: 'exact', answer: m.answer, reason: 'มีในคลังแล้ว' };
+  if (m.kind === 'close') return { kind: 'close', answer: m.answer, reason: 'คำสะกดใกล้เคียง (close match)' };
+
+  const norm = normalize(rawText);
+  const compact = compactKey(rawText);
+  if (compact.length < 2) return null;
+
+  const tStem = templeStem(rawText);
+  for (const ans of question.answers) {
+    const names = [ans.label, ...(ans.aliases || [])];
+    for (const name of names) {
+      const existingNorm = normalize(name);
+      const existingCompact = compactKey(name);
+      if (!existingCompact) continue;
+
+      if (compact === existingCompact) {
+        return { kind: 'variant', answer: ans, reason: 'รูปแบบขีด/เว้นวรรคต่างจากคำหลัก' };
+      }
+
+      if (tStem.length >= 2) {
+        const aStem = templeStem(name);
+        if (aStem && (aStem === tStem || aStem.startsWith(tStem) || tStem.startsWith(aStem)) && Math.min(aStem.length, tStem.length) >= 4) {
+          return { kind: 'variant', answer: ans, reason: `ชื่อเรียกย่อ/สร้อยวัดของ "${ans.label}"` };
+        }
+      }
+
+      for (const prefix of CATEGORY_PREFIXES) {
+        if (existingNorm === prefix + norm || existingCompact === compactKey(prefix) + compact) {
+          return { kind: 'variant', answer: ans, reason: `ตัดคำนำหน้า "${prefix}" ของ "${ans.label}"` };
+        }
+      }
+    }
+  }
+  return null;
+}
+
+export function findCrossQuestionMatch(bank, sourceQuestion, rawText) {
+  const q = typeof sourceQuestion === 'string'
+    ? (bank?.questions || []).find(x => x.id === sourceQuestion)
+    : sourceQuestion;
+  const excludeQuestionId = q?.id || (typeof sourceQuestion === 'string' ? sourceQuestion : '');
+  const sourceTheme = q?.theme || '';
+  const c = compactKey(rawText);
+  const tStem = templeStem(rawText);
+  if (c.length < 2) return null;
+  for (const oq of bank?.questions || []) {
+    if (oq.id === excludeQuestionId) continue;
+    if (sourceTheme && oq.theme !== sourceTheme) continue;
+    // Do not cross-adopt plant/flower labels into animal questions
+    if (/flower|tree|herb|fruit|vegetable/i.test(oq.id) !== /flower|tree|herb|fruit|vegetable/i.test(excludeQuestionId)) continue;
+    for (const a of oq.answers || []) {
+      for (const n of [a.label, ...(a.aliases || [])]) {
+        const nc = compactKey(n);
+        if (nc === c || (tStem.length >= 4 && templeStem(n) === tStem)) {
+          return { questionId: oq.id, label: a.label, aliases: a.aliases || [], tier: a.tier || '' };
+        }
+      }
+    }
+  }
+  return null;
 }
 
 export function checkBankCoverage(questionById, questionId, rawText) {
@@ -49,6 +149,173 @@ export function checkBankCoverage(questionById, questionId, rawText) {
   };
 }
 
+export function buildAdditionPlan(bank, questionById, suggestions, rejectedGuesses) {
+  // Merge suggestions & rejected guesses per (question_id, normalized/compact)
+  const merged = new Map();
+
+  function upsert(row, kind) {
+    const qid = row.question_id;
+    const rawSample = kind === 'suggestion' ? row.sample_answer : row.sample_input;
+    const norm = normalize(rawSample);
+    const key = `${qid}::${compactKey(rawSample) || norm}`;
+    const prev = merged.get(key) || {
+      questionId: qid,
+      prompt: row.prompt || questionById.get(qid)?.prompt || qid,
+      sample: rawSample,
+      norm,
+      compact: compactKey(rawSample),
+      suggestionCount: 0,
+      rejectedCount: 0,
+      todayCount: 0,
+      latestVersion: row.latest_version || '',
+      notes: '',
+      bankStatus: row.bankStatus,
+    };
+    if (kind === 'suggestion') {
+      prev.suggestionCount += num(row.total_count);
+      if (row.notes && !prev.notes.includes(row.notes)) {
+        prev.notes = prev.notes ? `${prev.notes} | ${row.notes}` : row.notes;
+      }
+      // Prefer explicit survey wording over rejected typo
+      if (rawSample) prev.sample = rawSample;
+    } else {
+      prev.rejectedCount += num(row.total_count);
+    }
+    prev.todayCount += num(row.today_count);
+    if (row.latest_version && row.latest_version > prev.latestVersion) {
+      prev.latestVersion = row.latest_version;
+    }
+    merged.set(key, prev);
+  }
+
+  for (const s of suggestions) upsert(s, 'suggestion');
+  for (const r of rejectedGuesses) upsert(r, 'rejected');
+
+  const newAnswers = [];
+  const newAliases = [];
+  const reviewOrSkip = [];
+  const pendingAnswersByQ = new Map();
+
+  // Process suggestions first, then cross-matched canonical hits, then higher-count rejected entries
+  const items = [...merged.values()]
+    .map(item => ({
+      ...item,
+      _cross: findCrossQuestionMatch(bank, questionById.get(item.questionId) || item.questionId, item.sample),
+    }))
+    .sort((a, b) =>
+      ((b.suggestionCount > 0 ? 1 : 0) - (a.suggestionCount > 0 ? 1 : 0))
+      || ((b._cross ? 1 : 0) - (a._cross ? 1 : 0))
+      || ((b.suggestionCount + b.rejectedCount) - (a.suggestionCount + a.rejectedCount))
+      || (a.compact.length - b.compact.length)
+    );
+
+  for (const item of items) {
+    const q = questionById.get(item.questionId);
+    const totalHits = item.suggestionCount + item.rejectedCount;
+    const sources = [
+      item.suggestionCount ? `survey(${item.suggestionCount})` : '',
+      item.rejectedCount ? `rejected(${item.rejectedCount})` : '',
+    ].filter(Boolean).join(' + ');
+
+    if (!q) {
+      reviewOrSkip.push({ ...item, totalHits, sources, reason: 'ไม่พบรหัสโจทย์ในคลังปัจจุบัน' });
+      continue;
+    }
+    if (item.compact.length < 2 || /^[\d\s]+$/.test(item.norm)) {
+      reviewOrSkip.push({ ...item, totalHits, sources, reason: 'สั้นเกินเกณฑ์หรือเป็นตัวอักษรเดี่ยว/ตัวเลข' });
+      continue;
+    }
+
+    const aliasHit = findAliasTargetInQuestion(q, item.sample);
+    if (aliasHit?.kind === 'exact') continue; // already covered in bank
+
+    if (aliasHit) {
+      newAliases.push({
+        questionId: item.questionId,
+        prompt: item.prompt,
+        alias: item.sample,
+        targetId: aliasHit.answer.id,
+        targetLabel: aliasHit.answer.label,
+        targetTier: aliasHit.answer.tier || '',
+        reason: aliasHit.reason,
+        suggestionCount: item.suggestionCount,
+        rejectedCount: item.rejectedCount,
+        totalHits,
+        todayCount: item.todayCount,
+        latestVersion: item.latestVersion,
+        sources,
+      });
+      continue;
+    }
+
+    // Check if this ASCII/Thai variant matches an already-queued New Answer in same Q (by crossMatch or edit distance <= 2)
+    const qQueue = pendingAnswersByQ.get(item.questionId) || [];
+    const crossDupParent = item._cross
+      ? qQueue.find(p => p.rec.label === item._cross.label)
+      : null;
+    if (crossDupParent) {
+      if (!crossDupParent.rec.suggestedAliases.some(x => compactKey(x) === item.compact) && normalize(crossDupParent.rec.label) !== item.norm) {
+        crossDupParent.rec.suggestedAliases.push(item.sample);
+      }
+      crossDupParent.rec.rejectedCount += item.rejectedCount;
+      crossDupParent.rec.suggestionCount += item.suggestionCount;
+      crossDupParent.rec.totalHits += totalHits;
+      continue;
+    }
+    const typoParent = /^[a-z0-9]+$/.test(item.compact) && item.compact.length >= 4
+      ? qQueue.find(p => /^[a-z0-9]+$/.test(p.compact) && editDistanceAtMost2(item.compact, p.compact))
+      : null;
+    if (typoParent) {
+      reviewOrSkip.push({
+        ...item,
+        totalHits,
+        sources,
+        reason: `พิมพ์คลาดเคลื่อนจาก "${typoParent.sample}" (จัดกลุ่มซ้ำออกแล้ว)`,
+      });
+      continue;
+    }
+
+    const cross = item._cross;
+    // Only reuse cross-question canonical label if the target answer's own label isn't a different drink/variant
+    const canAdoptCrossLabel = cross && (
+      normalize(cross.label) === item.norm
+      || compactKey(cross.label) === item.compact
+      || /^[a-z0-9\s-]+$/i.test(item.sample)
+      || (item.sample.startsWith('วัด') && cross.label.startsWith(item.sample))
+    );
+    const preferredLabel = canAdoptCrossLabel ? cross.label : item.sample;
+    const autoAliases = canAdoptCrossLabel
+      ? [...new Set([item.sample, ...(cross.aliases || [])].filter(x => normalize(x) !== normalize(preferredLabel)))].slice(0, 4)
+      : [];
+
+    const rec = {
+      questionId: item.questionId,
+      prompt: item.prompt,
+      label: preferredLabel,
+      submittedText: item.sample,
+      suggestedAliases: autoAliases,
+      suggestedTier: cross?.tier || (item.rejectedCount >= 2 || item.suggestionCount >= 2 ? 'schooler' : 'rare'),
+      crossMatch: canAdoptCrossLabel ? `${cross.questionId}: ${cross.label}` : '',
+      suggestionCount: item.suggestionCount,
+      rejectedCount: item.rejectedCount,
+      totalHits,
+      todayCount: item.todayCount,
+      latestVersion: item.latestVersion,
+      notes: item.notes,
+      sources,
+    };
+    newAnswers.push(rec);
+    qQueue.push({ ...item, rec });
+    pendingAnswersByQ.set(item.questionId, qQueue);
+  }
+
+  return {
+    newAnswers,
+    newAliases,
+    reviewOrSkip,
+  };
+}
+
 function num(v, fallback = 0) {
   const n = Number(v);
   return Number.isFinite(n) ? n : fallback;
@@ -57,12 +324,12 @@ function num(v, fallback = 0) {
 export async function generateDailyAnalysis(
   sql,
   bank,
-  { date = bangkokDateString(), tz = DEFAULT_TZ, topLimit = 40, ensure = ensureSchema } = {}
+  { date = bangkokDateString(), tz = DEFAULT_TZ, topLimit = 60, ensure = ensureSchema } = {}
 ) {
   await ensure(sql);
   const questionById = new Map((bank?.questions || []).map(q => [q.id, q]));
 
-  // 1. dive_sessions (Table 1: Session & Player Overview)
+  // 1. dive_sessions
   const [sessionOverview] = await sql.query(
     `SELECT
        COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date)::int AS today_sessions,
@@ -110,7 +377,7 @@ export async function generateDailyAnalysis(
     [tz]
   );
 
-  // 2. round_attempts (Table 2: Tiers, Outcomes & Question Balance)
+  // 2. round_attempts
   const [roundOverview] = await sql.query(
     `SELECT
        COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date)::int AS today_rounds,
@@ -169,7 +436,7 @@ export async function generateDailyAnalysis(
     };
   });
 
-  // 3. answer_suggestions (Table 3: Player Survey Suggestions)
+  // 3. answer_suggestions
   const [suggestionCounts] = await sql.query(
     `SELECT COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date)::int AS today_rows,
             COUNT(*)::int AS total_rows,
@@ -194,7 +461,7 @@ export async function generateDailyAnalysis(
      GROUP BY question_id, normalized_answer
      ORDER BY today_count DESC, total_count DESC, last_seen DESC
      LIMIT $3`,
-    [tz, date, topLimit * 2]
+    [tz, date, topLimit * 3]
   );
 
   const suggestions = groupedSuggestionsRaw.map(row => {
@@ -208,7 +475,7 @@ export async function generateDailyAnalysis(
     };
   });
 
-  // 4. rejected_guesses (Table 4: Player Failed / Rejected Inputs)
+  // 4. rejected_guesses
   const [rejectedCounts] = await sql.query(
     `SELECT COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date)::int AS today_rows,
             COUNT(*)::int AS total_rows,
@@ -229,7 +496,7 @@ export async function generateDailyAnalysis(
      GROUP BY question_id, normalized_input
      ORDER BY today_count DESC, total_count DESC, last_seen DESC
      LIMIT $3`,
-    [tz, date, topLimit * 2]
+    [tz, date, topLimit * 3]
   );
 
   const rejectedGuesses = groupedRejectedRaw.map(row => {
@@ -243,27 +510,23 @@ export async function generateDailyAnalysis(
     };
   });
 
-  // 5. Compute actionable insights automatically
   const actionableSuggestions = suggestions.filter(s => s.bankStatus === 'missing');
   const closeSuggestions = suggestions.filter(s => s.bankStatus === 'close');
   const alreadyCoveredSuggestions = suggestions.filter(s => s.bankStatus === 'covered');
   const actionableRejected = rejectedGuesses.filter(r => r.bankStatus === 'missing');
   const closeRejected = rejectedGuesses.filter(r => r.bankStatus === 'close');
 
+  const recommendations = buildAdditionPlan(bank, questionById, suggestions, rejectedGuesses);
+
   const insights = [];
-  if (actionableRejected.length) {
+  if (recommendations.newAnswers.length || recommendations.newAliases.length) {
     insights.push(
-      `พบคำตอบที่ผู้เล่นพิมพ์ไม่ผ่านและยังไม่มีในคลัง v${bank?.version || '?'} จำนวน ${actionableRejected.length} คำ (เช่น ${actionableRejected.slice(0, 5).map(r => `"${r.sample_input}" [${r.question_id}]`).join(', ')})`
-    );
-  }
-  if (closeRejected.length) {
-    insights.push(
-      `พบคำที่พิมพ์แล้วเกือบตรงคลัง (ควรพิจารณาเพิ่ม alias) ${closeRejected.length} คำ (เช่น ${closeRejected.slice(0, 4).map(r => `"${r.sample_input}" ≈ "${r.matchedLabel}"`).join(', ')})`
+      `รายการเข้าเกณฑ์เพิ่มเติมเทียบกับคลัง v${bank?.version || '?'}: คำตอบหลักใหม่ (New Answer) ${recommendations.newAnswers.length} รายการ และคำเรียกอื่น (New Alias) ${recommendations.newAliases.length} รายการ`
     );
   }
   if (suggestions.length) {
     insights.push(
-      `ข้อเสนอ Survey ทั้งหมด ${suggestions.length} รายการ (ไม่ซ้ำ): เพิ่มเข้าคลังแล้ว ${alreadyCoveredSuggestions.length} รายการ, ใกล้เคียง ${closeSuggestions.length} รายการ, ยังขาดจริง ${actionableSuggestions.length} รายการ`
+      `ข้อเสนอ Survey ทั้งหมด ${suggestions.length} รายการ (ไม่ซ้ำ): เพิ่มเข้าคลังแล้ว ${alreadyCoveredSuggestions.length} รายการ, รอเติม/ผูก alias ${actionableSuggestions.length + closeSuggestions.length} รายการ`
     );
   }
   const hardQuestions = questionStats.filter(q => q.misses > 0 && (q.missRatePct >= 50 || q.avgRejected >= 1)).slice(0, 5);
@@ -302,6 +565,7 @@ export async function generateDailyAnalysis(
       actionable: actionableRejected,
       close: closeRejected,
     },
+    recommendations,
     insights,
   };
 }
@@ -311,6 +575,7 @@ export function formatDailyReportMarkdown(report) {
   const r = report.rounds.overview;
   const sg = report.suggestions.counts;
   const rj = report.rejected.counts;
+  const rec = report.recommendations || { newAnswers: [], newAliases: [], reviewOrSkip: [] };
 
   const lines = [];
   lines.push(`# สรุปวิเคราะห์ข้อมูลรายวัน Krillion TH (${report.date} · ${report.timezone})`);
@@ -347,38 +612,41 @@ export function formatDailyReportMarkdown(report) {
     lines.push('');
   }
 
-  lines.push(`## 2) ข้อเสนอคำตอบจาก Survey (\`answer_suggestions\`) — วันนี้ ${num(sg.today_rows)} · สะสม ${num(sg.total_rows)} รายการ (รอดำเนินการ ${num(sg.pending_rows)})`);
-  lines.push(`- เทียบกับคลัง **v${report.bankVersion}**: ยังไม่มีในคลัง **${report.suggestions.actionable.length}** รายการ | ใกล้เคียง (น่าเพิ่ม alias) **${report.suggestions.close.length}** รายการ | มีอยู่แล้ว **${report.suggestions.covered.length}** รายการ`);
-  if (report.suggestions.actionable.length) {
-    lines.push('\n**รายการเสนอที่ยังไม่มีในคลังปัจจุบัน (ควรพิจารณาเพิ่ม):**');
-    lines.push('| โจทย์ | คำที่เสนอ | จำนวนครั้ง | เวอร์ชัน | หมายเหตุ |');
-    lines.push('| --- | --- | ---: | --- | --- |');
-    for (const item of report.suggestions.actionable.slice(0, 20)) {
-      lines.push(`| \`${item.question_id}\` | ${item.sample_answer} | ${item.total_count} | ${item.latest_version || '-'} | ${item.notes || '-'} |`);
-    }
-  }
-  lines.push('');
+  lines.push(`## 2) คำที่เข้าเกณฑ์ควรเพิ่มในคลัง — แยก Answer กับ Alias (รวม \`answer_suggestions\` [${num(sg.total_rows)}] + \`rejected_guesses\` [${num(rj.total_rows)}])`);
 
-  lines.push(`## 3) คำตอบที่ผู้เล่นพิมพ์แล้วระบบปฏิเสธ (\`rejected_guesses\`) — วันนี้ ${num(rj.today_rows)} · สะสม ${num(rj.total_rows)} รายการ (${num(rj.unique_misses)} คำไม่ซ้ำ)`);
-  if (report.rejected.items.length) {
-    lines.push('| โจทย์ | คำที่ผู้เล่นพิมพ์ | วันนี้ / รวม | เวอร์ชัน | สถานะใน v' + report.bankVersion + ' |');
-    lines.push('| --- | --- | ---: | --- | --- |');
-    for (const item of report.rejected.items.slice(0, 25)) {
-      const statusLabel = item.bankStatus === 'missing'
-        ? 'ยังไม่มี (MISSING)'
-        : item.bankStatus === 'close'
-          ? `ใกล้เคียง "${item.matchedLabel}" (CLOSE)`
-          : item.bankStatus === 'covered'
-            ? `มีแล้ว "${item.matchedLabel}" (${item.matchedTier})`
-            : 'ไม่พบโจทย์';
-      lines.push(`| \`${item.question_id}\` | ${item.sample_input} | ${item.today_count} / ${item.total_count} | ${item.latest_version || '-'} | ${statusLabel} |`);
+  lines.push(`\n### หมวด A: คำตอบหลักใหม่ (New Answer) — ${rec.newAnswers.length} รายการ`);
+  if (rec.newAnswers.length) {
+    lines.push('| โจทย์ | คำตอบหลัก (`label`) | Alias แนะนำ | ระดับแนะนำ | ที่มา | หมายเหตุ |');
+    lines.push('| --- | --- | --- | --- | --- | --- |');
+    for (const a of rec.newAnswers) {
+      const aliasCol = a.suggestedAliases.length ? a.suggestedAliases.join(', ') : '-';
+      const noteCol = a.crossMatch ? `อ้างอิงจาก ${a.crossMatch}` : (a.notes || '-');
+      lines.push(`| \`${a.questionId}\` | **${a.label}** | ${aliasCol} | \`${a.suggestedTier}\` | ${a.sources} | ${noteCol} |`);
     }
   } else {
-    lines.push('_ยังไม่มีคำตอบที่ถูกปฏิเสธในฐานข้อมูล_');
+    lines.push('_ไม่มีคำตอบหลักใหม่ค้างเพิ่ม_');
+  }
+
+  lines.push(`\n### หมวด B: คำเรียกอื่น / Alias ของคำเดิม (New Alias) — ${rec.newAliases.length} รายการ`);
+  if (rec.newAliases.length) {
+    lines.push('| โจทย์ | Alias ใหม่ | ผูกกับคำหลักในคลัง (`label`) | เหตุผล | ที่มา |');
+    lines.push('| --- | --- | --- | --- | --- |');
+    for (const al of rec.newAliases) {
+      lines.push(`| \`${al.questionId}\` | **${al.alias}** | ${al.targetLabel} (\`${al.targetTier}\`) | ${al.reason} | ${al.sources} |`);
+    }
+  } else {
+    lines.push('_ไม่มี alias ใหม่ค้างเพิ่ม_');
+  }
+
+  if (rec.reviewOrSkip.length) {
+    lines.push(`\n### หมวด C: รายการที่ตัดออก / รอคัดกรองเพิ่มเติม — ${rec.reviewOrSkip.length} รายการ`);
+    for (const sk of rec.reviewOrSkip) {
+      lines.push(`- \`${sk.questionId}\` · "${sk.sample}" (${sk.sources}): ${sk.reason}`);
+    }
   }
   lines.push('');
 
-  lines.push('## 4) ข้อค้นพบและคำแนะนำเชิงวิเคราะห์ (Insights)');
+  lines.push('## 3) ข้อค้นพบและคำแนะนำเชิงวิเคราะห์ (Insights)');
   if (report.insights.length) {
     for (const ins of report.insights) lines.push(`- ${ins}`);
   } else {

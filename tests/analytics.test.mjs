@@ -1,11 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { bangkokDateString, checkBankCoverage, formatDailyReportMarkdown, generateDailyAnalysis } from '../db/analytics.js';
+import {
+  bangkokDateString,
+  buildAdditionPlan,
+  checkBankCoverage,
+  findAliasTargetInQuestion,
+  formatDailyReportMarkdown,
+  generateDailyAnalysis,
+} from '../db/analytics.js';
 import { prepareSurveyBank } from '../src/survey.js';
 
 const rawBank = JSON.parse(await readFile(new URL('../data/survey-bank.json', import.meta.url), 'utf8'));
 const bank = prepareSurveyBank(rawBank);
+const byId = new Map(bank.questions.map(q => [q.id, q]));
 
 test('bangkokDateString formats Asia/Bangkok date cleanly', () => {
   const d = new Date('2026-11-20T18:30:00.000Z'); // 2026-11-21 01:30 BKK
@@ -13,7 +21,6 @@ test('bangkokDateString formats Asia/Bangkok date cleanly', () => {
 });
 
 test('checkBankCoverage distinguishes covered, close, missing, and unknown questions', () => {
-  const byId = new Map(bank.questions.map(q => [q.id, q]));
   const exact = checkBankCoverage(byId, 'th-isaan-food', 'ซอยจุ๊');
   assert.equal(exact.status, 'covered');
   assert.ok(exact.matchedTier);
@@ -23,6 +30,36 @@ test('checkBankCoverage distinguishes covered, close, missing, and unknown quest
 
   const unknownQ = checkBankCoverage(byId, 'no-such-q', 'anything');
   assert.equal(unknownQ.status, 'unknown_question');
+});
+
+test('findAliasTargetInQuestion and buildAdditionPlan cleanly separate New Answers vs New Aliases', () => {
+  const templeAlias = findAliasTargetInQuestion(byId.get('th-temples'), 'วัดบวรนิเวศวิหาร');
+  assert.equal(templeAlias?.answer?.label, 'วัดบวรนิเวศ');
+
+  const prefixAlias = findAliasTargetInQuestion(byId.get('world-sushi'), 'ซาบะ');
+  assert.equal(prefixAlias?.answer?.label, 'ปลาซาบะ');
+
+  const plan = buildAdditionPlan(
+    bank,
+    byId,
+    [
+      { question_id: 'th-temples', sample_answer: 'วัดบวรนิเวศวิหาร', total_count: 1, today_count: 1, latest_version: '1.0.9', notes: '' },
+      { question_id: 'world-coffee-orders', sample_answer: 'อเมริกาโน่น้ำผึ้ง', total_count: 2, today_count: 2, latest_version: '1.0.9', notes: '' },
+    ],
+    [
+      { question_id: 'world-sushi', sample_input: 'ซาบะ', total_count: 1, today_count: 1, latest_version: '1.0.9' },
+      { question_id: 'world-cat-breeds', sample_input: 'ก', total_count: 1, today_count: 1, latest_version: '1.0.9' },
+      { question_id: 'world-famous-movies', sample_input: 'wall e', total_count: 1, today_count: 1, latest_version: '1.0.9' },
+      { question_id: 'world-famous-movies', sample_input: 'wale e', total_count: 1, today_count: 1, latest_version: '1.0.9' },
+    ]
+  );
+
+  assert.equal(plan.newAliases.some(a => a.alias === 'วัดบวรนิเวศวิหาร' && a.targetLabel === 'วัดบวรนิเวศ'), true);
+  assert.equal(plan.newAliases.some(a => a.alias === 'ซาบะ' && a.targetLabel === 'ปลาซาบะ'), true);
+  assert.equal(plan.newAnswers.some(a => a.questionId === 'world-coffee-orders' && a.label === 'อเมริกาโน่น้ำผึ้ง'), true);
+  assert.equal(plan.newAnswers.some(a => a.questionId === 'world-famous-movies' && /วอลล์อี/.test(a.label)), true);
+  assert.equal(plan.reviewOrSkip.some(s => s.sample === 'ก'), true);
+  assert.equal(plan.reviewOrSkip.some(s => s.sample === 'wale e'), true);
 });
 
 test('generateDailyAnalysis queries all tables and cross-checks against live bank', async () => {
