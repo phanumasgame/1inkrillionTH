@@ -9,9 +9,9 @@ const raw = JSON.parse(await readFile(new URL('../data/survey-bank.json', import
 const bank = prepareSurveyBank(raw);
 const make = () => createSession({mode:'daily',bank,questions:selectDaily(bank,'2026-11-17'),date:'2026-11-17',now:1000});
 
-test('v1.0.7 mega hybrid bank has 100 questions, 40k+ answers, 12 1000+ pools, and rich Isan food & animal coverage', () => {
+test('v1.0.8 mega hybrid bank has 100 questions, 40k+ answers, 12 1000+ pools, and rich Isan food & animal coverage', () => {
   assert.deepEqual(validateSurveyBank(raw), []);
-  assert.equal(raw.version, '1.0.7');
+  assert.equal(raw.version, '1.0.8');
   assert.equal(raw.scoringMethod, HYBRID_SCORING);
   assert.equal(raw.questions.length, 100);
   assert.equal(raw.questions.filter(q => q.scope === 'thai').length, 50);

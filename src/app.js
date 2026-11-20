@@ -39,8 +39,8 @@ function icon(name) {
 async function load() {
   try {
     const results = await Promise.allSettled([
-      fetch('/data/survey-bank.json').then(r => { if (!r.ok) throw new Error('คลังผลสำรวจโหลดไม่สำเร็จ'); return r.json(); }),
-      fetch('/assets/audio-cues.json').then(r => { if (!r.ok) throw new Error('ชุดเสียงโหลดไม่สำเร็จ'); return r.json(); })
+      fetch('/data/survey-bank.json?v=' + APP_VERSION, { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('คลังผลสำรวจโหลดไม่สำเร็จ'); return r.json(); }),
+      fetch('/assets/audio-cues.json?v=' + APP_VERSION).then(r => { if (!r.ok) throw new Error('ชุดเสียงโหลดไม่สำเร็จ'); return r.json(); })
     ]);
     if (results[0].status !== 'fulfilled') throw results[0].reason;
     if (results[1].status !== 'fulfilled') throw results[1].reason;
@@ -62,7 +62,7 @@ async function load() {
     applySettings();
     restoreCurrent();
     render();
-    if (view === 'home' && save.seenPatchVersion !== APP_VERSION) patchNotesDialog();
+    if (view !== 'play' && save.seenPatchVersion !== APP_VERSION) patchNotesDialog();
     setInterval(pulse, 100);
     document.addEventListener('pointerdown', () => audio.unlock(), { passive:true });
     document.addEventListener('keydown', () => audio.unlock(), { passive:true });
