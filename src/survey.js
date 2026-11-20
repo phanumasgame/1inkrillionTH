@@ -1,16 +1,30 @@
 import { answerForms } from './answers.js';
 
 export const SURVEY_SCORING = 'published-survey-relative-rank-v1';
+export const HYBRID_SCORING = 'hybrid-survey-and-curated-v1';
 export const SURVEY_TIERS = Object.freeze(['plankton', 'schooler', 'rare', 'deepcut', 'krillion']);
 export const MIN_PLAYABLE_ANSWERS = 21;
 export const BROAD_ANSWER_TARGET = 100;
+const VALID_TIERS = new Set(SURVEY_TIERS);
+const VALID_SCORING = new Set([SURVEY_SCORING, HYBRID_SCORING]);
 const nonempty = value => typeof value === 'string' && value.trim().length > 0;
+const isHttps = value => {
+  try { return new URL(value).protocol === 'https:'; }
+  catch { return false; }
+};
 
 export const surveyValue = (question, answer) => question.survey?.scale === 'rating-1-to-7'
   ? answer.rating : answer.percent;
 
-// This checks that evidence is present and internally consistent; reviewing the
-// published source and its permission to reuse remains a human research task.
+export function starterExample(question) {
+  if (!question?.answers?.length) return null;
+  if (question.curated) return question.answers.find(a => a.tier === 'plankton') || question.answers[0];
+  return question.answers.reduce((best, answer) => surveyValue(question, answer) > surveyValue(question, best) ? answer : best);
+}
+
+// Validates that either published-survey or curated-familiarity provenance is
+// complete and internally consistent. Reviewing source accuracy/permissions
+// remains a human research task.
 export function validateSurveyQuestion(q) {
   const errors = [];
   if (!q || typeof q !== 'object') return ['Missing question'];
@@ -18,45 +32,63 @@ export function validateSurveyQuestion(q) {
   for (const field of ['id', 'theme', 'prompt', 'hint'])
     if (!nonempty(q[field])) errors.push(name + ': missing ' + field);
   if (!['thai', 'world'].includes(q.scope)) errors.push(name + ': invalid scope');
-  const s = q.survey;
-  if (!s || typeof s !== 'object') errors.push(name + ': missing survey');
-  else {
+  const hasSurvey = Boolean(q.survey && typeof q.survey === 'object');
+  const hasCurated = Boolean(q.curated && typeof q.curated === 'object');
+  if (hasSurvey === hasCurated) {
+    errors.push(name + ': must define either survey or curated metadata');
+  } else if (hasSurvey) {
+    const s = q.survey;
     for (const field of ['publisher', 'fieldwork', 'population', 'sampleNote', 'sourceQuestion', 'metric', 'coverage'])
       if (!nonempty(s[field])) errors.push(name + ': missing survey ' + field);
     if (s.sampleSize !== null && (!Number.isInteger(s.sampleSize) || s.sampleSize <= 0)) errors.push(name + ': invalid survey sample size');
     if (s.scale !== undefined && s.scale !== 'rating-1-to-7') errors.push(name + ': unknown survey scale');
-    if (s.licenseUrl !== undefined) {
-      try { if (new URL(s.licenseUrl).protocol !== 'https:') throw new Error(); }
-      catch { errors.push(name + ': invalid license URL'); }
+    if (s.licenseUrl !== undefined && !isHttps(s.licenseUrl)) errors.push(name + ': invalid license URL');
+    if (!isHttps(s.url)) errors.push(name + ': invalid survey URL');
+  } else {
+    const c = q.curated;
+    for (const field of ['basis', 'coverage'])
+      if (!nonempty(c[field])) errors.push(name + ': missing curated ' + field);
+    if (c.references !== undefined) {
+      if (!Array.isArray(c.references) || c.references.some(ref => !nonempty(ref?.label) || !isHttps(ref?.url)))
+        errors.push(name + ': invalid curated references');
     }
-    try { if (new URL(s.url).protocol !== 'https:') throw new Error(); }
-    catch { errors.push(name + ': invalid survey URL'); }
   }
   if (!Array.isArray(q.answers) || q.answers.length < 5) return [...errors, name + ': needs at least five reported answers'];
-  const ids = new Set(), names = new Map(), values = new Set();
+  const ids = new Set(), names = new Map(), values = new Set(), tiers = new Set();
   for (const a of q.answers) {
     if (!a || !nonempty(a.id) || !nonempty(a.label) || !Array.isArray(a.aliases) || a.aliases.some(alias => !nonempty(alias))) {
       errors.push(name + ': invalid answer'); continue;
     }
     if (ids.has(a.id)) errors.push(name + ': duplicate answer ' + a.id);
     ids.add(a.id);
-    const value = surveyValue(q, a);
-    if (!Number.isFinite(value) || (s?.scale === 'rating-1-to-7'
-      ? value < 1 || value > 7 || a.percent !== undefined
-      : value <= 0 || value > 100 || a.rating !== undefined)) errors.push(name + '/' + a.id + ': invalid measured value');
-    else values.add(value);
+    if (hasSurvey) {
+      const value = surveyValue(q, a);
+      if (!Number.isFinite(value) || (q.survey?.scale === 'rating-1-to-7'
+        ? value < 1 || value > 7 || a.percent !== undefined
+        : value <= 0 || value > 100 || a.rating !== undefined)) errors.push(name + '/' + a.id + ': invalid measured value');
+      else values.add(value);
+    } else if (hasCurated) {
+      if (!VALID_TIERS.has(a.tier)) errors.push(name + '/' + a.id + ': invalid curated tier');
+      else tiers.add(a.tier);
+      if (!nonempty(a.reason)) errors.push(name + '/' + a.id + ': missing curated reason');
+      if (a.percent !== undefined || a.rating !== undefined) errors.push(name + '/' + a.id + ': curated answer cannot include survey metrics');
+    }
     for (const label of [a.label, ...a.aliases]) for (const form of answerForms(label)) {
       if (!form) errors.push(name + ': empty answer alias');
       if (names.has(form) && names.get(form) !== a.id) errors.push(name + ': ambiguous alias ' + label);
       names.set(form, a.id);
     }
   }
-  if (values.size < 2) errors.push(name + ': at least two distinct measured values are needed');
+  if (hasSurvey && values.size < 2) errors.push(name + ': at least two distinct measured values are needed');
+  if (hasCurated) {
+    if (tiers.size < 2) errors.push(name + ': curated questions need at least two distinct tiers');
+    if (!tiers.has('plankton') || !tiers.has('krillion')) errors.push(name + ': curated questions need plankton and krillion tiers');
+  }
   return errors;
 }
 
 export function validateSurveyBank(bank) {
-  if (!bank || !nonempty(bank.version) || bank.scoringMethod !== SURVEY_SCORING || !Array.isArray(bank.questions))
+  if (!bank || !nonempty(bank.version) || !VALID_SCORING.has(bank.scoringMethod) || !Array.isArray(bank.questions))
     return ['Missing survey bank version, scoring method or questions'];
   const errors = [], ids = new Set();
   for (const q of bank.questions) {
@@ -71,9 +103,8 @@ export function validateSurveyBank(bank) {
   return errors;
 }
 
-// Relative rank uses only measured values from this question's survey.
-// Identical values always receive identical scores; no unreported value
-// is inferred. Scores are game points, not probabilities or respondent counts.
+// Relative rank uses only measured values from this question's survey; curated
+// questions return their validated familiarity tier.
 export function surveyTier(question, answerId) {
   return surveyTiers(question).get(answerId) ?? null;
 }
@@ -83,6 +114,7 @@ export function surveyTiers(question) {
 }
 
 function tiersFor(question) {
+  if (question.curated) return new Map(question.answers.map(answer => [answer.id, answer.tier]));
   const values = [...new Set(question.answers.map(a => surveyValue(question, a)))].sort((a, b) => b - a);
   const ranks = new Map(values.map((value, rank) => [value, SURVEY_TIERS[Math.floor(rank * (SURVEY_TIERS.length - 1) / (values.length - 1))]]));
   return new Map(question.answers.map(answer => [answer.id, ranks.get(surveyValue(question, answer))]));
@@ -93,13 +125,15 @@ export function prepareSurveyBank(raw) {
   if (errors.length) throw new Error('คลังผลสำรวจไม่ผ่านการตรวจ: ' + errors[0]);
   const bank = structuredClone(raw);
   for (const question of bank.questions) {
-    const tiers = tiersFor(question);
-    for (const answer of question.answers) answer.tier = tiers.get(answer.id);
+    if (question.survey) {
+      const tiers = tiersFor(question);
+      for (const answer of question.answers) answer.tier = tiers.get(answer.id);
+    }
   }
   return bank;
 }
 
 export function isSurveySession(session) {
-  return !!(session && session.scoringMethod === SURVEY_SCORING && Array.isArray(session.questions) &&
+  return !!(session && VALID_SCORING.has(session.scoringMethod) && Array.isArray(session.questions) &&
     session.questions.length === 7 && session.questions.every(q => validateSurveyQuestion(q).length === 0));
 }

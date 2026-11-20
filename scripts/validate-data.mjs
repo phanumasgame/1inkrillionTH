@@ -6,12 +6,12 @@ const bank = JSON.parse(await readFile(new URL('data/questions.json', root), 'ut
 const errors = validateBank(bank);
 const active = JSON.parse(await readFile(new URL('data/survey-bank.json', root), 'utf8'));
 errors.push(...validateSurveyBank(active));
-if (active.questions.length < 40 || active.questions.length > 50) errors.push('Survey bank must have 40–50 playable questions');
+if (active.questions.length < 80) errors.push('Playable bank must have at least 80 questions');
 if (active.questions.filter(q => q.scope === 'thai').length !== active.questions.filter(q => q.scope === 'world').length)
   errors.push('Playable questions must be split evenly between Thai and general topics');
 for (const scope of ['thai','world'])
-  if (active.questions.filter(q=>q.scope===scope && q.answers.length>=BROAD_ANSWER_TARGET).length<3)
-    errors.push('Need three questions with ' + BROAD_ANSWER_TARGET + ' measured answers in scope ' + scope);
+  if (active.questions.filter(q=>q.scope===scope && q.answers.length>=BROAD_ANSWER_TARGET).length<5)
+    errors.push('Need five questions with ' + BROAD_ANSWER_TARGET + ' answers in scope ' + scope);
 if (bank.questions.length !== 100) errors.push('Bank must have 100 questions');
 if (bank.questions.filter(q => q.scope === 'thai').length !== 70) errors.push('Bank must have 70 Thai questions');
 if (bank.questions.filter(q => q.scope === 'world').length !== 30) errors.push('Bank must have 30 world questions');

@@ -1,6 +1,6 @@
 import { descentDuration } from './descent.js';
 import { normalize, answerForms } from './answers.js';
-import { BROAD_ANSWER_TARGET, SURVEY_SCORING, SURVEY_TIERS, isSurveySession, surveyTier, validateSurveyBank, validateSurveyQuestion } from './survey.js';
+import { BROAD_ANSWER_TARGET, HYBRID_SCORING, SURVEY_TIERS, isSurveySession, surveyTier, validateSurveyBank, validateSurveyQuestion } from './survey.js';
 export { normalize, answerForms } from './answers.js';
 
 export const ANSWER_MS = 25_000;
@@ -222,7 +222,7 @@ export function createSession({ mode, bank, questions, date = dayKey(), now = Da
     throw new Error('A dive requires survey-backed questions.');
   return {
     schemaVersion: 1, id: mode + ':' + date + ':' + run + ':' + now, mode, date, run,
-    bankVersion: bank.version, scoringMethod: SURVEY_SCORING, startedAt: now, phase: 'preview', index: 0,
+    bankVersion: bank.version, scoringMethod: bank.scoringMethod || HYBRID_SCORING, startedAt: now, phase: 'preview', index: 0,
     phaseUntil: now + PREVIEW_MS, deadline: now + PREVIEW_MS + ANSWER_MS,
     questions: structuredClone(questions), results: [], score: 0, depth: 0,
     correction: null, rejected: '', input: '', completedAt: null

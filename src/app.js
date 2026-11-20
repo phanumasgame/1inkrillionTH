@@ -1,7 +1,7 @@
 import { ANSWER_MS, PREVIEW_MS, TIME_ZONE, TIERS, TIER_ORDER, dayKey, selectDaily, selectEndless,
   createSession, tickSession, submitAnswer, confirmCorrection, skipRound, nextRound, shareText } from './game.js';
 import { readSave, writeSave, validSession, dailySlot, prepareSaveForBank, currentSavedSession, savedSessions } from './storage.js';
-import { isSurveySession, prepareSurveyBank, surveyTiers, surveyValue } from './survey.js';
+import { isSurveySession, prepareSurveyBank, starterExample, surveyTiers, surveyValue } from './survey.js';
 import { answerForms } from './answers.js';
 import { DiveAudio } from './audio.js';
 import { OceanScene } from './scene.js';
@@ -140,7 +140,7 @@ function landing() {
     friend() + '<section class="landing-bottom">' +
     '<details class="howto"><summary>how to play</summary><ol>' +
     '<li>SEVEN PROMPTS. A SHARED DAILY CHALLENGE.</li><li>25 SECONDS. TYPE ONE ANSWER THAT FITS.</li>' +
-    '<li>LOWER SURVEY RANKS CAN SINK DEEPER.</li><li>ONLY PUBLISHED SURVEY ANSWERS CAN SCORE.</li>' +
+    '<li>LOWER OR RARER RANKS CAN SINK DEEPER.</li><li>ONLY ANSWERS IN THIS DIVE’S BANK CAN SCORE.</li>' +
     '<li>ONE POINT = 10 METRES. AIM FOR 7,000M.</li><li>ONE DAILY ATTEMPT. ENDLESS DIVES ANYTIME.</li></ol></details>' +
     '<div class="landing-credits"><button class="small-link" data-action="about">About this dive</button><span>' + bank.questions.length + ' คำถาม · ไทยและเรื่องทั่วไป</span></div>' +
     (mode === 'daily' ? '<button class="discovery-card" data-action="endless"><span class="discovery-tag">DIVE AFTER DIVE</span><img src="' +
@@ -166,7 +166,7 @@ function hud() {
 }
 function promptCard() {
   const q = session.questions[session.index];
-  const example = q.answers.reduce((best, answer) => surveyValue(q, answer) > surveyValue(q, best) ? answer : best);
+  const example = starterExample(q);
   const exampleKey = session.id + ':' + session.index;
   const exampleHint = ['preview','answer','correction'].includes(session.phase)
     ? '<details class="starter-hint" data-example-key="' + esc(exampleKey) + '"' + (openExamples.has(exampleKey) ? ' open' : '') +
@@ -252,7 +252,7 @@ function resultsView() {
       '"><div class="result-prompt">' + esc(r.prompt) + '</div><div class="result-answer">' + esc(r.label || (r.reason === 'timeout' ? 'หมดเวลา' : 'ข้ามข้อ')) +
       '</div></button><div class="result-score" style="color:' + (r.tier ? tierColor(r.tier) : '#7890a5') + '">' + r.points +
       '<div style="font-size:12px;letter-spacing:1px">' + (r.tier ? esc(TIERS[r.tier].name.toUpperCase()) : 'MISS') + '</div></div></article>').join('') +
-    '</section><p class="results-footnote">แต้มจัดอันดับจากค่าที่สำรวจได้ของแต่ละข้อ · ไม่ใช่สัดส่วนผู้เล่น<br>บันทึกผลไว้ในเบราว์เซอร์นี้ · ' +
+    '</section><p class="results-footnote">แต้มมาจากผลสำรวจหรือระดับความคุ้นเคยของคลังคำตอบในแต่ละข้อ · ไม่ใช่สัดส่วนผู้เล่น<br>บันทึกผลไว้ในเบราว์เซอร์นี้ · ' +
     esc(session.bankVersion) + '</p></main>';
 }
 function render(answerSelection = null) {
@@ -479,8 +479,8 @@ function aboutDialog() {
     ' ข้อ และเรื่องทั่วไป ' + bank.questions.filter(q => q.scope === 'world').length +
     ' ข้อ แต่ละรอบมี 7 ข้อ สลับสัดส่วนไทยกับทั่วไปเป็น 4:3 และ 3:4</p>' +
     '<p>นึกไม่ออกใช่ไหม? กดขอตัวอย่างคำตอบบนการ์ดได้หนึ่งคำตอบ</p>' +
-    '<p><strong>แต้มมาจากข้อมูลสำรวจของแต่ละข้อ</strong> ค่าที่น้อยกว่าได้แต้มเท่าเดิมหรือมากกว่า ตัวเลขจากแหล่งข้อมูลอาจเป็นร้อยละหรือค่าเฉลี่ยจากแบบสอบถาม ดูหน่วยและกลุ่มตัวอย่างได้หลังเฉลย</p>' +
-    '<p>เกมให้แต้มเฉพาะคำตอบที่มีข้อมูลรองรับ คำที่ไม่มีในคลังอาจยังถูกตามโจทย์ได้ ดูกลุ่มตัวอย่าง ช่วงเวลา และแหล่งข้อมูลหลังเฉลย</p>' +
+    '<p><strong>ระบบคะแนนแบบผสม (Survey + Curated)</strong> บางโจทย์เรียงแต้มจากผลสำรวจที่เผยแพร่จริง และบางโจทย์ใช้คลังคัดสรรตามความคุ้นเคยเพื่อขยายหมวดชีวิตประจำวันและคำตอบให้ครอบคลุมขึ้น ดูที่มาและเกณฑ์ของแต่ละข้อได้ในหน้าเฉลย</p>' +
+    '<p>เกมให้แต้มเฉพาะคำตอบที่อยู่ในคลังของข้อนั้น คำที่ยังไม่มีในคลังอาจยังสมเหตุผลตามโจทย์ได้ ดูที่มา ขอบเขต และรายการคำตอบทั้งหมดหลังเฉลย</p>' +
     '<div class="method-info">คลัง ' + esc(bank.version) +
     '<br>ปฏิทินด่าน: America/New_York ตามต้นแบบ · ความคืบหน้าบันทึกในเบราว์เซอร์นี้</div>' +
     '<p style="font-size:11px;color:#7c9bb6">ภาพฉากและตัวละครสร้างใหม่สำหรับโปรเจกต์นี้ ที่มาและสิทธิ์ของฟอนต์อยู่ใน assets/README.md เกมนี้เป็นโปรเจกต์แยกจาก Krillion.io</p></div>');
@@ -516,18 +516,21 @@ function historyDialog() {
     (history.length ? history.map(({s,i}) =>
     '<button class="history-item" data-history="' + i + '"><span>' + (s.mode === 'daily' ? 'Daily · ' + esc(s.date) : 'Endless #' + s.run) +
     '<small>' + s.results.map(r => r.tier ? TIERS[r.tier].emoji : '⬛').join('') + '</small></span><strong>' +
-    number(s.depth) + 'm</strong></button>').join('') : '<p class="empty-history">ยังไม่มีประวัติการดำน้ำจากผลสำรวจ<br>เล่นให้ครบ 7 ข้อ แล้วกลับมาดูผลงานได้ที่นี่</p>') +
+    number(s.depth) + 'm</strong></button>').join('') : '<p class="empty-history">ยังไม่มีประวัติการดำน้ำ<br>เล่นให้ครบ 7 ข้อ แล้วกลับมาดูผลงานได้ที่นี่</p>') +
     (legacyCount ? '<p class="method-info">ประวัติรุ่นก่อน ' + legacyCount + ' รอบยังเก็บไว้ในเครื่อง แต่คะแนนรุ่นนั้นไม่ได้ใช้ผลสำรวจจึงไม่แสดงรวม</p>' : ''));
 }
 const EVIDENCE_PAGE_SIZE = 100;
 const evidenceNumber = new Intl.NumberFormat('en-US', { maximumFractionDigits: 4 });
-const evidenceValue = (q, a) => evidenceNumber.format(surveyValue(q, a)) +
-  (q.survey.scale === 'rating-1-to-7' ? ' / 7' : '%');
+const evidenceValue = (q, a, tier) => q.curated
+  ? TIERS[tier].name
+  : evidenceNumber.format(surveyValue(q, a)) + (q.survey.scale === 'rating-1-to-7' ? ' / 7' : '%');
 function wireEvidenceList(q, tiers) {
   const details = modalRoot.querySelector('.evidence-details');
   const filter = details.querySelector('input'), rows = details.querySelector('.answer-bank');
   const status = details.querySelector('.evidence-status'), more = details.querySelector('.evidence-more');
-  const ordered = [...q.answers].sort((a,b)=>surveyValue(q,b)-surveyValue(q,a));
+  const ordered = q.curated
+    ? [...q.answers].sort((a,b)=>TIERS[tiers.get(a.id)].score-TIERS[tiers.get(b.id)].score || a.label.localeCompare(b.label,'th'))
+    : [...q.answers].sort((a,b)=>surveyValue(q,b)-surveyValue(q,a));
   let shown = EVIDENCE_PAGE_SIZE;
   const names = ordered.map(a => [a.label, ...a.aliases].flatMap(answerForms));
   function draw() {
@@ -536,7 +539,7 @@ function wireEvidenceList(q, tiers) {
     rows.innerHTML = matches.slice(0,shown).map(a => {
       const tier=tiers.get(a.id);
       return '<div class="bank-row"><span>' + esc(a.label) + '</span><small style="--tier:' + tierColor(tier) +
-        '"> ' + esc(evidenceValue(q,a)) + ' · ' + TIERS[tier].score + ' PTS</small></div>';
+        '"> ' + esc(evidenceValue(q,a,tier)) + ' · ' + TIERS[tier].score + ' PTS</small></div>';
     }).join('');
     status.textContent = matches.length ? 'แสดง ' + number(Math.min(shown,matches.length)) + ' จาก ' + number(matches.length) : 'ไม่พบคำตอบที่ตรงกับคำค้น';
     if (matches.length <= shown && document.activeElement === more) status.focus({preventScroll:true});
@@ -550,20 +553,35 @@ function explainDialog(index) {
   const q = session?.questions[index], result = session?.results[index];
   if (!q || !result) return;
   const answer = q.answers.find(a=>a.id===result.answerId);
-  const survey=q.survey;
   const tiers=surveyTiers(q);
-  openModal('explain','Field notes · ' + (index+1),'<div class="body-copy"><p><strong>' + esc(q.prompt) + '</strong></p><p>' +
-    esc(survey.sourceQuestion) + '</p>' + (answer ? '<p>คำตอบของคุณ: <strong>' + esc(answer.label) +
-    '</strong> · ' + esc(evidenceValue(q,answer)) + ' ตามข้อมูลต้นทาง</p>' : '') +
-    '<div class="method-info">ผู้สำรวจ: ' + esc(survey.publisher) + '<br>ช่วงเก็บข้อมูล: ' + esc(survey.fieldwork) +
-    '<br>กลุ่มตัวอย่าง: ' + esc(survey.population) + '<br>จำนวนตัวอย่าง: ' +
-    (survey.sampleSize === null ? 'ตารางนี้ไม่ได้ระบุ' : esc(survey.sampleSizeQualifier || '') + number(survey.sampleSize) + ' ' + esc(survey.sampleUnit || 'คน')) +
-    '<br>' + esc(survey.sampleNote) + '<br>' + esc(survey.metric) + '<br>' + esc(survey.coverage) +
-    '<br><a href="' + safeUrl(survey.url) + '" target="_blank" rel="noopener noreferrer">ดูผลสำรวจต้นทาง ↗</a>' +
-    (survey.licenseUrl ? ' · <a href="' + safeUrl(survey.licenseUrl) + '" target="_blank" rel="noopener noreferrer">สัญญาอนุญาต ↗</a>' : '') +
-    (survey.translationNotice ? '<br>' + esc(survey.translationNotice) : '') + '</div>' +
-    '<p>แต้มจัดตามอันดับค่าที่สำรวจได้ ค่าเท่ากันได้แต้มเท่ากัน</p>' +
-    '<details class="evidence-details"><summary>ดูคำตอบที่มีข้อมูล (' + number(q.answers.length) + ')</summary>' +
+  const answerTier = answer ? tiers.get(answer.id) : null;
+  let provenance = '';
+  if (q.survey) {
+    const survey = q.survey;
+    provenance = '<p>' + esc(survey.sourceQuestion) + '</p>' +
+      (answer ? '<p>คำตอบของคุณ: <strong>' + esc(answer.label) + '</strong> · ' + esc(evidenceValue(q,answer,answerTier)) + ' ตามข้อมูลต้นทาง</p>' : '') +
+      '<div class="method-info">ผู้สำรวจ: ' + esc(survey.publisher) + '<br>ช่วงเก็บข้อมูล: ' + esc(survey.fieldwork) +
+      '<br>กลุ่มตัวอย่าง: ' + esc(survey.population) + '<br>จำนวนตัวอย่าง: ' +
+      (survey.sampleSize === null ? 'ตารางนี้ไม่ได้ระบุ' : esc(survey.sampleSizeQualifier || '') + number(survey.sampleSize) + ' ' + esc(survey.sampleUnit || 'คน')) +
+      '<br>' + esc(survey.sampleNote) + '<br>' + esc(survey.metric) + '<br>' + esc(survey.coverage) +
+      '<br><a href="' + safeUrl(survey.url) + '" target="_blank" rel="noopener noreferrer">ดูผลสำรวจต้นทาง ↗</a>' +
+      (survey.licenseUrl ? ' · <a href="' + safeUrl(survey.licenseUrl) + '" target="_blank" rel="noopener noreferrer">สัญญาอนุญาต ↗</a>' : '') +
+      (survey.translationNotice ? '<br>' + esc(survey.translationNotice) : '') + '</div>' +
+      '<p>แต้มจัดตามอันดับค่าที่สำรวจได้ ค่าเท่ากันได้แต้มเท่ากัน</p>';
+  } else {
+    const curated = q.curated;
+    const refs = curated.references?.length
+      ? '<br>อ้างอิง: ' + curated.references.map(r => '<a href="' + safeUrl(r.url) + '" target="_blank" rel="noopener noreferrer">' + esc(r.label) + ' ↗</a>').join(' · ')
+      : '';
+    provenance = (answer ? '<p>คำตอบของคุณ: <strong>' + esc(answer.label) + '</strong> · ' + esc(TIERS[answerTier].name) + ' (' + TIERS[answerTier].score + ' PTS)' +
+      (answer.reason ? '<br><small style="color:#9eb8cc">' + esc(answer.reason) + '</small>' : '') + '</p>' : '') +
+      '<div class="method-info">แหล่งที่มา: คลังคัดสรรตามความคุ้นเคย (Curated Familiarity · ไม่ใช่ผลสำรวจความถี่จากผู้ตอบ)<br>เกณฑ์จัดระดับ: ' +
+      esc(curated.basis) + '<br>ขอบเขตคลัง: ' + esc(curated.coverage) +
+      (curated.note ? '<br>' + esc(curated.note) : '') + refs + '</div>' +
+      '<p>แต้มจัดตามระดับความคุ้นเคยของคำตอบในหมวดนี้</p>';
+  }
+  openModal('explain','Field notes · ' + (index+1),'<div class="body-copy"><p><strong>' + esc(q.prompt) + '</strong></p>' +
+    provenance + '<details class="evidence-details"><summary>ดูคำตอบที่มีข้อมูล (' + number(q.answers.length) + ')</summary>' +
     '<label class="evidence-filter">ค้นหาชื่อคำตอบ <input type="search" placeholder="พิมพ์ชื่อหรือชื่อเรียกอื่น" autocomplete="off"></label>' +
     '<p class="evidence-status" role="status" tabindex="-1"></p><div class="answer-bank"></div>' +
     '<button type="button" class="evidence-more small-link" hidden>แสดงเพิ่ม</button></details></div>');
