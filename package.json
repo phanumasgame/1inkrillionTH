@@ -1,6 +1,6 @@
 {
   "name": "krillion-th",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "private": true,
   "type": "module",
   "description": "A Thai rare-answer dive, inspired by Krillion.io.",
@@ -11,8 +11,15 @@
     "preview": "node scripts/preview-build.mjs",
     "test": "node --test tests/*.test.mjs",
     "check": "node scripts/validate-data.mjs",
+    "db:init": "node scripts/init-db.mjs",
+    "export-suggestions": "node scripts/export-suggestions.mjs",
     "refresh-data": "node scripts/refresh-evidence.mjs",
     "analyze-reference": "node scripts/analyze-reference.mjs"
   },
-  "engines": { "node": ">=22" }
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.2.1"
+  }
 }

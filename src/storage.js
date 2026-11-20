@@ -4,7 +4,16 @@ export const DEFAULT_SETTINGS = Object.freeze({
 });
 export function emptySave() {
   return { version: 1, settings: { ...DEFAULT_SETTINGS }, daily: {}, endless: null, endlessByBank: {},
-    history: [], seen: [], run: 0, character: 'krillion', currentBankVersion: null, resumeSessionId: null };
+    history: [], seen: [], run: 0, character: 'krillion', currentBankVersion: null, resumeSessionId: null,
+    clientId: '', telemetrySent: [] };
+}
+export function ensureClientId(save) {
+  if (save.clientId && typeof save.clientId === 'string') return save.clientId;
+  const id = typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+    ? 'c_' + crypto.randomUUID().replace(/-/g, '').slice(0, 16)
+    : 'c_' + Math.random().toString(36).slice(2, 12) + Date.now().toString(36);
+  save.clientId = id;
+  return id;
 }
 function slimQuestionSnapshot(question, matchedIds) {
   const picked = [];

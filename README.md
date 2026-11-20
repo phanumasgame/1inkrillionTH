@@ -39,15 +39,28 @@ Daily และ Endless มีรอบละ 7 ข้อ ข้อละ 25 ว
 
 Preview ของ static build เปิดที่ http://127.0.0.1:4174 โดยปริยาย `check` ตรวจรูปแบบ ข้อมูลที่จำเป็น (ทั้งข้อมูลผลสำรวจและข้อมูลจัดระดับความคุ้นเคย) และขั้นต่ำ 21 คำตอบต่อข้อของคลังเวอร์ชัน `1.0.7` รวมถึงตรวจโครงสร้างฉบับร่างเดิมด้วย การตรวจอัตโนมัติไม่สามารถยืนยันความถูกต้องหรือสิทธิ์ของแหล่งข้อมูลภายนอกแทนการอ่านต้นฉบับได้
 
-## Vercel และ Git
+## Vercel, ฐานข้อมูล (Neon Postgres) และระบบ Survey
 
-`vercel.json` ใช้ Framework Preset แบบ Other รัน `npm run build` และเผยแพร่ `dist/` ซึ่งมีเฉพาะข้อมูลโพลที่ใช้งาน ไม่มี environment variables ที่แอปต้องใช้ สำหรับ Preview:
+`vercel.json` รัน `npm run build` เพื่อสร้างไฟล์หน้าเว็บใน `dist/` และเผยแพร่ Vercel Serverless Functions จาก `api/`:
+
+- **Survey หลังเล่นเสร็จ**: บนหน้าสรุปผล (และในหน้า Field notes รายข้อ) มีปุ่ม **เสนอคำตอบที่ควรมีเพิ่มในคลัง (SURVEY)** พร้อมปุ่มลัดเติมคำที่ผู้เล่นลองพิมพ์ในรอบนั้นแล้วยังไม่พบในคลัง
+- **API Endpoints**:
+  - `POST /api/suggestions` — บันทึกคำตอบที่ผู้เล่นเสนอลงตาราง `answer_suggestions`
+  - `POST /api/telemetry` — บันทึกสรุปรอบเล่น (`dive_sessions`, `round_attempts`) และคำที่พิมพ์แล้วไม่พบในคลัง (`rejected_guesses`) แบบไม่ระบุตัวตน
+  - `GET /api/suggestions?view=summary|raw|rejected|questions&format=json|csv` — ดึงข้อมูลสรุปหรือ Export CSV (ป้องกันด้วย `ADMIN_TOKEN` ผ่าน `Authorization: Bearer <ADMIN_TOKEN>`)
+  - `GET /api/health` — ตรวจสถานะ API และการเชื่อมต่อฐานข้อมูล (`?check=db`)
+- **Environment Variables** (บน Vercel และ `.env.local`):
+  - `DATABASE_URL` — Connection string ของ Neon Postgres (เชื่อมต่ออัตโนมัติผ่าน Vercel Marketplace)
+  - `ADMIN_TOKEN` — โทเคนสำหรับเรียกดู/Export ข้อมูลผ่าน `GET /api/suggestions`
+- **สคริปต์ช่วยดูแลคลัง**:
+  - `npm run db:init` — สร้างตารางและ index ในฐานข้อมูล
+  - `npm run export-suggestions -- --view=summary --format=csv --out=outputs/analytics/suggestions.csv` — ส่งออกคำตอบที่ถูกเสนอหรือพิมพ์ไม่พบเป็น CSV (UTF-8 BOM เปิดภาษาไทยใน Excel ได้ทันที)
+
+ข้อมูล `localStorage` ในเครื่องไม่ย้ายจาก localhost ไปยังโดเมน Vercel โดยอัตโนมัติ แต่คำตอบที่ผู้เล่นเสนอผ่าน Survey และสถิติรอบเล่นแบบไม่ระบุตัวตนจะเก็บไว้ในฐานข้อมูลของแอปเพื่อใช้วิเคราะห์และขยายคลังคำถามต่อไป สำหรับ Preview:
 
     npx --yes vercel deploy --environment preview
 
 ตรวจ target และ Deployment Protection ก่อนแชร์ การเชื่อม GitHub กับ Vercel สำหรับ deploy อัตโนมัติเป็นการตั้งค่าแยก และการ push branch ที่เป็น production อาจกระตุ้น production deployment ได้
-
-ข้อมูล localStorage ไม่ย้ายจาก localhost ไปยังโดเมน Vercel โดยอัตโนมัติ ไม่มีการส่งคำตอบผู้เล่นไปยังบริการภายนอก
 
 ## เพิ่มโจทย์สำรวจ
 

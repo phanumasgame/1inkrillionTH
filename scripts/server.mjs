@@ -1,7 +1,17 @@
 import { createServer } from 'node:http';
+import fs from 'node:fs';
 import { readFile, stat } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import suggestionsHandler from '../api/suggestions.js';
+import telemetryHandler from '../api/telemetry.js';
+import healthHandler from '../api/health.js';
+
+for (const envFile of ['.env.local', '.env']) {
+  if (fs.existsSync(envFile) && typeof process.loadEnvFile === 'function') {
+    try { process.loadEnvFile(envFile); } catch {}
+  }
+}
 
 const root = path.resolve(fileURLToPath(new URL('../', import.meta.url)));
 const port = Number(process.env.PORT || 4173);
@@ -12,14 +22,38 @@ const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; ch
   '.png': 'image/png', '.webp': 'image/webp', '.ttf': 'font/ttf', '.woff2': 'font/woff2',
   '.md': 'text/plain; charset=utf-8', '.txt': 'text/plain; charset=utf-8' };
 const routes = new Set(['/', '/daily', '/unlimited', '/unlimited/classic']);
+const apiRoutes = new Map([
+  ['/api/suggestions', suggestionsHandler],
+  ['/api/telemetry', telemetryHandler],
+  ['/api/health', healthHandler],
+]);
+
+function adaptRes(res) {
+  let code = 200;
+  res.status = statusCode => { code = statusCode; return res; };
+  res.json = payload => {
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.writeHead(code);
+    res.end(JSON.stringify(payload));
+  };
+  res.send = payload => {
+    res.writeHead(code);
+    res.end(payload);
+  };
+  return res;
+}
 
 const server = createServer(async (req, res) => {
   try {
+    const url = new URL(req.url, 'http://localhost');
+    const pathname = decodeURIComponent(url.pathname);
+    if (apiRoutes.has(pathname)) {
+      req.query = Object.fromEntries(url.searchParams.entries());
+      return await apiRoutes.get(pathname)(req, adaptRes(res));
+    }
     if (!['GET', 'HEAD'].includes(req.method)) {
       res.writeHead(405, { Allow: 'GET, HEAD' }); return res.end();
     }
-    const url = new URL(req.url, 'http://localhost');
-    const pathname = decodeURIComponent(url.pathname);
     const relative = routes.has(pathname) ? 'index.html' : pathname.replace(/^\/+/, '');
     if (relative.split(/[\\/]/).some(segment => segment.startsWith('.'))) {
       res.writeHead(404); return res.end('Not found');

@@ -1,6 +1,6 @@
 import { ANSWER_MS, PREVIEW_MS, TIME_ZONE, TIERS, TIER_ORDER, dayKey, selectDaily, selectEndless,
   createSession, tickSession, submitAnswer, confirmCorrection, skipRound, nextRound, shareText } from './game.js';
-import { readSave, writeSave, emptySave, validSession, dailySlot, prepareSaveForBank, currentSavedSession, savedSessions } from './storage.js';
+import { readSave, writeSave, emptySave, ensureClientId, validSession, dailySlot, prepareSaveForBank, currentSavedSession, savedSessions } from './storage.js';
 import { curatedReason, isSurveySession, prepareSurveyBank, starterExample, surveyTiers, surveyValue } from './survey.js';
 import { answerForms } from './answers.js';
 import { DiveAudio } from './audio.js';
@@ -45,6 +45,7 @@ async function load() {
     if (results[1].status !== 'fulfilled') throw results[1].reason;
     bank = prepareSurveyBank(results[0].value);
     save = prepareSaveForBank(readSave(globalThis.localStorage, bank), bank);
+    ensureClientId(save);
     writeSave(save, globalThis.localStorage, bank);
     audio = new DiveAudio(results[1].value, save.settings.muted);
     scene = new OceanScene((depth, frame) => {
@@ -107,6 +108,7 @@ function persist() {
       let surveyCount = 0;
       save.history = save.history.filter(item => !surveySession(item) || ++surveyCount <= 40);
     }
+    if (session.phase === 'complete') sendTelemetryIfNeeded(session);
   }
   for (const [date, stored] of Object.entries(save.daily)) {
     if (surveySession(stored) && stored?.date !== dayKey() && stored?.phase === 'complete' && save.history.some(item => item.id === stored.id))
@@ -238,6 +240,7 @@ function playing() {
 function resultsView() {
   const gems = session.results.filter(r => r.tier === 'krillion').length;
   const title = session.score === 700 ? 'THE PERFECT DIVE' : session.score >= 450 ? 'INTO THE ABYSS' : session.score >= 250 ? 'A DEEPER KIND OF KNOWLEDGE' : 'BACK AT THE SURFACE';
+  const totalRejected = session.results.reduce((sum, r) => sum + (Array.isArray(r.rejectedInputs) ? r.rejectedInputs.length : 0), 0);
   return '<main class="results-view">' + controls() +
     '<p class="overline">' + (session.mode === 'daily' ? 'DAILY DIVE · ' + session.date : 'ENDLESS DIVE #' + session.run) + '</p>' +
     '<h1>' + title + '</h1><div class="results-depth">' + number(session.depth) + '<span style="font-size:35px">m</span></div>' +
@@ -247,6 +250,8 @@ function resultsView() {
       r.points + '%"></i><span>' + (i + 1) + '</span></div>').join('') + '</div>' +
     '<div class="results-actions"><button class="primary-button" data-action="share">COPY RESULT ↗</button>' +
     '<button class="primary-button" data-action="new-endless">DIVE AGAIN ∞</button></div>' +
+    '<div class="survey-cta-wrap"><button class="survey-trigger" data-action="survey">+ เสนอคำตอบที่ควรมีเพิ่มในคลัง (SURVEY)' +
+    (totalRejected ? '<span class="survey-badge">' + totalRejected + ' MISSED</span>' : '') + '</button></div>' +
     '<div style="text-align:center"><button class="small-link" data-action="home">BACK TO THE SURFACE</button></div>' +
     '<section class="result-list" aria-label="Dive results">' + session.results.map((r, i) =>
       '<article class="result-row"><span class="num">' + (i + 1) + '</span><button data-action="explain" data-index="' + i +
@@ -583,11 +588,169 @@ function explainDialog(index) {
       '<p>แต้มจัดตามระดับความคุ้นเคยของคำตอบในหมวดนี้</p>';
   }
   openModal('explain','Field notes · ' + (index+1),'<div class="body-copy"><p><strong>' + esc(q.prompt) + '</strong></p>' +
-    provenance + '<details class="evidence-details"><summary>ดูคำตอบที่มีข้อมูล (' + number(q.answers.length) + ')</summary>' +
+    provenance + '<div class="survey-inline-link"><button type="button" class="small-link" data-action="survey" data-index="' + index +
+    '">ไม่เจอคำตอบที่อยากตอบ? เสนอเพิ่มเข้าคลัง ↗</button></div>' +
+    '<details class="evidence-details"><summary>ดูคำตอบที่มีข้อมูล (' + number(q.answers.length) + ')</summary>' +
     '<label class="evidence-filter">ค้นหาชื่อคำตอบ <input type="search" placeholder="พิมพ์ชื่อหรือชื่อเรียกอื่น" autocomplete="off"></label>' +
     '<p class="evidence-status" role="status" tabindex="-1"></p><div class="answer-bank"></div>' +
     '<button type="button" class="evidence-more small-link" hidden>แสดงเพิ่ม</button></details></div>');
   wireEvidenceList(q,tiers);
+}
+const telemetryInFlight = new Set();
+function sendTelemetryIfNeeded(doneSession) {
+  if (!doneSession || doneSession.phase !== 'complete' || !surveySession(doneSession)) return;
+  const sent = Array.isArray(save.telemetrySent) ? save.telemetrySent : [];
+  if (sent.includes(doneSession.id) || telemetryInFlight.has(doneSession.id)) return;
+  telemetryInFlight.add(doneSession.id);
+  const clientId = ensureClientId(save);
+  const payload = {
+    sessionId: doneSession.id,
+    clientId,
+    mode: doneSession.mode,
+    date: doneSession.date,
+    bankVersion: doneSession.bankVersion,
+    score: doneSession.score,
+    depth: doneSession.depth,
+    gems: doneSession.results.filter(r => r.tier === 'krillion').length,
+    rounds: doneSession.results.map(r => ({
+      questionId: r.questionId,
+      reason: r.reason,
+      answerId: r.answerId || '',
+      label: r.label || '',
+      tier: r.tier || '',
+      points: r.points || 0,
+      elapsedMs: r.elapsedMs || 0,
+      rejectedInputs: Array.isArray(r.rejectedInputs) ? r.rejectedInputs : []
+    }))
+  };
+  fetch('/api/telemetry', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+    keepalive: true
+  }).then(r => {
+    if (!r.ok) return;
+    save.telemetrySent = [...new Set([...(save.telemetrySent || []), doneSession.id])].slice(-60);
+    writeSave(save, globalThis.localStorage, bank);
+  }).catch(() => {}).finally(() => {
+    telemetryInFlight.delete(doneSession.id);
+  });
+}
+function surveyDialog(initialIndex = null) {
+  if (!session?.questions?.length) return;
+  const defaultIdx = Number.isInteger(initialIndex) && initialIndex >= 0 && initialIndex < session.questions.length
+    ? initialIndex
+    : (() => {
+        const withRej = session.results.findIndex(r => Array.isArray(r.rejectedInputs) && r.rejectedInputs.length > 0);
+        if (withRej >= 0) return withRej;
+        const missed = session.results.findIndex(r => !r.tier);
+        return missed >= 0 ? missed : 0;
+      })();
+  const optionsHtml = session.questions.map((q, i) => {
+    const r = session.results[i];
+    const rejCount = Array.isArray(r?.rejectedInputs) ? r.rejectedInputs.length : 0;
+    const tag = !r?.tier ? ' · ไม่ได้แต้ม' : rejCount ? ' · พิมพ์ไม่พบ ' + rejCount + ' คำ' : '';
+    return '<option value="' + i + '"' + (i === defaultIdx ? ' selected' : '') + '>ข้อ ' + (i + 1) + ': ' + esc(q.prompt) + tag + '</option>';
+  }).join('');
+
+  openModal('survey', 'Pool Survey · เสนอคำตอบเพิ่ม',
+    '<div class="body-copy"><p>เจอคำตอบที่นึกออกแต่ยังไม่มีในคลังใช่ไหม? ส่งมาได้เลย ทีมงานจะนำไปวิเคราะห์และเติมเข้าคลังรุ่นถัดไปครับ</p>' +
+    '<form class="survey-form" id="survey-form">' +
+    '<label class="survey-field">เลือกโจทย์จากรอบที่เพิ่งเล่น<select id="survey-question">' + optionsHtml + '</select></label>' +
+    '<div id="survey-chips-box"></div>' +
+    '<label class="survey-field">คำตอบที่ควรมีในข้อนี้ (ใส่หลายคำได้ คั่นด้วย , หรือขึ้นบรรทัดใหม่)<textarea id="survey-answers" required placeholder="เช่น ซอยจุ๊, อู๋เพี้ย, หมกฮวก"></textarea></label>' +
+    '<label class="survey-field">หมายเหตุหรือชื่อเรียกอื่น (ไม่บังคับ)<input id="survey-note" type="text" maxlength="400" placeholder="เช่น ชื่อภาษาอังกฤษ หรือทำไมควรอยู่ในข้อนี้"></label>' +
+    '<p class="survey-status" id="survey-status" role="status"></p>' +
+    '<button type="submit" class="primary-button survey-submit" id="survey-submit">ส่งข้อเสนอเข้าคลัง →</button>' +
+    '</form><div class="survey-sent-list" id="survey-sent-list" hidden></div></div>');
+
+  const form = document.getElementById('survey-form');
+  const selectEl = document.getElementById('survey-question');
+  const chipsBox = document.getElementById('survey-chips-box');
+  const answersEl = document.getElementById('survey-answers');
+  const noteEl = document.getElementById('survey-note');
+  const statusEl = document.getElementById('survey-status');
+  const submitBtn = document.getElementById('survey-submit');
+  const sentList = document.getElementById('survey-sent-list');
+  const submittedItems = [];
+  let usedChip = false;
+
+  function renderChips() {
+    const idx = Number(selectEl.value);
+    const rej = session.results[idx]?.rejectedInputs || [];
+    if (!rej.length) { chipsBox.innerHTML = ''; return; }
+    chipsBox.innerHTML = '<div class="survey-chips-wrap"><span class="survey-chips-label">คำที่คุณลองพิมพ์ในข้อนี้แต่ยังไม่พบในคลัง (แตะเพื่อเติมอัตโนมัติ):</span>' +
+      '<div class="survey-chips">' + rej.map(word => '<button type="button" class="survey-chip" data-chip="' + esc(word) + '">+ ' + esc(word) + '</button>').join('') + '</div></div>';
+  }
+  renderChips();
+  selectEl.addEventListener('change', () => { usedChip = false; statusEl.textContent = ''; renderChips(); });
+  chipsBox.addEventListener('click', e => {
+    const chip = e.target.closest('[data-chip]');
+    if (!chip) return;
+    const word = chip.dataset.chip;
+    const current = answersEl.value.trim();
+    const parts = current ? current.split(/[\n,]+/).map(s => s.trim()).filter(Boolean) : [];
+    if (!parts.includes(word)) parts.push(word);
+    answersEl.value = parts.join(', ');
+    usedChip = true;
+    answersEl.focus();
+  });
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const idx = Number(selectEl.value);
+    const q = session.questions[idx];
+    const rawText = answersEl.value.trim();
+    if (!rawText) {
+      statusEl.className = 'survey-status is-error';
+      statusEl.textContent = 'กรุณาพิมพ์คำตอบที่ต้องการเสนออย่างน้อย 1 รายการ';
+      answersEl.focus();
+      return;
+    }
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'กำลังบันทึก...';
+    statusEl.className = 'survey-status';
+    statusEl.textContent = '';
+    try {
+      const res = await fetch('/api/suggestions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          questionId: q.id,
+          questionPrompt: q.prompt,
+          suggestedAnswer: rawText,
+          note: noteEl.value.trim(),
+          source: usedChip ? 'rejected-chip' : 'survey',
+          bankVersion: session.bankVersion || bank.version,
+          mode: session.mode,
+          sessionId: session.id,
+          clientId: ensureClientId(save)
+        })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || 'บันทึกไม่สำเร็จ (รหัส ' + res.status + ')');
+      }
+      const savedLabels = (data.items || []).map(it => it.suggested_answer).filter(Boolean);
+      submittedItems.unshift({ prompt: q.prompt, labels: savedLabels.length ? savedLabels : [rawText] });
+      answersEl.value = '';
+      noteEl.value = '';
+      usedChip = false;
+      statusEl.className = 'survey-status';
+      statusEl.textContent = 'บันทึกแล้ว ' + (data.saved || savedLabels.length) + ' รายการ ขอบคุณที่ช่วยขยายคลังครับ!';
+      sentList.hidden = false;
+      sentList.innerHTML = '<strong>ข้อเสนอที่ส่งในรอบนี้:</strong>' + submittedItems.map(item =>
+        '<div>✓ ' + esc(item.labels.join(', ')) + ' <span style="color:#6f90aa">(' + esc(item.prompt) + ')</span></div>').join('');
+      toast('ส่งคำตอบที่เสนอลงฐานข้อมูลแล้ว');
+      audio?.play('spare');
+    } catch (err) {
+      statusEl.className = 'survey-status is-error';
+      statusEl.textContent = err.message || 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'ส่งข้อเสนอเข้าคลัง →';
+    }
+  });
 }
 async function copyResult() {
   const text = shareText(session,save.settings.shareLink,location.origin);
@@ -636,6 +799,7 @@ document.addEventListener('click', async event => {
     case 'edit': if (session.phase === 'correction') transition({...session,phase:'answer',correction:null}); break;
     case 'share': await copyResult(); break;
     case 'explain': explainDialog(Number(button.dataset.index)); break;
+    case 'survey': surveyDialog(button.dataset.index != null ? Number(button.dataset.index) : null); break;
     case 'sound':
       save.settings.muted = !save.settings.muted; applySettings(); persist(); render();
       if (!save.settings.muted) audio.play('blub'); break;
@@ -654,7 +818,7 @@ document.addEventListener('keydown',event => {
   if (!modalKind) return;
   if (event.key === 'Escape') { closeModal(); event.preventDefault(); }
   if (event.key === 'Tab') {
-    const nodes = [...modalRoot.querySelectorAll('button:not(:disabled),a[href],input,summary')].filter(el=>el.getClientRects().length);
+    const nodes = [...modalRoot.querySelectorAll('button:not(:disabled),a[href],input,select,textarea,summary')].filter(el=>el.getClientRects().length);
     if (!nodes.length) return;
     const first = nodes[0], last = nodes.at(-1);
     if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }

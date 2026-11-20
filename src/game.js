@@ -227,7 +227,7 @@ export function createSession({ mode, bank, questions, date = dayKey(), now = Da
     bankVersion: bank.version, scoringMethod: bank.scoringMethod || HYBRID_SCORING, startedAt: now, phase: 'preview', index: 0,
     phaseUntil: now + PREVIEW_MS, deadline: now + PREVIEW_MS + ANSWER_MS,
     questions: structuredClone(questions), results: [], score: 0, depth: 0,
-    correction: null, rejected: '', input: '', completedAt: null
+    correction: null, rejected: '', rejectedInputs: [], input: '', completedAt: null
   };
 }
 export function settleRound(session, answer, raw, reason, now = Date.now()) {
@@ -237,14 +237,16 @@ export function settleRound(session, answer, raw, reason, now = Date.now()) {
   const tier = answer ? surveyTier(question, recorded?.id) : null;
   if (answer && !tier) return session;
   const points = tier ? TIERS[tier].score : 0;
+  const rejectedInputs = Array.isArray(session.rejectedInputs) ? [...session.rejectedInputs] : [];
   const result = { questionId: question.id,
     prompt: question.prompt, raw: String(raw).slice(0, 256),
     answerId: recorded?.id ?? null, label: recorded?.label ?? null, tier, points, reason,
-    answeredAt: now, elapsedMs: Math.min(ANSWER_MS, Math.max(0, now - (session.deadline - ANSWER_MS))) };
+    answeredAt: now, elapsedMs: Math.min(ANSWER_MS, Math.max(0, now - (session.deadline - ANSWER_MS))),
+    ...(rejectedInputs.length ? { rejectedInputs } : {}) };
   return {
     ...session, phase: 'sinking', phaseUntil: now + descentDuration(points),
     results: [...session.results, result], score: session.score + points,
-    depth: session.depth + points * 10, correction: null, rejected: '', input: ''
+    depth: session.depth + points * 10, correction: null, rejected: '', rejectedInputs: [], input: ''
   };
 }
 export function tickSession(session, now = Date.now()) {
@@ -267,7 +269,12 @@ export function submitAnswer(session, raw, settings = {}, now = Date.now()) {
     return settleRound(ready, match.answer, entered, 'correct', now);
   if (match.kind === 'correction')
     return { ...ready, phase: 'correction', correction: match.answer, input: entered, rejected: '' };
-  return { ...ready, rejected: entered, input: settings.clearRejected ? '' : entered };
+  const trimmed = entered.trim().slice(0, 120);
+  const norm = normalize(trimmed);
+  const prevRejected = Array.isArray(ready.rejectedInputs) ? ready.rejectedInputs : [];
+  const rejectedInputs = trimmed && norm && prevRejected.length < 12 && !prevRejected.some(item => normalize(item) === norm)
+    ? [...prevRejected, trimmed] : prevRejected;
+  return { ...ready, rejected: entered, rejectedInputs, input: settings.clearRejected ? '' : entered };
 }
 export function confirmCorrection(session, now = Date.now()) {
   const ready = tickSession(session, now);
@@ -281,7 +288,7 @@ export function nextRound(session, now = Date.now()) {
   if (session.phase !== 'reveal') return session;
   if (session.index === 6) return { ...session, phase: 'complete', completedAt: now, phaseUntil: null };
   return { ...session, index: session.index + 1, phase: 'preview', phaseUntil: now + PREVIEW_MS,
-    deadline: now + PREVIEW_MS + ANSWER_MS, correction: null, rejected: '', input: '' };
+    deadline: now + PREVIEW_MS + ANSWER_MS, correction: null, rejected: '', rejectedInputs: [], input: '' };
 }
 export function shareText(session, includeLink = false, origin = '') {
   const marks = session.results.map(r => r.tier ? TIERS[r.tier].emoji : '⬛').join('');
