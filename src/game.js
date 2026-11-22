@@ -164,7 +164,7 @@ export function selectEndless(bank, seen = [], rng = Math.random, run = 1) {
   return { questions: picked, seen: [...new Set(nextSeen)] };
 }
 const segmenter = new Intl.Segmenter('th', { granularity: 'grapheme' });
-const graphemes = text => Array.from(segmenter.segment(text), s => s.segment);
+const graphemes = text => /^[\x20-\x7e]*$/.test(text) ? Array.from(text) : Array.from(segmenter.segment(text), s => s.segment);
 const answerIndexes = new WeakMap();
 function answerIndex(answers) {
   if (answerIndexes.has(answers)) return answerIndexes.get(answers);
@@ -207,6 +207,7 @@ export function matchAnswer(question, raw) {
   let best = new Set(), bestDistance = limit;
   for (let length = value.length - 2; length <= value.length + 2; length++) {
     for (const entry of index.byLength.get(length) || []) {
+      if (bestDistance === 1 && value[0] !== entry.name[0] && value.at(-1) !== entry.name.at(-1)) continue;
       entry.parts ??= graphemes(entry.name);
       if (Math.abs(parts.length - entry.parts.length) > bestDistance) continue;
       const delta = distance(parts, entry.parts);

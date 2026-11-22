@@ -9,21 +9,35 @@ const raw = JSON.parse(await readFile(new URL('../data/survey-bank.json', import
 const bank = prepareSurveyBank(raw);
 const make = () => createSession({mode:'daily',bank,questions:selectDaily(bank,'2026-11-17'),date:'2026-11-17',now:1000});
 
-test('v1.0.10-hf2 unified 130-question bank has 66k+ answers, 22 1000+ mega pools, consolidated rail stations, and calibrated tiers', () => {
+test('v1.0.10-hf3 unified 132-question bank has 128k+ answers, 25 1000+ pools, 5 10000+ ultra-mega pools, and calibrated tiers', () => {
   assert.deepEqual(validateSurveyBank(raw), []);
-  assert.equal(raw.version, '1.0.10-hf2');
+  assert.equal(raw.version, '1.0.10-hf3');
   assert.equal(raw.scoringMethod, HYBRID_SCORING);
-  assert.equal(raw.questions.length, 130);
-  assert.equal(raw.questions.filter(q => q.scope === 'thai').length, 65);
-  assert.equal(raw.questions.filter(q => q.scope === 'world').length, 65);
+  assert.equal(raw.questions.length, 132);
+  assert.equal(raw.questions.filter(q => q.scope === 'thai').length, 66);
+  assert.equal(raw.questions.filter(q => q.scope === 'world').length, 66);
   const surveyQuestions = raw.questions.filter(q => q.survey);
   const curatedQuestions = raw.questions.filter(q => q.curated);
   assert.equal(surveyQuestions.length, 6);
-  assert.equal(curatedQuestions.length, 124);
-  assert.ok(raw.questions.reduce((sum, q) => sum + q.answers.length, 0) >= 66_000);
-  assert.ok(raw.questions.filter(q => q.answers.length >= BROAD_ANSWER_TARGET).length >= 122);
-  assert.ok(raw.questions.filter(q => q.answers.length >= 1000).length >= 22);
+  assert.equal(curatedQuestions.length, 126);
+  assert.ok(raw.questions.reduce((sum, q) => sum + q.answers.length, 0) >= 125_000);
+  assert.ok(raw.questions.filter(q => q.answers.length >= BROAD_ANSWER_TARGET).length >= 124);
+  assert.ok(raw.questions.filter(q => q.answers.length >= 1000).length >= 25);
+  assert.ok(raw.questions.filter(q => q.answers.length >= 10000).length >= 5);
   assert.ok(raw.questions.every(q => q.answers.length >= MIN_PLAYABLE_ANSWERS));
+
+  // Verify the 5 Ultra-Mega 10,000+ categories
+  for (const [qid, minAnswers, probe] of [
+    ['th-dictionary-words', 14000, 'ความรัก'],
+    ['world-wordle-words', 14800, 'WATER'],
+    ['th-schools', 11000, 'สวนกุหลาบ'],
+    ['th-temples', 11000, 'วัดพระแก้ว'],
+    ['world-famous-cities', 11000, 'โตเกียว'],
+  ]) {
+    const q = raw.questions.find(x => x.id === qid);
+    assert.ok(q && q.answers.length >= minAnswers, `Expected ${minAnswers}+ answers in ${qid}, got ${q?.answers.length}`);
+    assert.equal(matchAnswer(q, probe).kind, 'exact', `Expected exact match for ${probe} in ${qid}`);
+  }
 
   // Verify all 10 new 1,000+ mega categories (5 Thai + 5 World)
   for (const [qid, probe] of [
@@ -266,6 +280,10 @@ test('game points are derived from published ordering, with equal percentages ti
 });
 
 test('missing provenance or percentage cannot receive a fabricated score or start a dive', () => {
+  const baseSlice = [
+    ...raw.questions.filter(q => q.scope === 'thai').slice(0, 4),
+    ...raw.questions.filter(q => q.scope === 'world' && q.answers.length < 1000).slice(0, 4),
+  ];
   for (const modify of [
     q=>delete q.survey,
     q=>delete q.survey.sampleSize,
@@ -275,7 +293,7 @@ test('missing provenance or percentage cannot receive a fabricated score or star
     q=>q.survey.url='http://example.org',
     q=>q.answers[0].aliases.push(q.answers[1].label)
   ]) {
-    const invalid=structuredClone(raw);modify(invalid.questions[0]);
+    const invalid={...raw,questions:baseSlice.map((q,i)=>i===0?structuredClone(q):q)};modify(invalid.questions[0]);
     assert.ok(validateSurveyBank(invalid).length);
     assert.throws(()=>prepareSurveyBank(invalid));
     assert.throws(()=>createSession({mode:'daily',bank:invalid,questions:invalid.questions.slice(0,7),now:1000}));
@@ -308,6 +326,11 @@ test('legacy editorial games remain stored but are not survey sessions', () => {
 test('curated familiarity questions validate strictly and score + save through hybrid sessions', () => {
   const curatedIndex = raw.questions.findIndex(q => q.id === 'world-animals');
   assert.ok(curatedIndex >= 0);
+  const curatedSlice = [
+    structuredClone(raw.questions[curatedIndex]),
+    ...raw.questions.filter(q => q.scope === 'thai' && q.answers.length < 1000).slice(0, 4),
+    ...raw.questions.filter(q => q.scope === 'world' && q.id !== 'world-animals' && q.answers.length < 1000).slice(0, 3),
+  ];
   for (const modify of [
     q => { delete q.curated.basis; },
     q => { delete q.curated.coverage; },
@@ -317,8 +340,8 @@ test('curated familiarity questions validate strictly and score + save through h
     q => { q.answers.forEach(a => { if (a.tier === 'krillion') a.tier = 'rare'; }); },
     q => { q.survey = structuredClone(raw.questions[0].survey); }
   ]) {
-    const invalid = structuredClone(raw);
-    modify(invalid.questions[curatedIndex]);
+    const invalid = { ...raw, questions: curatedSlice.map((q, i) => i === 0 ? structuredClone(q) : q) };
+    modify(invalid.questions[0]);
     assert.ok(validateSurveyBank(invalid).length > 0);
     assert.throws(() => prepareSurveyBank(invalid));
   }

@@ -8,7 +8,7 @@ import { OceanScene } from './scene.js';
 import { descentDuration, PIXELS_PER_METER, METERS_PER_POINT } from './descent.js';
 import { focusAnswer } from './input.js';
 
-const APP_VERSION = '1.0.10-hf2';
+const APP_VERSION = '1.0.10-hf3';
 const app = document.getElementById('app');
 const modalRoot = document.getElementById('modal-root');
 let bank, audio, scene;
@@ -648,12 +648,12 @@ function sendTelemetryIfNeeded(doneSession) {
 function getPatchHistory(totalAnswers, megaCount) {
   return [
     {
-      version: '1.0.10-hf2',
+      version: '1.0.10-hf3',
       badge: 'ล่าสุด',
       headline: 'มีอะไรใหม่ในอัปเดต v1.0.10 (Hotfix)',
-      subtitle: 'ขยายคลังหมวดใหญ่ 1,000+ คำตอบ เพิ่มโจทย์ใหม่ ปรับสมดุลคลังเดิม และอัปเกรดภาพฉากหลังใต้ทะเล',
+      subtitle: 'ขยายคลังหมวดใหญ่ระดับ 1,000+ และ 10,000+ คำตอบ เพิ่มโจทย์ใหม่ ปรับสมดุลคลังเดิม และอัปเกรดภาพฉากหลังใต้ทะเล',
       stats: [
-        { value: number(bank.questions.length), label: 'โจทย์ไทย & ทั่วไป (65/65)' },
+        { value: number(bank.questions.length), label: 'โจทย์ไทย & ทั่วไป (66/66)' },
         { value: number(totalAnswers), label: 'คำตอบทั้งหมดในคลัง' },
         { value: number(megaCount), label: 'หมวดใหญ่ 1,000+ คำ' },
       ],
@@ -670,10 +670,10 @@ function getPatchHistory(totalAnswers, megaCount) {
         {
           tag: 'CONSOLIDATED',
           tagClass: 'is-gold',
-          title: 'ปรับสมดุลโครงสร้างโจทย์ & เพิ่มโจทย์ใหม่ (รวม 130 โจทย์)',
+          title: 'ปรับสมดุลโครงสร้างโจทย์ & เพิ่มหมวดใหญ่ระดับ 1,000+ และ 10,000+ คำตอบ',
           bullets: [
-            'ปรับปรุงและรวมโจทย์กลุ่มใกล้เคียงเข้าด้วยกันเป็นข้อเดียว พร้อมเพิ่มโจทย์ไทยใหม่ทดแทน 1 หมวดเพื่อรักษาสัดส่วนไทย–ทั่วไปให้สมดุล',
-            'เพิ่มโจทย์ใหม่ขนาดคลังใหญ่ (<strong>1,000+ คำตอบต่อข้อ</strong>) อีก <strong>10 หมวด</strong> (ไทย 5 / ทั่วไป 5) รวมเป็น <strong>22 หมวดหลักพัน</strong> และมีหมวด 100+ คำตอบถึง <strong>122 ข้อ</strong>',
+            'ปรับปรุงและรวมโจทย์กลุ่มใกล้เคียงเข้าด้วยกันเป็นข้อเดียว พร้อมเพิ่มโจทย์ใหม่รักษาสัดส่วนไทย–ทั่วไปให้สมดุล (รวม <strong>132 โจทย์ 66/66</strong>)',
+            'ขยายคลังสู่ระดับ <strong>10,000+ คำตอบต่อข้อถึง 5 หมวด</strong> และมีหมวดใหญ่ <strong>1,000+ คำตอบรวม 25 หมวด</strong> (ครอบคลุมคำตอบกว่าแสนรายการทั้งคลัง)',
           ],
         },
         {
