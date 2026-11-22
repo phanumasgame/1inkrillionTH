@@ -9,30 +9,41 @@ const raw = JSON.parse(await readFile(new URL('../data/survey-bank.json', import
 const bank = prepareSurveyBank(raw);
 const make = () => createSession({mode:'daily',bank,questions:selectDaily(bank,'2026-11-17'),date:'2026-11-17',now:1000});
 
-test('v1.0.10-hf3 unified 132-question bank has 128k+ answers, 25 1000+ pools, 5 10000+ ultra-mega pools, and calibrated tiers', () => {
+test('v1.0.11 unified 136-question bank has 230k+ answers, 30 1000+ pools, 16 10000+ ultra-mega pools, and calibrated tiers', () => {
   assert.deepEqual(validateSurveyBank(raw), []);
-  assert.equal(raw.version, '1.0.10-hf3');
+  assert.equal(raw.version, '1.0.11');
   assert.equal(raw.scoringMethod, HYBRID_SCORING);
-  assert.equal(raw.questions.length, 132);
-  assert.equal(raw.questions.filter(q => q.scope === 'thai').length, 66);
-  assert.equal(raw.questions.filter(q => q.scope === 'world').length, 66);
+  assert.equal(raw.questions.length, 136);
+  assert.equal(raw.questions.filter(q => q.scope === 'thai').length, 68);
+  assert.equal(raw.questions.filter(q => q.scope === 'world').length, 68);
   const surveyQuestions = raw.questions.filter(q => q.survey);
   const curatedQuestions = raw.questions.filter(q => q.curated);
   assert.equal(surveyQuestions.length, 6);
-  assert.equal(curatedQuestions.length, 126);
-  assert.ok(raw.questions.reduce((sum, q) => sum + q.answers.length, 0) >= 125_000);
-  assert.ok(raw.questions.filter(q => q.answers.length >= BROAD_ANSWER_TARGET).length >= 124);
-  assert.ok(raw.questions.filter(q => q.answers.length >= 1000).length >= 25);
-  assert.ok(raw.questions.filter(q => q.answers.length >= 10000).length >= 5);
+  assert.equal(curatedQuestions.length, 130);
+  assert.ok(raw.questions.reduce((sum, q) => sum + q.answers.length, 0) >= 230_000);
+  assert.ok(raw.questions.filter(q => q.answers.length >= BROAD_ANSWER_TARGET).length >= 128);
+  assert.ok(raw.questions.filter(q => q.answers.length >= 1000).length >= 30);
+  assert.ok(raw.questions.filter(q => q.answers.length >= 10000).length >= 16);
   assert.ok(raw.questions.every(q => q.answers.length >= MIN_PLAYABLE_ANSWERS));
 
-  // Verify the 5 Ultra-Mega 10,000+ categories
+  // Verify all 16 Ultra-Mega 10,000+ categories (Group 1, 2, 3, and 4)
   for (const [qid, minAnswers, probe] of [
     ['th-dictionary-words', 14000, 'ความรัก'],
     ['world-wordle-words', 14800, 'WATER'],
     ['th-schools', 11000, 'สวนกุหลาบ'],
     ['th-temples', 11000, 'วัดพระแก้ว'],
     ['world-famous-cities', 11000, 'โตเกียว'],
+    ['world-anime', 10000, 'วันพีซ'],
+    ['world-famous-movies', 10000, 'ไททานิค'],
+    ['world-video-games', 10000, 'Minecraft'],
+    ['world-famous-artists', 10000, 'Taylor Swift'],
+    ['world-actors-directors', 10000, 'ทอม ครูซ'],
+    ['world-animals', 10000, 'ช้าง'],
+    ['world-sea-creatures', 10000, 'ฉลาม'],
+    ['th-famous-people', 10000, 'เบิร์ด ธงไชย'],
+    ['world-fictional-characters', 10000, 'โดราเอมอน'],
+    ['th-living-things', 10000, 'ปลากัด'],
+    ['world-living-fish', 10000, 'ปลาแซลมอน'],
   ]) {
     const q = raw.questions.find(x => x.id === qid);
     assert.ok(q && q.answers.length >= minAnswers, `Expected ${minAnswers}+ answers in ${qid}, got ${q?.answers.length}`);

@@ -8,7 +8,7 @@ import { OceanScene } from './scene.js';
 import { descentDuration, PIXELS_PER_METER, METERS_PER_POINT } from './descent.js';
 import { focusAnswer } from './input.js';
 
-const APP_VERSION = '1.0.10-hf3';
+const APP_VERSION = '1.0.11';
 const app = document.getElementById('app');
 const modalRoot = document.getElementById('modal-root');
 let bank, audio, scene;
@@ -648,14 +648,45 @@ function sendTelemetryIfNeeded(doneSession) {
 function getPatchHistory(totalAnswers, megaCount) {
   return [
     {
-      version: '1.0.10-hf3',
+      version: '1.0.11',
       badge: 'ล่าสุด',
-      headline: 'มีอะไรใหม่ในอัปเดต v1.0.10 (Hotfix)',
-      subtitle: 'ขยายคลังหมวดใหญ่ระดับ 1,000+ และ 10,000+ คำตอบ เพิ่มโจทย์ใหม่ ปรับสมดุลคลังเดิม และอัปเกรดภาพฉากหลังใต้ทะเล',
+      headline: 'มีอะไรใหม่ในอัปเดต v1.0.11',
+      subtitle: 'เพิ่มโจทย์ใหม่และอัปเกรดหมวดเดิมสู่ระดับ 10,000+ คำตอบในกลุ่มสื่อ บันเทิง ผู้คน และกลุ่มสิ่งมีชีวิตและวิทยาศาสตร์',
       stats: [
-        { value: number(bank.questions.length), label: 'โจทย์ไทย & ทั่วไป (66/66)' },
+        { value: number(bank.questions.length), label: 'โจทย์ไทย & ทั่วไป (68/68)' },
         { value: number(totalAnswers), label: 'คำตอบทั้งหมดในคลัง' },
         { value: number(megaCount), label: 'หมวดใหญ่ 1,000+ คำ' },
+      ],
+      cards: [
+        {
+          tag: 'CONSOLIDATED',
+          tagClass: 'is-new',
+          title: 'เพิ่มโจทย์ใหม่ระดับ 10,000+ คำตอบในกลุ่มสื่อ บันเทิง ผู้คน และสิ่งมีชีวิต',
+          bullets: [
+            'เพิ่มโจทย์ไทยใหม่ 2 ข้อ และโจทย์ทั่วไปใหม่ 2 ข้อ ในกลุ่มสื่อ บันเทิง และผู้คน รวมถึงกลุ่มสิ่งมีชีวิตและวิทยาศาสตร์ รักษาสัดส่วนโจทย์ไทย–ทั่วไปให้สมดุล (รวม <strong>136 โจทย์ 68/68</strong>)',
+            'โจทย์ใหม่ทุกข้อจัดเต็มคลังคำตอบระดับ <strong>10,000+ รายการต่อข้อ</strong> พร้อมจัดลำดับความคุ้นเคยตั้งแต่ระดับพื้นฐานไปจนถึงระดับหายาก',
+          ],
+        },
+        {
+          tag: 'EXPANDED',
+          tagClass: 'is-gold',
+          title: 'อัปเกรดคลังคำตอบหมวดเดิมสู่ระดับ 10,000+ คำตอบรวม 16 หมวด',
+          bullets: [
+            'ขยายคลังคำตอบของโจทย์เดิมในกลุ่มสื่อ บันเทิง และผู้คน (5 หมวด) และกลุ่มสิ่งมีชีวิตและธรรมชาติ (2 หมวด) ให้รองรับคำตอบมากกว่า <strong>10,000+ รายการต่อข้อ</strong>',
+            'รวมทั้งคลังมีหมวดระดับ <strong>10,000+ คำตอบถึง 16 หมวด</strong> และหมวดใหญ่ <strong>1,000+ คำตอบรวม 30 หมวด</strong> ครอบคลุมคำตอบรวมกว่าสองแสนรายการ',
+          ],
+        },
+      ],
+    },
+    {
+      version: '1.0.10',
+      badge: '',
+      headline: 'มีอะไรใหม่ในอัปเดต v1.0.10',
+      subtitle: 'ขยายคลังหมวดใหญ่ระดับ 1,000+ และ 10,000+ คำตอบ เพิ่มโจทย์ใหม่ ปรับสมดุลคลังเดิม และอัปเกรดภาพฉากหลังใต้ทะเล',
+      stats: [
+        { value: '132', label: 'โจทย์ไทย & ทั่วไป (66/66)' },
+        { value: '128,750', label: 'คำตอบทั้งหมดในคลัง' },
+        { value: '25', label: 'หมวดใหญ่ 1,000+ คำ' },
       ],
       cards: [
         {
