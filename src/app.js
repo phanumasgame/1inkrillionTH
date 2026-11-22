@@ -8,7 +8,7 @@ import { OceanScene } from './scene.js';
 import { descentDuration, PIXELS_PER_METER, METERS_PER_POINT } from './descent.js';
 import { focusAnswer } from './input.js';
 
-const APP_VERSION = '1.0.10-hf1';
+const APP_VERSION = '1.0.10-hf2';
 const app = document.getElementById('app');
 const modalRoot = document.getElementById('modal-root');
 let bank, audio, scene;
@@ -648,7 +648,7 @@ function sendTelemetryIfNeeded(doneSession) {
 function getPatchHistory(totalAnswers, megaCount) {
   return [
     {
-      version: '1.0.10-hf1',
+      version: '1.0.10-hf2',
       badge: 'ล่าสุด',
       headline: 'มีอะไรใหม่ในอัปเดต v1.0.10 (Hotfix)',
       subtitle: 'ขยายคลังหมวดใหญ่ 1,000+ คำตอบ เพิ่มโจทย์ใหม่ ปรับสมดุลคลังเดิม และอัปเกรดภาพฉากหลังใต้ทะเล',

@@ -1,6 +1,6 @@
 {
   "name": "krillion-th",
-  "version": "1.0.10-hf1",
+  "version": "1.0.10-hf2",
   "private": true,
   "type": "module",
   "description": "A Thai rare-answer dive, inspired by Krillion.io.",
@@ -15,6 +15,7 @@
     "export-suggestions": "node scripts/export-suggestions.mjs",
     "daily-report": "node scripts/daily-analysis.mjs",
     "daily-research": "node scripts/daily-analysis.mjs --research",
+    "db:cleanup": "node scripts/db-cleanup.mjs",
     "refresh-data": "node scripts/refresh-evidence.mjs",
     "analyze-reference": "node scripts/analyze-reference.mjs"
   },

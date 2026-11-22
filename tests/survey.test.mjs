@@ -9,9 +9,9 @@ const raw = JSON.parse(await readFile(new URL('../data/survey-bank.json', import
 const bank = prepareSurveyBank(raw);
 const make = () => createSession({mode:'daily',bank,questions:selectDaily(bank,'2026-11-17'),date:'2026-11-17',now:1000});
 
-test('v1.0.10-hf1 unified 130-question bank has 66k+ answers, 22 1000+ mega pools, consolidated rail stations, and calibrated tiers', () => {
+test('v1.0.10-hf2 unified 130-question bank has 66k+ answers, 22 1000+ mega pools, consolidated rail stations, and calibrated tiers', () => {
   assert.deepEqual(validateSurveyBank(raw), []);
-  assert.equal(raw.version, '1.0.10-hf1');
+  assert.equal(raw.version, '1.0.10-hf2');
   assert.equal(raw.scoringMethod, HYBRID_SCORING);
   assert.equal(raw.questions.length, 130);
   assert.equal(raw.questions.filter(q => q.scope === 'thai').length, 65);
@@ -85,6 +85,11 @@ test('v1.0.10-hf1 unified 130-question bank has 66k+ answers, 22 1000+ mega pool
     ['world-famous-cities', 'คุมาโมโต้', 'rare'],
     ['world-cartoon-characters', 'ไจแอนท์', 'schooler'],
     ['world-cartoon-characters', 'ไจเอ้น', 'schooler'],
+    ['world-cartoon-characters', 'เบนเทน', 'schooler'],
+    ['world-cartoon-characters', 'เบนเทนนิสัน', 'schooler'],
+    ['world-cartoon-characters', 'Ben 10', 'schooler'],
+    ['th-festivals', 'แห่ไม้ค้ำ', 'schooler'],
+    ['th-songs', 'คุณลำไย', 'schooler'],
     ['world-sushi', 'ซาบะ', 'schooler'],
     ['world-cat-breeds', 'ไทย', 'plankton'],
     ['th-freshwater-fish', 'ปลาบู่ทอง', null],
