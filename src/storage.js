@@ -157,7 +157,22 @@ export function writeSave(save, storage = globalThis.localStorage, bank = null) 
       endless:pack(save.endless),
       endlessByBank:Object.fromEntries(Object.entries(save.endlessByBank||{}).map(([key,session])=>[key,pack(session)])),
       history:save.history.map(pack)};
-    storage.setItem(STORAGE_KEY, JSON.stringify(packed)); return true;
+    try {
+      storage.setItem(STORAGE_KEY, JSON.stringify(packed));
+      return true;
+    } catch {
+      let slimmed = false;
+      for (let i = 0; i < questionSnapshots.length; i++) {
+        const entry = questionSnapshots[i];
+        if (entry && !entry.$bankRef && Array.isArray(entry.answers) && entry.answers.length > 25) {
+          questionSnapshots[i] = slimQuestionSnapshot(entry, matchedByQuestion.get(entry.id) || new Set());
+          slimmed = true;
+        }
+      }
+      if (!slimmed) return false;
+      storage.setItem(STORAGE_KEY, JSON.stringify(packed));
+      return true;
+    }
   } catch { return false; }
 }
 export function validSession(session) {

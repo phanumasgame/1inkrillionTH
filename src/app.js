@@ -418,9 +418,31 @@ function startDive(forceNew = false) {
     }
   }
   const date = dayKey();
+  const bankIds = new Set(bank.questions.map(q => q.id));
+  const knownSeen = new Set(save.seen);
+  const recentSessions = [
+    ...Object.values(save.daily || {}),
+    save.endless,
+    ...(save.history || []).slice(0, 15)
+  ].filter(s => validSession(s) && s.bankVersion === bank.version);
+  for (const s of recentSessions) {
+    for (const q of s.questions || []) {
+      if (q?.id && bankIds.has(q.id) && !knownSeen.has(q.id)) {
+        knownSeen.add(q.id);
+        save.seen.push(q.id);
+      }
+    }
+  }
   let questions;
-  if (mode === 'daily') questions = selectDaily(bank, date);
-  else {
+  if (mode === 'daily') {
+    questions = selectDaily(bank, date);
+    for (const q of questions) {
+      if (!knownSeen.has(q.id)) {
+        knownSeen.add(q.id);
+        save.seen.push(q.id);
+      }
+    }
+  } else {
     const selection = selectEndless(bank, save.seen, Math.random, save.run + 1);
     questions = selection.questions; save.seen = selection.seen; save.run++;
   }
@@ -431,7 +453,7 @@ function startDive(forceNew = false) {
 function changeMode(nextMode) {
   save.resumeSessionId=null;
   if (session && view !== 'history-result') persist();
-  else writeSave(save);
+  else writeSave(save, globalThis.localStorage, bank);
   mode = nextMode; closeModal();
   history.pushState({}, '', mode === 'daily' ? '/' : '/unlimited/classic');
   const saved = getSaved();
@@ -683,6 +705,7 @@ function getPatchHistory(totalAnswers, megaCount) {
           bullets: [
             'อัปเกรดปุ่มแชร์ผลหลังจบเกมเป็น <strong>Share Card Studio</strong> สร้างการ์ดรูปภาพสรุปผลความละเอียดสูง บันทึกเป็นไฟล์ <strong>.PNG</strong> หรือกดคัดลอกรูปภาพไปวางแชร์ได้ทันที (เลือกเปิด/ปิดการแสดงคำตอบเพื่อกันสปอยล์ได้)',
             'เพิ่มฉากและสิ่งมีชีวิตใต้ทะเลตามระดับความลึก ยิ่งดำดิ่งลึกยิ่งพบสิ่งใหม่ ทั้งแนวสาหร่าย ฝูงปลาเรืองแสง พญานาคทะเล หมึกดัมโบ ซากเรือจม ปล่องน้ำร้อนใต้สมุทร และออโรราฝูงเคยทองคำในร่องลึก',
+            'ปรับปรุงระบบสุ่มโจทย์ให้กระจายครบ 7 หมวดไม่ซ้ำกันในแต่ละรอบ พร้อมระบบเว้นระยะตระกูลโจทย์ต่อเนื่อง ไม่เจอโจทย์แนวเดิมซ้ำถี่เมื่อเล่นต่อเนื่องหลายรอบ',
           ],
         },
       ],

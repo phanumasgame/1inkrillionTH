@@ -50,35 +50,136 @@ export function selectDaily(bank, date) {
   return diverseRound(bank.questions, rng, [], false, scopeTargetsForRound(day));
 }
 const questionTheme = question => question.theme || question.category || question.id;
+export function questionFamily(question) {
+  const id = String(question?.id || '');
+  if (/temple|sacred-and-heritage/.test(id)) return 'temples';
+  if (/school|universit/.test(id)) return 'schools';
+  if (/^th-words-|^th-dictionary-words$|^th-tunorms-(?:khwam|leading)/.test(id)) return 'thai-words';
+  if (/wordle/.test(id)) return 'wordle';
+  if (/cities|countries-and-major-cities|states-and-provinces|us-states/.test(id)) return 'cities-regions';
+  if (/countries|asia-trip|europe-trip/.test(id)) return 'countries';
+  if (/landmark/.test(id)) return 'landmarks';
+  if (/islands|beaches|waterfalls|water-destinations|rivers/.test(id)) return 'water-places';
+  if (/national-parks|parks-mountains/.test(id)) return 'parks-mountains';
+  if (/bangkok-districts|bangkok-places|bkk-roads|rail-stations|urban-transit|provinces-districts|province-trips/.test(id)) return 'thai-places-transit';
+  if (/anime|manga|childhood-cartoons|tv-shows-and-cartoons/.test(id)) return 'anime-cartoon';
+  if (/movie|films|famous-series|kdrama|thai-dramas|screen-titles/.test(id)) return 'movies-series';
+  if (/character|superhero|protagonist|heroes-villains/.test(id)) return 'characters';
+  if (/actors|directors|hollywood-stars|famous-people|people-starting|royals-heroes|historical-icons|historical-figures|authors-scientists/.test(id)) return 'famous-people';
+  if (/artists|bands|solo-singers/.test(id)) return 'music-artists';
+  if (/songs|karaoke|pop-rock-hits|hiphop-rnb/.test(id)) return 'songs';
+  if (/instrument/.test(id)) return 'instruments';
+  if (/football-clubs/.test(id)) return 'football-clubs';
+  if (/athletes|football-players|muaythai-stars/.test(id)) return 'athletes';
+  if (/sports|move-body|childhood-games/.test(id)) return 'sports-activities';
+  if (/video-games|action-rpg-games|strategy-sim|favourite-pokemon|game-consoles/.test(id)) return 'video-games';
+  if (/board-games|card-games|board-and-card/.test(id)) return 'tabletop-games';
+  if (/living-fish|freshwater-fish|sea-creatures|sharks-rays|shellfish|aquarium-and-reef|commercial-and-game-fish|aquatic-animals/.test(id)) return 'fish-marine';
+  if (/world-animals|zoo-animals|dog-breeds|cat-breeds|dinosaurs|th-living-things|land-animals|home-creatures|pets|garden-insects|thai-birds|nature-invertebrates|nature-starting-prefix/.test(id)) return 'animals-fauna';
+  if (/flowers|trees|kitchen-herbs|fruits-vegetables-herbs/.test(id)) return 'plants-flora';
+  if (/dessert|cake|bakery|breads|ice-cream|named-snacks/.test(id)) return 'desserts-bakery';
+  if (/companies|brands|shopping-malls|restaurant-chains|tech-apps/.test(id)) return 'brands-companies';
+  if (/folklore|literary|festivals|proverbs/.test(id)) return 'thai-folklore-culture';
+  return id;
+}
+
+function orderCandidates(questions, rng, balanceRemaining, cooldown) {
+  const shuffled = shuffle(questions, rng);
+  if (!balanceRemaining && !cooldown) return shuffled;
+  const recentThemes = cooldown?.recentThemes || new Set();
+  const recentFam1 = cooldown?.recentFamilies1 || new Set();
+  const recentFam2 = cooldown?.recentFamilies2 || new Set();
+  const famPenalty = q => {
+    const f = questionFamily(q);
+    return recentFam1.has(f) ? 2 : recentFam2.has(f) ? 1 : 0;
+  };
+  const byTheme = new Map();
+  for (const q of shuffled) {
+    const t = questionTheme(q);
+    if (!byTheme.has(t)) byTheme.set(t, []);
+    byTheme.get(t).push(q);
+  }
+  for (const [t, list] of byTheme) {
+    const byFam = new Map();
+    for (const q of list) {
+      const f = questionFamily(q);
+      if (!byFam.has(f)) byFam.set(f, []);
+      byFam.get(f).push(q);
+    }
+    const famKeys = [...byFam.keys()].sort((a, b) => {
+      const pa = recentFam1.has(a) ? 2 : recentFam2.has(a) ? 1 : 0;
+      const pb = recentFam1.has(b) ? 2 : recentFam2.has(b) ? 1 : 0;
+      return pa - pb;
+    });
+    const interleaved = [];
+    let depth = 0, added = true;
+    while (added) {
+      added = false;
+      for (const f of famKeys) {
+        const arr = byFam.get(f);
+        if (depth < arr.length) { interleaved.push(arr[depth]); added = true; }
+      }
+      depth++;
+    }
+    interleaved.sort((a, b) => famPenalty(a) - famPenalty(b));
+    byTheme.set(t, interleaved);
+  }
+  const themes = [...byTheme.keys()];
+  const ordered = [];
+  let pass = 0, hasMore = true;
+  while (hasMore) {
+    hasMore = false;
+    const passThemes = themes.filter(t => pass < byTheme.get(t).length);
+    if (!passThemes.length) break;
+    hasMore = true;
+    const scored = passThemes.map(t => {
+      const list = byTheme.get(t);
+      const q = list[pass];
+      const rem = list.length - pass;
+      let weight = balanceRemaining ? Math.pow(rem, 0.72) : 1;
+      if (pass === 0 && recentThemes.has(t)) weight *= 0.35;
+      const fp = famPenalty(q);
+      if (fp === 2) weight *= 0.2;
+      else if (fp === 1) weight *= 0.48;
+      const u = Math.max(1e-6, Math.min(1 - 1e-6, rng()));
+      return { t, q, key: -Math.log(u) / weight };
+    }).sort((a, b) => a.key - b.key);
+    for (const item of scored) ordered.push(item.q);
+    pass++;
+  }
+  return ordered;
+}
 
 // Seven prompts cannot be divided equally, so alternating dives use 4:3 and
-// 3:4. Keep at least five themes where possible, with at most two of each.
-export function diverseRound(questions, rng = Math.random, requiredIds = [], balanceRemaining = false, targets = scopeTargetsForRound(1), quota = null) {
-  const ordered = shuffle(questions, rng);
+// 3:4. Prefer seven distinct themes and sub-families per dive whenever possible.
+export function diverseRound(questions, rng = Math.random, requiredIds = [], balanceRemaining = false, targets = scopeTargetsForRound(1), quota = null, cooldown = null) {
+  const ordered = orderCandidates(questions, rng, balanceRemaining, cooldown);
   const broad = q => q.answers.length >= BROAD_ANSWER_TARGET;
-  if (balanceRemaining) {
-    // Spend larger remaining themes steadily instead of leaving them all for
-    // the last few dives. Shuffling still randomizes questions within a theme.
-    const remainingByTheme = new Map();
-    for (const q of ordered) remainingByTheme.set(questionTheme(q), (remainingByTheme.get(questionTheme(q)) || 0) + 1);
-    ordered.sort((a,b) => remainingByTheme.get(questionTheme(b)) - remainingByTheme.get(questionTheme(a)));
-  }
-  const minimumThemes = Math.min(5,new Set(questions.map(questionTheme)).size);
+  const availableThemeCount = new Set(questions.map(questionTheme)).size;
+  const availableFamCount = new Set(questions.map(questionFamily)).size;
   const required = new Set(requiredIds);
-  function plan(pool, mandatory = new Set(), broadMinimum = 0, broadPerScope = null) {
+  function plan(pool, mandatory = new Set(), broadMinimum = 0, broadPerScope = null, maxPerTheme = 1, maxPerFamily = 1) {
     if (pool.filter(q=>q.scope==='thai').length < targets.thai || pool.filter(q=>q.scope==='world').length < targets.world) return null;
+    if (maxPerTheme === 1 && availableThemeCount < 7) return null;
+    if (maxPerFamily === 1 && availableFamCount < 7) return null;
+    const minimumThemes = maxPerTheme === 1 ? Math.min(7, availableThemeCount) : Math.min(5, availableThemeCount);
     const chosen = pool.filter(q=>mandatory.has(q.id));
     const candidates = pool.filter(q=>!mandatory.has(q.id));
     const remainingBroad = Array(candidates.length + 1).fill(0);
     for (let i = candidates.length - 1; i >= 0; i--) remainingBroad[i] = remainingBroad[i + 1] + Number(broad(candidates[i]));
-    const counts = new Map();
-    for (const q of chosen) counts.set(questionTheme(q),(counts.get(questionTheme(q))||0)+1);
+    const counts = new Map(), famCounts = new Map();
+    for (const q of chosen) {
+      counts.set(questionTheme(q),(counts.get(questionTheme(q))||0)+1);
+      famCounts.set(questionFamily(q),(famCounts.get(questionFamily(q))||0)+1);
+    }
     const thai = chosen.filter(q=>q.scope==='thai').length;
     const world = chosen.length-thai;
     const broadThai = chosen.filter(q=>q.scope==='thai'&&broad(q)).length;
     const broadWorld = chosen.filter(q=>q.scope==='world'&&broad(q)).length;
-    if (thai>targets.thai || world>targets.world || [...counts.values()].some(n=>n>2)) return null;
+    if (thai>targets.thai || world>targets.world || [...counts.values()].some(n=>n>maxPerTheme) || [...famCounts.values()].some(n=>n>maxPerFamily)) return null;
+    let steps = 0;
     function search(start, thaiCount, worldCount, thaiWide, worldWide) {
+      if (++steps > 2500) return null;
       const broadCount = thaiWide + worldWide;
       if (broadPerScope && (
         thaiWide > broadPerScope.thai || worldWide > broadPerScope.world ||
@@ -92,21 +193,27 @@ export function diverseRound(questions, rng = Math.random, requiredIds = [], bal
       if (chosen.length+candidates.length-start<7) return null;
       if (broadCount + Math.min(7-chosen.length, remainingBroad[start]) < broadMinimum) return null;
       for (let i=start;i<candidates.length;i++) {
-        const q=candidates[i], theme=questionTheme(q), n=counts.get(theme)||0;
-        if (n>=2 || q.scope==='thai' && thaiCount>=targets.thai || q.scope==='world' && worldCount>=targets.world) continue;
-        chosen.push(q);counts.set(theme,n+1);
+        const q=candidates[i], theme=questionTheme(q), fam=questionFamily(q), n=counts.get(theme)||0, fn=famCounts.get(fam)||0;
+        if (n>=maxPerTheme || fn>=maxPerFamily || q.scope==='thai' && thaiCount>=targets.thai || q.scope==='world' && worldCount>=targets.world) continue;
+        chosen.push(q);counts.set(theme,n+1);famCounts.set(fam,fn+1);
         const found=search(i+1,thaiCount+Number(q.scope==='thai'),worldCount+Number(q.scope==='world'),
           thaiWide+Number(q.scope==='thai'&&broad(q)),worldWide+Number(q.scope==='world'&&broad(q)));
-        chosen.pop();if(n)counts.set(theme,n);else counts.delete(theme);
+        chosen.pop();
+        if(n)counts.set(theme,n);else counts.delete(theme);
+        if(fn)famCounts.set(fam,fn);else famCounts.delete(fam);
         if(found)return found;
       }
       return null;
     }
     return search(0,thai,world,broadThai,broadWorld);
   }
+  const tryPlans = (bMin, bScope) =>
+    plan(ordered, required, bMin, bScope, 1, 1) ||
+    plan(ordered, required, bMin, bScope, 2, 1) ||
+    plan(ordered, required, bMin, bScope, 2, 2);
   const strict = quota
-    ? plan(ordered,required,quota.thai+quota.world,quota)
-    : plan(ordered,required,Math.min(4,ordered.filter(broad).length)) || plan(ordered,required);
+    ? tryPlans(quota.thai+quota.world, quota)
+    : tryPlans(Math.min(4,ordered.filter(broad).length), null) || tryPlans(0, null);
   if(strict)return shuffle(strict,rng);
   // Small/custom banks can make the variety target impossible. Preserve scope,
   // unseen mandatory questions and playability, then maximize available variety.
@@ -132,6 +239,14 @@ export function selectEndless(bank, seen = [], rng = Math.random, run = 1) {
   const available = [], required = [];
   const nextSeen = [...seen];
   const targets = scopeTargetsForRound(run);
+  const byId = new Map(bank.questions.map(q => [q.id, q]));
+  const last1 = seen.slice(-7).map(id => byId.get(id)).filter(Boolean);
+  const last2 = seen.slice(-14, -7).map(id => byId.get(id)).filter(Boolean);
+  const cooldown = {
+    recentThemes: new Set(last1.map(questionTheme)),
+    recentFamilies1: new Set(last1.map(questionFamily)),
+    recentFamilies2: new Set(last2.map(questionFamily))
+  };
   const quota = Object.keys(targets).every(scope => {
     const broadCount = bank.questions.filter(q=>q.scope===scope && q.answers.length>=BROAD_ANSWER_TARGET).length;
     const shortCount = bank.questions.filter(q=>q.scope===scope && q.answers.length<BROAD_ANSWER_TARGET).length;
@@ -150,8 +265,14 @@ export function selectEndless(bank, seen = [], rng = Math.random, run = 1) {
       if (remaining.length < count) {
         required.push(...remaining.map(q=>q.id));
         const used = new Set(remaining.map(q => q.id));
-        remaining.push(...shuffle(all.filter(q => !used.has(q.id)), rng));
+        const refill = all.filter(q => !used.has(q.id));
+        refill.sort((a, b) => seen.lastIndexOf(a.id) - seen.lastIndexOf(b.id));
+        const releaseCount = Math.max(count * 3, Math.ceil(refill.length * 0.55));
+        const released = refill.slice(0, releaseCount);
+        remaining.push(...shuffle(released, rng));
+        const releasedIds = new Set(remaining.map(q => q.id));
         for (const q of all) {
+          if (!releasedIds.has(q.id)) continue;
           let i;
           while ((i = nextSeen.indexOf(q.id)) >= 0) nextSeen.splice(i, 1);
         }
@@ -159,9 +280,13 @@ export function selectEndless(bank, seen = [], rng = Math.random, run = 1) {
       available.push(...remaining);
     }
   }
-  const picked = diverseRound(available,rng,required,true,targets,quota);
-  nextSeen.push(...picked.map(q => q.id));
-  return { questions: picked, seen: [...new Set(nextSeen)] };
+  const picked = diverseRound(available,rng,required,true,targets,quota,cooldown);
+  for (const q of picked) {
+    let i;
+    while ((i = nextSeen.indexOf(q.id)) >= 0) nextSeen.splice(i, 1);
+    nextSeen.push(q.id);
+  }
+  return { questions: picked, seen: nextSeen };
 }
 const segmenter = new Intl.Segmenter('th', { granularity: 'grapheme' });
 const graphemes = text => /^[\x20-\x7e]*$/.test(text) ? text : Array.from(segmenter.segment(text), s => s.segment);

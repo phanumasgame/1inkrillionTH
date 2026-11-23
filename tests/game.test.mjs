@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { dayKey, TIME_ZONE, TIERS, PREVIEW_MS, ANSWER_MS, selectDaily, selectEndless, normalize, matchAnswer,
-  createSession, tickSession, submitAnswer, confirmCorrection, skipRound, nextRound, shareText, validateBank } from '../src/game.js';
+import { dayKey, TIME_ZONE, TIERS, PREVIEW_MS, ANSWER_MS, selectDaily, selectEndless, questionFamily, normalize, matchAnswer,
+  createSession, tickSession, submitAnswer, confirmCorrection, skipRound, nextRound, shareText, validateBank, random } from '../src/game.js';
 import { readSave, writeSave, emptySave, validSession, dailySlot, prepareSaveForBank,
   currentSavedSession, savedSessions } from '../src/storage.js';
 import { BROAD_ANSWER_TARGET, prepareSurveyBank } from '../src/survey.js';
@@ -83,6 +83,41 @@ test('endless alternates evenly and rotates questions without early repeats with
       assert.equal(pair.filter(q=>q.scope==='thai').length,7);
       assert.equal(pair.filter(q=>q.scope==='world').length,7);
       pair=[];
+    }
+  }
+});
+test('playing 10+ endless rounds rotates across all themes and families without premature repeats',()=>{
+  const rng = random(20261123);
+  let seen = [];
+  const tenRoundIds = new Set();
+  const tenRoundThemes = new Set();
+  for (let r = 1; r <= 10; r++) {
+    const draw = selectEndless(bank, seen, rng, r);
+    seen = draw.seen;
+    const roundThemes = new Set(draw.questions.map(q => q.theme));
+    const roundFamilies = new Set(draw.questions.map(q => questionFamily(q)));
+    assert.equal(roundThemes.size, 7, 'Expected 7 distinct themes in round ' + r);
+    assert.equal(roundFamilies.size, 7, 'Expected 7 distinct topic families in round ' + r);
+    for (const q of draw.questions) {
+      assert.ok(!tenRoundIds.has(q.id), 'Duplicate question within 10 rounds: ' + q.id);
+      tenRoundIds.add(q.id);
+      tenRoundThemes.add(q.theme);
+    }
+  }
+  assert.equal(tenRoundIds.size, 70);
+  assert.ok(tenRoundThemes.size >= 12, 'Expected >=12 themes across 10 rounds, got ' + tenRoundThemes.size);
+
+  const lastSeenAt = new Map();
+  let seenWrap = [];
+  for (let r = 1; r <= 45; r++) {
+    const draw = selectEndless(bank, seenWrap, rng, r);
+    seenWrap = draw.seen;
+    for (const q of draw.questions) {
+      if (lastSeenAt.has(q.id)) {
+        const distance = r - lastSeenAt.get(q.id);
+        assert.ok(distance >= 10, `Question ${q.id} repeated too soon after ${distance} rounds`);
+      }
+      lastSeenAt.set(q.id, r);
     }
   }
 });
