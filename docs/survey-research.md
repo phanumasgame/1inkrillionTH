@@ -1,6 +1,6 @@
-# บันทึกการคัดโจทย์และแหล่งข้อมูล (v1.0.11 Expanded 136Q / 30 Mega / 16 10k+ Bank)
+# บันทึกการคัดโจทย์และแหล่งข้อมูล (v1.0.12 Expanded 136Q / 30 Mega / 16 10k+ Bank)
 
-คลังเวอร์ชัน `1.0.11` (`hybrid-survey-and-curated-v1`) ขยายคลังคำตอบเป็น **136 โจทย์** (ไทย 68 ข้อ และทั่วไป 68 ข้อ) รวม **233,728 รายการ** แบ่งเป็น:
+คลังเวอร์ชัน `1.0.12` (`hybrid-survey-and-curated-v1`) ขยายคลังคำตอบเป็น **136 โจทย์** (ไทย 68 ข้อ และทั่วไป 68 ข้อ) รวม **233,738 รายการ** แบ่งเป็น:
 
 - **6 โจทย์จากผลสำรวจที่เผยแพร่จริง** (`survey`): ไทย 5 ข้อ และทั่วไป 1 ข้อ คงเฉพาะข้อที่กว้างหลักร้อยอยู่แล้วหรือจำกัดตามจริง (ช่องทีวีดิจิทัล 21, เขต กทม. 50, ผักในตลาด 109, ขนม/ของกินเล่น 143, ของใช้ในบ้าน 244, โปเกมอน 805)
 - **130 โจทย์จัดระดับความคุ้นเคยเชิงบรรณาธิการ** (`curated`): ไทย 63 ข้อ และทั่วไป 67 ข้อ ผสมคลังคัดสรรภาษาไทยเข้ากับฐานข้อมูลสาธารณะ (AniList, Manami Anime Offline Database, Wikipedia Movie Data, Steam AppID List, Spotify Tracks Dataset, MyAnimeList Characters, FishBase, SeaLifeBase, Wikidata, Thai Wikipedia, TVMaze, GeoNames, PyThaiNLP TNC/TTC, Wordle Dictionary) และจัดระดับตามความนิยมจริง (`pageviews`, `langlinks`, `corpus frequency`, `commercial importance`) เพื่อไม่ให้คำตอบสามัญหลุดไปอยู่ระดับลึก

@@ -164,35 +164,94 @@ export function selectEndless(bank, seen = [], rng = Math.random, run = 1) {
   return { questions: picked, seen: [...new Set(nextSeen)] };
 }
 const segmenter = new Intl.Segmenter('th', { granularity: 'grapheme' });
-const graphemes = text => /^[\x20-\x7e]*$/.test(text) ? Array.from(text) : Array.from(segmenter.segment(text), s => s.segment);
+const graphemes = text => /^[\x20-\x7e]*$/.test(text) ? text : Array.from(segmenter.segment(text), s => s.segment);
+
+function stripThaiSilent(text) {
+  if (!/[\u0E00-\u0E7F]/.test(text)) return '';
+  return text
+    .replace(/[\u0E01-\u0E2E][\u0E30-\u0E3A]?\u0E4C/g, '')
+    .replace(/\u0E47/g, '')
+    .replace(/[-.\s·()'!?:,/]/g, '');
+}
+
+function thaiSkeleton(text) {
+  const base = stripThaiSilent(text);
+  if (!base) return '';
+  return base
+    .replace(/[\u0E48-\u0E4E]/g, '')
+    .replace(/กระ/g, 'กะ').replace(/รร/g, 'ัน').replace(/ัม/g, 'ำ').replace(/ใ/g, 'ไ')
+    .replace(/[ฃฅฆคข]/g, 'ก').replace(/[ฌฉชซศษส]/g, 'ส').replace(/[ฎฏฐฑฒทธถต]/g, 'ด')
+    .replace(/[ณญ]/g, 'น').replace(/[พฟภ]/g, 'บ').replace(/[รฬ]/g, 'ล');
+}
+
+function fuzzyVariants(name) {
+  const out = new Set([name]);
+  const clean = name.replace(/[-:.,!'’/()]/g, ' ').replace(/\s+/g, ' ').trim();
+  if (clean.length >= 4) out.add(clean);
+  if (/^the\s+/.test(clean) && clean.length >= 8) {
+    out.add(clean.slice(4).trim());
+  }
+  for (const v of [...out]) {
+    if (v.length >= 6 && /[a-z]s$/.test(v) && !/(?:ss|us|is)$/.test(v)) {
+      out.add(v.slice(0, -1));
+    }
+    const compact = v.replace(/\s+/g, '');
+    if (compact.length >= 4) out.add(compact);
+  }
+  const thSilent = stripThaiSilent(name);
+  if (thSilent.length >= 3) out.add(thSilent);
+  return [...out];
+}
+
 const answerIndexes = new WeakMap();
 function answerIndex(answers) {
   if (answerIndexes.has(answers)) return answerIndexes.get(answers);
-  const exact = new Map(), byLength = new Map();
+  const exact = new Map(), fuzzyExact = new Map(), byLength = new Map();
   for (const answer of answers) {
     const names = new Set([answer.label, ...(answer.aliases || [])].map(normalize));
+    const indexedVariants = new Set();
     for (const name of names) {
       for (const form of answerForms(name)) {
         if (!exact.has(form)) exact.set(form, new Set());
         exact.get(form).add(answer);
       }
-      if (!byLength.has(name.length)) byLength.set(name.length, []);
-      byLength.get(name.length).push({ name, answer, parts: null });
+      for (const v of fuzzyVariants(name)) {
+        if (!fuzzyExact.has(v)) fuzzyExact.set(v, new Set());
+        fuzzyExact.get(v).add(answer);
+        if (v.length >= 4 && !indexedVariants.has(v)) {
+          indexedVariants.add(v);
+          if (!byLength.has(v.length)) byLength.set(v.length, []);
+          byLength.get(v.length).push({ name: v, answer, parts: null });
+        }
+      }
+      const skel = thaiSkeleton(name);
+      if (skel.length >= 3) {
+        if (!fuzzyExact.has(skel)) fuzzyExact.set(skel, new Set());
+        fuzzyExact.get(skel).add(answer);
+      }
     }
   }
-  const index = { exact, byLength };
+  const index = { exact, fuzzyExact, byLength };
   answerIndexes.set(answers, index);
   return index;
 }
-function distance(left, right) {
-  let previous = Array.from({ length: right.length + 1 }, (_, i) => i);
-  for (let i = 0; i < left.length; i++) {
+function distance(left, right, maxDist = Infinity) {
+  const n = left.length, m = right.length;
+  if (Math.abs(n - m) > maxDist) return maxDist + 1;
+  let previous = Array.from({ length: m + 1 }, (_, i) => i);
+  for (let i = 0; i < n; i++) {
     const row = [i + 1];
-    for (let j = 0; j < right.length; j++)
-      row.push(Math.min(row[j] + 1, previous[j + 1] + 1, previous[j] + (left[i] === right[j] ? 0 : 1)));
+    let rowMin = row[0];
+    const li = left[i];
+    for (let j = 0; j < m; j++) {
+      const val = Math.min(row[j] + 1, previous[j + 1] + 1, previous[j] + (li === right[j] ? 0 : 1));
+      row.push(val);
+      if (val < rowMin) rowMin = val;
+    }
+    if (rowMin > maxDist) return maxDist + 1;
     previous = row;
   }
-  return previous[right.length];
+  return previous[m];
 }
 export function matchAnswer(question, raw) {
   const value = normalize(raw);
@@ -202,18 +261,32 @@ export function matchAnswer(question, raw) {
   if (exact.size === 1) return { kind: 'exact', answer: exact.values().next().value };
   if (exact.size > 1) return { kind: 'ambiguous' };
   if (value.length < 4) return { kind: 'unknown' };
-  const limit = value.length >= 10 ? 2 : 1;
-  const parts = graphemes(value);
+
+  const fuzzyKeys = [...fuzzyVariants(value)];
+  const skel = thaiSkeleton(value);
+  if (skel.length >= 3) fuzzyKeys.push(skel);
+  const fuzzyHits = new Set(fuzzyKeys.flatMap(k => [...(index.fuzzyExact.get(k) || [])]));
+  if (fuzzyHits.size === 1) return { kind: 'correction', answer: fuzzyHits.values().next().value };
+
+  const limit = value.length >= 14 ? 3 : value.length >= 7 ? 2 : 1;
+  const queryForms = [value];
+  const thSilent = stripThaiSilent(value);
+  if (thSilent.length >= 4 && thSilent !== value) queryForms.push(thSilent);
+
   let best = new Set(), bestDistance = limit;
-  for (let length = value.length - 2; length <= value.length + 2; length++) {
-    for (const entry of index.byLength.get(length) || []) {
-      if (bestDistance === 1 && value[0] !== entry.name[0] && value.at(-1) !== entry.name.at(-1)) continue;
-      entry.parts ??= graphemes(entry.name);
-      if (Math.abs(parts.length - entry.parts.length) > bestDistance) continue;
-      const delta = distance(parts, entry.parts);
-      if (delta > bestDistance) continue;
-      if (delta < bestDistance) { best = new Set(); bestDistance = delta; }
-      best.add(entry.answer);
+  for (const qVal of queryForms) {
+    const parts = graphemes(qVal);
+    for (let length = Math.max(4, qVal.length - limit); length <= qVal.length + limit; length++) {
+      if (Math.abs(length - qVal.length) > bestDistance) continue;
+      for (const entry of index.byLength.get(length) || []) {
+        if (bestDistance === 1 && qVal[0] !== entry.name[0] && qVal.at(-1) !== entry.name.at(-1)) continue;
+        entry.parts ??= graphemes(entry.name);
+        if (Math.abs(parts.length - entry.parts.length) > bestDistance) continue;
+        const delta = distance(parts, entry.parts, bestDistance);
+        if (delta > bestDistance) continue;
+        if (delta < bestDistance) { best = new Set(); bestDistance = delta; }
+        best.add(entry.answer);
+      }
     }
   }
   if (best.size === 1) return { kind: 'correction', answer: best.values().next().value };

@@ -100,6 +100,27 @@ test('short ambiguous spellings never get guessed automatically',()=>{
 });
 test('a unique near spelling offers a correction',()=>{
   assert.equal(matchAnswer(q,'Nakhon Ratchasimx').kind,'correction');
+  const lotrQ={answers:[
+    {id:'lotr',label:'The Lord of the Rings',aliases:['ลอร์ดออฟเดอะริงส์'],tier:'plankton'},
+    {id:'matrix',label:'The Matrix',aliases:['เดอะ เมทริกซ์'],tier:'plankton'},
+    {id:'rott',label:'ร็อตไวเลอร์',aliases:['Rottweiler'],tier:'rare'},
+    {id:'texas',label:'เท็กซัส',aliases:['Texas'],tier:'plankton'},
+    {id:'sherlock',label:'เชอร์ล็อก โฮมส์',aliases:['Sherlock Holmes'],tier:'plankton'},
+    {id:'sapphire',label:'บุษราคัม',aliases:['Yellow Sapphire'],tier:'plankton'},
+  ]};
+  for(const [input,expectedId] of [
+    ['load of the ring','lotr'],
+    ['lord of the ring','lotr'],
+    ['รอตไวเลอ','rott'],
+    ['เท็คซัด','texas'],
+    ['เชอร์ลอกโฮม','sherlock'],
+    ['บุษราคำ','sapphire'],
+    ['บุษลาคำ','sapphire'],
+  ]){
+    const m=matchAnswer(lotrQ,input);
+    assert.equal(m.kind,'correction','Expected correction for '+input);
+    assert.equal(m.answer.id,expectedId);
+  }
 });
 test('preview lasts 3 seconds and submission is disabled during it',()=>{
   const s=make();

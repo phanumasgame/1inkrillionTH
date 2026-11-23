@@ -8,7 +8,7 @@ import { OceanScene } from './scene.js';
 import { descentDuration, PIXELS_PER_METER, METERS_PER_POINT } from './descent.js';
 import { focusAnswer } from './input.js';
 
-const APP_VERSION = '1.0.11';
+const APP_VERSION = '1.0.12';
 const app = document.getElementById('app');
 const modalRoot = document.getElementById('modal-root');
 let bank, audio, scene;
@@ -648,14 +648,45 @@ function sendTelemetryIfNeeded(doneSession) {
 function getPatchHistory(totalAnswers, megaCount) {
   return [
     {
-      version: '1.0.11',
+      version: '1.0.12',
       badge: 'ล่าสุด',
-      headline: 'มีอะไรใหม่ในอัปเดต v1.0.11',
-      subtitle: 'เพิ่มโจทย์ใหม่และอัปเกรดหมวดเดิมสู่ระดับ 10,000+ คำตอบในกลุ่มสื่อ บันเทิง ผู้คน และกลุ่มสิ่งมีชีวิตและวิทยาศาสตร์',
+      headline: 'มีอะไรใหม่ในอัปเดต v1.0.12',
+      subtitle: 'กด Enter เพื่อไปข้อถัดไปได้ทันที อัปเกรดระบบ Auto-Correct ให้ฉลาดขึ้น และเติมคำตอบพร้อมชื่อเรียกอื่นในคลัง',
       stats: [
         { value: number(bank.questions.length), label: 'โจทย์ไทย & ทั่วไป (68/68)' },
         { value: number(totalAnswers), label: 'คำตอบทั้งหมดในคลัง' },
         { value: number(megaCount), label: 'หมวดใหญ่ 1,000+ คำ' },
+      ],
+      cards: [
+        {
+          tag: 'CONTROLS & AUTO-CORRECT',
+          tagClass: 'is-new',
+          title: 'กด Enter ไปข้อถัดไปได้ทันที & ระบบเดาคำสะกดใกล้เคียงแม่นยำขึ้น',
+          bullets: [
+            'เมื่อเฉลยคำตอบในแต่ละข้อแล้ว สามารถกดปุ่ม <strong>Enter ↵</strong> บนคีย์บอร์ดเพื่อดำดิ่งสู่ข้อถัดไป (หรือยืนยันคำแก้) ได้ทันทีโดยไม่ต้องคลิกเมาส์',
+            'อัปเกรดระบบ <strong>Auto-Correct</strong> ให้เข้าใจทั้งการพิมพ์ตกคำนำหน้า/พหูพจน์ภาษาอังกฤษ การสะกดคำทับศัพท์ และการพ้องเสียงพยัญชนะหรือวรรณยุกต์ภาษาไทยได้แม่นยำยิ่งขึ้น',
+          ],
+        },
+        {
+          tag: 'EXPANDED',
+          tagClass: 'is-gold',
+          title: 'เติมคำตอบใหม่และชื่อเรียกพ้องเพิ่มเติมในคลังคำถาม',
+          bullets: [
+            'เพิ่มคำตอบหลักใหม่และปรับระดับคะแนนความคุ้นเคยในหลายหมวดจากข้อมูลที่ผู้เล่นเสนอและตอบเข้ามาจริง',
+            'เพิ่มชื่อเรียกย่อ ชื่อเล่น และรูปแบบตัวสะกดยอดนิยมในคลังคำตอบเพื่อให้ตรวจรับคำตอบได้ครอบคลุมและลื่นไหลยิ่งขึ้น',
+          ],
+        },
+      ],
+    },
+    {
+      version: '1.0.11',
+      badge: '',
+      headline: 'มีอะไรใหม่ในอัปเดต v1.0.11',
+      subtitle: 'เพิ่มโจทย์ใหม่และอัปเกรดหมวดเดิมสู่ระดับ 10,000+ คำตอบในกลุ่มสื่อ บันเทิง ผู้คน และกลุ่มสิ่งมีชีวิตและวิทยาศาสตร์',
+      stats: [
+        { value: '136', label: 'โจทย์ไทย & ทั่วไป (68/68)' },
+        { value: '233,728', label: 'คำตอบทั้งหมดในคลัง' },
+        { value: '30', label: 'หมวดใหญ่ 1,000+ คำ' },
       ],
       cards: [
         {
@@ -1248,14 +1279,26 @@ modalRoot.addEventListener('change',event => {
   syncScene();
 });
 document.addEventListener('keydown',event => {
-  if (!modalKind) return;
-  if (event.key === 'Escape') { closeModal(); event.preventDefault(); }
-  if (event.key === 'Tab') {
-    const nodes = [...modalRoot.querySelectorAll('button:not(:disabled),a[href],input,select,textarea,summary')].filter(el=>el.getClientRects().length);
-    if (!nodes.length) return;
-    const first = nodes[0], last = nodes.at(-1);
-    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  if (modalKind) {
+    if (event.key === 'Escape') { closeModal(); event.preventDefault(); }
+    if (event.key === 'Tab') {
+      const nodes = [...modalRoot.querySelectorAll('button:not(:disabled),a[href],input,select,textarea,summary')].filter(el=>el.getClientRects().length);
+      if (!nodes.length) return;
+      const first = nodes[0], last = nodes.at(-1);
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    }
+    return;
+  }
+  if (view === 'play' && session && event.key === 'Enter' && !event.repeat && !event.isComposing && !composing && !event.ctrlKey && !event.altKey && !event.metaKey) {
+    if (session.phase === 'reveal' && !event.target?.closest?.('button:not([data-action="next"]),a[href],input,textarea,select,summary')) {
+      event.preventDefault();
+      audio?.play(session.index === 6 ? 'surface' : 'descend');
+      transition(nextRound(session));
+    } else if (session.phase === 'correction' && !event.target?.closest?.('#answer-form,button:not([data-action="confirm"]),a[href],input,textarea,select,summary')) {
+      event.preventDefault();
+      transition(confirmCorrection(session));
+    }
   }
 });
 addEventListener('popstate',()=>{mode=location.pathname.startsWith('/unlimited')?'endless':'daily';closeModal();restoreCurrent();render();});
