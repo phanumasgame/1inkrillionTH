@@ -6,6 +6,7 @@ import path from 'node:path';
 import suggestionsHandler from '../api/suggestions.js';
 import telemetryHandler from '../api/telemetry.js';
 import healthHandler from '../api/health.js';
+import adminHandler from '../api/admin.js';
 
 for (const envFile of ['.env.local', '.env']) {
   if (fs.existsSync(envFile) && typeof process.loadEnvFile === 'function') {
@@ -21,11 +22,15 @@ const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; ch
   '.json': 'application/json; charset=utf-8', '.svg': 'image/svg+xml',
   '.png': 'image/png', '.webp': 'image/webp', '.ttf': 'font/ttf', '.woff2': 'font/woff2',
   '.md': 'text/plain; charset=utf-8', '.txt': 'text/plain; charset=utf-8' };
-const routes = new Set(['/', '/daily', '/unlimited', '/unlimited/classic']);
+const routes = new Set([
+  '/', '/daily', '/unlimited', '/unlimited/classic', '/unlimited/entertainment',
+  '/unlimited/geography', '/unlimited/nature', '/unlimited/lifestyle', '/admin',
+]);
 const apiRoutes = new Map([
   ['/api/suggestions', suggestionsHandler],
   ['/api/telemetry', telemetryHandler],
   ['/api/health', healthHandler],
+  ['/api/admin', adminHandler],
 ]);
 
 function adaptRes(res) {

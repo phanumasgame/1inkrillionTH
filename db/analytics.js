@@ -664,3 +664,247 @@ export function formatDailyReportMarkdown(report) {
 
   return lines.join('\n');
 }
+
+export async function generateAdminDashboardData(
+  sql,
+  questionMeta = [],
+  { date = bangkokDateString(), tz = DEFAULT_TZ, days = 14, limit = 150, ensure = ensureSchema } = {}
+) {
+  await ensure(sql);
+  const metaById = new Map((questionMeta || []).map(q => [q.id, q]));
+  const safeDays = Math.min(90, Math.max(1, Number(days) || 14));
+  const safeLimit = Math.min(300, Math.max(20, Number(limit) || 150));
+
+  const [sessionOverview] = await sql.query(
+    `SELECT
+       COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date)::int AS today_sessions,
+       COUNT(DISTINCT NULLIF(client_id, '')) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date)::int AS today_players,
+       COALESCE(ROUND(AVG(score) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date)::numeric, 1), 0) AS today_avg_score,
+       COALESCE(MAX(score) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date), 0)::int AS today_max_score,
+       COALESCE(ROUND(AVG(depth) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date)::numeric, 0), 0)::int AS today_avg_depth,
+       COALESCE(SUM(gems) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date), 0)::int AS today_gems,
+       COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date AND mode = 'daily')::int AS today_daily,
+       COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date AND mode = 'endless')::int AS today_endless,
+       COUNT(*)::int AS total_sessions,
+       COUNT(DISTINCT NULLIF(client_id, ''))::int AS total_players,
+       COALESCE(ROUND(AVG(score)::numeric, 1), 0) AS total_avg_score,
+       COALESCE(MAX(score), 0)::int AS total_max_score,
+       COALESCE(ROUND(AVG(depth)::numeric, 0), 0)::int AS total_avg_depth,
+       COALESCE(SUM(gems), 0)::int AS total_gems,
+       COUNT(*) FILTER (WHERE mode = 'daily')::int AS total_daily,
+       COUNT(*) FILTER (WHERE mode = 'endless')::int AS total_endless
+     FROM dive_sessions`,
+    [tz, date]
+  );
+
+  const [roundOverview] = await sql.query(
+    `SELECT
+       COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date)::int AS today_rounds,
+       COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date AND outcome IN ('correct','corrected'))::int AS today_hits,
+       COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date AND outcome = 'skip')::int AS today_skips,
+       COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date AND outcome = 'timeout')::int AS today_timeouts,
+       COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date AND tier = 'krillion')::int AS today_krillions,
+       COALESCE(ROUND(AVG(elapsed_ms) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date)::numeric, 0), 0)::int AS today_avg_ms,
+       COUNT(*)::int AS total_rounds,
+       COUNT(*) FILTER (WHERE outcome IN ('correct','corrected'))::int AS total_hits,
+       COUNT(*) FILTER (WHERE outcome = 'skip')::int AS total_skips,
+       COUNT(*) FILTER (WHERE outcome = 'timeout')::int AS total_timeouts,
+       COUNT(*) FILTER (WHERE tier = 'krillion')::int AS total_krillions,
+       COALESCE(ROUND(AVG(elapsed_ms)::numeric, 0), 0)::int AS total_avg_ms
+     FROM round_attempts`,
+    [tz, date]
+  );
+
+  const dailyTrend = await sql.query(
+    `SELECT ((created_at AT TIME ZONE $1)::date)::text AS day,
+            COUNT(*)::int AS sessions,
+            COUNT(DISTINCT NULLIF(client_id, ''))::int AS players,
+            COUNT(*) FILTER (WHERE mode = 'daily')::int AS daily_sessions,
+            COUNT(*) FILTER (WHERE mode = 'endless')::int AS endless_sessions,
+            COALESCE(ROUND(AVG(score)::numeric, 1), 0) AS avg_score,
+            COALESCE(SUM(gems), 0)::int AS gems
+     FROM dive_sessions
+     WHERE created_at >= NOW() - ($2::int * INTERVAL '1 day')
+     GROUP BY (created_at AT TIME ZONE $1)::date
+     ORDER BY day DESC
+     LIMIT $2`,
+    [tz, safeDays]
+  );
+
+  const sessionsByVersion = await sql.query(
+    `SELECT COALESCE(NULLIF(bank_version, ''), '(unknown)') AS bank_version,
+            COUNT(*)::int AS sessions,
+            COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date)::int AS today_sessions,
+            COUNT(DISTINCT NULLIF(client_id, ''))::int AS players,
+            COALESCE(ROUND(AVG(score)::numeric, 1), 0) AS avg_score,
+            COALESCE(SUM(gems), 0)::int AS gems
+     FROM dive_sessions
+     GROUP BY COALESCE(NULLIF(bank_version, ''), '(unknown)')
+     ORDER BY today_sessions DESC, sessions DESC`,
+    [tz, date]
+  );
+
+  const tierBreakdown = await sql.query(
+    `SELECT CASE WHEN outcome IN ('skip','timeout') THEN outcome ELSE COALESCE(NULLIF(tier, ''), 'unknown') END AS bucket,
+            COUNT(*)::int AS total_count,
+            COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date)::int AS today_count,
+            COALESCE(ROUND(AVG(elapsed_ms)::numeric, 0), 0)::int AS avg_ms
+     FROM round_attempts
+     GROUP BY 1
+     ORDER BY total_count DESC`,
+    [tz, date]
+  );
+
+  const questionStatsRaw = await sql.query(
+    `SELECT question_id,
+            COUNT(*)::int AS plays,
+            COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date)::int AS today_plays,
+            COUNT(*) FILTER (WHERE outcome IN ('skip','timeout'))::int AS misses,
+            COUNT(*) FILTER (WHERE tier = 'krillion')::int AS krillions,
+            COALESCE(ROUND(AVG(points)::numeric, 1), 0) AS avg_points,
+            COALESCE(ROUND(AVG(elapsed_ms)::numeric, 0), 0)::int AS avg_ms,
+            COALESCE(ROUND(AVG(jsonb_array_length(rejected_inputs))::numeric, 2), 0) AS avg_rejected
+     FROM round_attempts
+     GROUP BY question_id
+     ORDER BY plays DESC, misses DESC`,
+    [tz, date]
+  );
+
+  const questionStats = questionStatsRaw.map(row => {
+    const m = metaById.get(row.question_id);
+    const plays = num(row.plays);
+    const misses = num(row.misses);
+    return {
+      questionId: row.question_id,
+      prompt: m?.prompt || row.question_id,
+      theme: m?.theme || 'unknown',
+      scope: m?.scope || '',
+      poolSize: m?.answersCount || 0,
+      plays,
+      todayPlays: num(row.today_plays),
+      misses,
+      missRatePct: plays ? Number(((misses / plays) * 100).toFixed(1)) : 0,
+      krillions: num(row.krillions),
+      avgPoints: num(row.avg_points),
+      avgMs: num(row.avg_ms),
+      avgRejected: num(row.avg_rejected),
+    };
+  });
+
+  const [suggestionCounts] = await sql.query(
+    `SELECT COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date)::int AS today_rows,
+            COUNT(*)::int AS total_rows,
+            COUNT(*) FILTER (WHERE status = 'pending')::int AS pending_rows,
+            COUNT(*) FILTER (WHERE status = 'added')::int AS added_rows,
+            COUNT(*) FILTER (WHERE status = 'ignored')::int AS ignored_rows
+     FROM answer_suggestions`,
+    [tz, date]
+  );
+
+  const suggestionGroups = await sql.query(
+    `SELECT question_id,
+            MAX(question_prompt) AS question_prompt,
+            MIN(suggested_answer) AS sample_answer,
+            normalized_answer,
+            COUNT(*)::int AS total_count,
+            COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date)::int AS today_count,
+            MAX(status) AS status,
+            MAX(bank_version) AS latest_version,
+            STRING_AGG(DISTINCT NULLIF(note, ''), ' | ') AS notes,
+            MAX(created_at) AS last_seen
+     FROM answer_suggestions
+     GROUP BY question_id, normalized_answer
+     ORDER BY (MAX(status) = 'pending') DESC, total_count DESC, last_seen DESC
+     LIMIT $3`,
+    [tz, date, safeLimit]
+  );
+
+  const [rejectedCounts] = await sql.query(
+    `SELECT COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date)::int AS today_rows,
+            COUNT(*)::int AS total_rows,
+            COUNT(DISTINCT (question_id || '::' || normalized_input))::int AS unique_misses
+     FROM rejected_guesses`,
+    [tz, date]
+  );
+
+  const rejectedGroups = await sql.query(
+    `SELECT question_id,
+            normalized_input,
+            MIN(raw_input) AS sample_input,
+            COUNT(*)::int AS miss_count,
+            COUNT(*) FILTER (WHERE (created_at AT TIME ZONE $1)::date = $2::date)::int AS today_count,
+            MAX(bank_version) AS latest_version,
+            MAX(created_at) AS last_seen
+     FROM rejected_guesses
+     GROUP BY question_id, normalized_input
+     ORDER BY today_count DESC, miss_count DESC, last_seen DESC
+     LIMIT $3`,
+    [tz, date, safeLimit]
+  );
+
+  const recentSessionsRaw = await sql.query(
+    `SELECT ds.session_id,
+            ds.created_at,
+            ds.client_id,
+            ds.mode,
+            ds.daily_date,
+            ds.bank_version,
+            ds.score,
+            ds.depth,
+            ds.gems,
+            COALESCE(
+              JSON_AGG(
+                JSON_BUILD_OBJECT(
+                  'idx', ra.round_index,
+                  'questionId', ra.question_id,
+                  'outcome', ra.outcome,
+                  'label', ra.answer_label,
+                  'tier', ra.tier,
+                  'points', ra.points,
+                  'ms', ra.elapsed_ms
+                ) ORDER BY ra.round_index
+              ) FILTER (WHERE ra.id IS NOT NULL),
+              '[]'::json
+            ) AS rounds
+     FROM dive_sessions ds
+     LEFT JOIN round_attempts ra ON ra.session_id = ds.session_id
+     GROUP BY ds.id
+     ORDER BY ds.created_at DESC
+     LIMIT 30`
+  );
+
+  return {
+    generatedAt: new Date().toISOString(),
+    date,
+    timezone: tz,
+    days: safeDays,
+    bankMetaCount: metaById.size,
+    sessions: {
+      overview: sessionOverview || {},
+      byVersion: sessionsByVersion,
+      dailyTrend,
+      recent: recentSessionsRaw,
+    },
+    rounds: {
+      overview: roundOverview || {},
+      tiers: tierBreakdown,
+      byQuestion: questionStats,
+    },
+    suggestions: {
+      counts: suggestionCounts || {},
+      items: suggestionGroups.map(r => ({
+        ...r,
+        prompt: metaById.get(r.question_id)?.prompt || r.question_prompt || r.question_id,
+        theme: metaById.get(r.question_id)?.theme || '',
+      })),
+    },
+    rejected: {
+      counts: rejectedCounts || {},
+      items: rejectedGroups.map(r => ({
+        ...r,
+        prompt: metaById.get(r.question_id)?.prompt || r.question_id,
+        theme: metaById.get(r.question_id)?.theme || '',
+      })),
+    },
+  };
+}

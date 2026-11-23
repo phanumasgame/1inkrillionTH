@@ -4,7 +4,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
 });
 export function emptySave() {
   return { version: 1, settings: { ...DEFAULT_SETTINGS }, daily: {}, endless: null, endlessByBank: {},
-    history: [], seen: [], run: 0, character: 'krillion', currentBankVersion: null, resumeSessionId: null,
+    history: [], seen: [], run: 0, runByGroup: {}, character: 'krillion', currentBankVersion: null, resumeSessionId: null,
     clientId: '', telemetrySent: [], seenPatchVersion: '' };
 }
 export function ensureClientId(save) {
@@ -56,8 +56,10 @@ export function readSave(storage = globalThis.localStorage, bank = null) {
         const entry = data.questionSnapshots[index];
         if (!entry) return undefined;
         if (entry.$bankRef) {
-          if (bankById && bank.version === entry.bankVersion && bankById.has(entry.$bankRef))
-            return structuredClone(bankById.get(entry.$bankRef));
+          if (bankById && bank.version === entry.bankVersion && bankById.has(entry.$bankRef)) {
+            const liveQ = bankById.get(entry.$bankRef);
+            return Object.isFrozen(liveQ) ? liveQ : structuredClone(liveQ);
+          }
           return entry.fallback;
         }
         return entry;
@@ -74,13 +76,30 @@ export function readSave(storage = globalThis.localStorage, bank = null) {
     return { ...emptySave(), ...data, settings: { ...DEFAULT_SETTINGS, ...data.settings },
       history: data.history.filter(s => validSession(s) && s.phase === 'complete'),
       endlessByBank: data.endlessByBank && typeof data.endlessByBank === 'object' && !Array.isArray(data.endlessByBank) ? data.endlessByBank : {},
+      runByGroup: data.runByGroup && typeof data.runByGroup === 'object' && !Array.isArray(data.runByGroup) ? data.runByGroup : {},
       seen: Array.isArray(data.seen) ? data.seen : [] };
   } catch { return emptySave(); }
 }
 export const dailySlot = (date,bankVersion) => date+'@'+bankVersion;
+export const endlessSlot = (bankVersion, groupId = 'classic') => !groupId || groupId === 'classic' ? bankVersion : bankVersion + '@' + groupId;
 export function prepareSaveForBank(saved,bank) {
-  const next=structuredClone(saved);
-  next.endlessByBank={...(next.endlessByBank||{})};
+  const cloneQuestion = q => Object.isFrozen(q) ? q : structuredClone(q);
+  const cloneSession = s => {
+    if (!s || typeof s !== 'object') return s;
+    const { questions, ...rest } = s;
+    return { ...structuredClone(rest), ...(Array.isArray(questions) ? { questions: questions.map(cloneQuestion) } : {}) };
+  };
+  const next = {
+    ...saved,
+    settings: { ...DEFAULT_SETTINGS, ...(saved.settings || {}) },
+    daily: Object.fromEntries(Object.entries(saved.daily || {}).map(([k, v]) => [k, cloneSession(v)])),
+    endless: cloneSession(saved.endless),
+    endlessByBank: Object.fromEntries(Object.entries(saved.endlessByBank || {}).map(([k, v]) => [k, cloneSession(v)])),
+    history: Array.isArray(saved.history) ? saved.history.map(cloneSession) : [],
+    seen: [...(saved.seen || [])],
+    runByGroup: { ...(saved.runByGroup || {}) },
+    telemetrySent: [...(saved.telemetrySent || [])],
+  };
   for(const [key,session] of Object.entries(next.daily)) {
     if(!validSession(session)||key.includes('@'))continue;
     const target=dailySlot(session.date,session.bankVersion);
@@ -88,8 +107,9 @@ export function prepareSaveForBank(saved,bank) {
     delete next.daily[key];
   }
   if(validSession(next.endless)) {
-    const previous=next.endlessByBank[next.endless.bankVersion];
-    if(!previous||previous.startedAt<=next.endless.startedAt)next.endlessByBank[next.endless.bankVersion]=next.endless;
+    const slot=endlessSlot(next.endless.bankVersion, next.endless.group || 'classic');
+    const previous=next.endlessByBank[slot];
+    if(!previous||previous.startedAt<=next.endless.startedAt)next.endlessByBank[slot]=next.endless;
   }
   if(next.currentBankVersion!==bank.version) {
     next.currentBankVersion=bank.version;
@@ -100,8 +120,8 @@ export function prepareSaveForBank(saved,bank) {
   next.endless=next.endlessByBank[bank.version]||null;
   return next;
 }
-export function currentSavedSession(saved,mode,date,bankVersion) {
-  const candidate=mode==='daily' ? saved.daily[dailySlot(date,bankVersion)] : saved.endlessByBank?.[bankVersion];
+export function currentSavedSession(saved,mode,date,bankVersion,groupId='classic') {
+  const candidate=mode==='daily' ? saved.daily[dailySlot(date,bankVersion)] : saved.endlessByBank?.[endlessSlot(bankVersion, groupId)];
   return validSession(candidate)&&candidate.bankVersion===bankVersion ? candidate : null;
 }
 export function savedSessions(saved) {

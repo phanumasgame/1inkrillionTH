@@ -1,11 +1,79 @@
 import { descentDuration } from './descent.js';
 import { normalize, answerForms } from './answers.js';
-import { BROAD_ANSWER_TARGET, HYBRID_SCORING, SURVEY_TIERS, isSurveySession, surveyTier, validateSurveyBank, validateSurveyQuestion } from './survey.js';
+import { BROAD_ANSWER_TARGET, HYBRID_SCORING, SURVEY_TIERS, isSurveySession, isTrustedPreparedQuestion, surveyTier, validateSurveyBank, validateSurveyQuestion } from './survey.js';
 export { normalize, answerForms } from './answers.js';
 
-export const ANSWER_MS = 25_000;
+export const ANSWER_MS = 30_000;
 export const PREVIEW_MS = 3_000;
 export const TIME_ZONE = 'America/New_York';
+export const DIVE_GROUPS = Object.freeze([
+  Object.freeze({
+    id: 'classic',
+    route: '/unlimited/classic',
+    title: 'ENDLESS CLASSIC',
+    shortTitle: 'CLASSIC',
+    tag: 'DIVE AFTER DIVE',
+    emoji: '∞',
+    subtitle: 'ครบทุกหมวด 14 แนว ผสมโจทย์ไทย–ทั่วไปสมดุลทุกรอบ',
+    oceanTitle: 'OPEN KRILLION OCEAN',
+    themes: null,
+  }),
+  Object.freeze({
+    id: 'entertainment',
+    route: '/unlimited/entertainment',
+    title: 'KRILLION ENTERTAIN',
+    shortTitle: 'ENTERTAIN',
+    tag: 'SCREEN · MUSIC · GAMES',
+    emoji: '🎬',
+    subtitle: 'หนัง ซีรีส์ อนิเมะ ตัวละคร เพลง ศิลปิน และเกมฮิต',
+    oceanTitle: 'NEON REEF STAGE',
+    themes: ['screen', 'music', 'games'],
+  }),
+  Object.freeze({
+    id: 'geography',
+    route: '/unlimited/geography',
+    title: 'KRILLION GEOGRAPHY',
+    shortTitle: 'GEOGRAPHY',
+    tag: 'WORLD · TRAVEL · CULTURE',
+    emoji: '🧭',
+    subtitle: 'ประเทศ เมือง แลนด์มาร์ก วัด สถานที่เที่ยว และวัฒนธรรม',
+    oceanTitle: 'SUNKEN ATLAS TRENCH',
+    themes: ['travel', 'culture'],
+  }),
+  Object.freeze({
+    id: 'nature',
+    route: '/unlimited/nature',
+    title: 'KRILLION NATURE & SCI',
+    shortTitle: 'NATURE & SCI',
+    tag: 'LIFE · SCIENCE · SPORT',
+    emoji: '🐋',
+    subtitle: 'สัตว์โลก สัตว์ทะเล พืชพรรณ ดาราศาสตร์ วิทยาศาสตร์ และกีฬา',
+    oceanTitle: 'KELP & ABYSS SANCTUARY',
+    themes: ['nature', 'science', 'sport'],
+  }),
+  Object.freeze({
+    id: 'lifestyle',
+    route: '/unlimited/lifestyle',
+    title: 'KRILLION FOOD & DAILY',
+    shortTitle: 'FOOD & DAILY',
+    tag: 'FOOD · BRANDS · WORDPLAY',
+    emoji: '🍜',
+    subtitle: 'อาหารไทย–โลก ขนม แบรนด์ดัง ของใช้รอบตัว และเล่นคำ',
+    oceanTitle: 'AMBER HARBOR LAGOON',
+    themes: ['food', 'dessert', 'ingredients', 'brands', 'everyday', 'wordplay'],
+  }),
+]);
+const GROUP_BY_ID = new Map(DIVE_GROUPS.map(g => [g.id, g]));
+export function getDiveGroup(groupId = 'classic') {
+  return GROUP_BY_ID.get(groupId) || GROUP_BY_ID.get('classic');
+}
+export function filterQuestionsByGroup(questions, groupId = 'classic') {
+  const group = getDiveGroup(groupId);
+  if (!group.themes) return questions;
+  const allowed = new Set(group.themes);
+  const filtered = questions.filter(q => allowed.has(q.theme));
+  return filtered.length >= 14 ? filtered : questions;
+}
 export const TIERS = Object.freeze({
   plankton: { name: 'Plankton', score: 10, emoji: '🫧', color: '#88b0c5', blurb: 'Near the top of the published survey results.' },
   tooclever: { name: 'Too Clever', score: 15, emoji: '🤡', color: '#dc8fe5', blurb: 'The famously obscure pick.' },
@@ -62,6 +130,7 @@ export function questionFamily(question) {
   if (/islands|beaches|waterfalls|water-destinations|rivers/.test(id)) return 'water-places';
   if (/national-parks|parks-mountains/.test(id)) return 'parks-mountains';
   if (/bangkok-districts|bangkok-places|bkk-roads|rail-stations|urban-transit|provinces-districts|province-trips/.test(id)) return 'thai-places-transit';
+  if (/harry-potter|one-piece|marvel-mcu|disney-pixar|naruto-dragonball|doraemon-conan|starwars-lotr|minecraft|sanrio|valorant-lol|ramakien|phra-aphai|rov-heroes|online-mobile-games|gdh-gth|famous-dramas|bnk-tpops|comedians-youtubers|thai-league|somtum-yam/.test(id)) return id;
   if (/anime|manga|childhood-cartoons|tv-shows-and-cartoons/.test(id)) return 'anime-cartoon';
   if (/movie|films|famous-series|kdrama|thai-dramas|screen-titles/.test(id)) return 'movies-series';
   if (/character|superhero|protagonist|heroes-villains/.test(id)) return 'characters';
@@ -162,7 +231,9 @@ export function diverseRound(questions, rng = Math.random, requiredIds = [], bal
     if (pool.filter(q=>q.scope==='thai').length < targets.thai || pool.filter(q=>q.scope==='world').length < targets.world) return null;
     if (maxPerTheme === 1 && availableThemeCount < 7) return null;
     if (maxPerFamily === 1 && availableFamCount < 7) return null;
-    const minimumThemes = maxPerTheme === 1 ? Math.min(7, availableThemeCount) : Math.min(5, availableThemeCount);
+    const minimumThemes = maxPerTheme === 1
+      ? Math.min(7, availableThemeCount)
+      : Math.min(availableThemeCount, Math.min(5, Math.ceil(7 / maxPerTheme)));
     const chosen = pool.filter(q=>mandatory.has(q.id));
     const candidates = pool.filter(q=>!mandatory.has(q.id));
     const remainingBroad = Array(candidates.length + 1).fill(0);
@@ -207,10 +278,11 @@ export function diverseRound(questions, rng = Math.random, requiredIds = [], bal
     }
     return search(0,thai,world,broadThai,broadWorld);
   }
+  const groupThemeCap = availableThemeCount >= 7 ? 1 : Math.min(7, Math.ceil(7 / Math.max(1, availableThemeCount)) + 1);
   const tryPlans = (bMin, bScope) =>
     plan(ordered, required, bMin, bScope, 1, 1) ||
-    plan(ordered, required, bMin, bScope, 2, 1) ||
-    plan(ordered, required, bMin, bScope, 2, 2);
+    plan(ordered, required, bMin, bScope, Math.max(2, groupThemeCap), 1) ||
+    plan(ordered, required, bMin, bScope, Math.max(2, groupThemeCap), 2);
   const strict = quota
     ? tryPlans(quota.thai+quota.world, quota)
     : tryPlans(Math.min(4,ordered.filter(broad).length), null) || tryPlans(0, null);
@@ -235,11 +307,12 @@ export function diverseRound(questions, rng = Math.random, requiredIds = [], bal
   }
   return shuffle(picked,rng);
 }
-export function selectEndless(bank, seen = [], rng = Math.random, run = 1) {
+export function selectEndless(bank, seen = [], rng = Math.random, run = 1, groupId = 'classic') {
+  const poolQuestions = filterQuestionsByGroup(bank.questions, groupId);
   const available = [], required = [];
   const nextSeen = [...seen];
   const targets = scopeTargetsForRound(run);
-  const byId = new Map(bank.questions.map(q => [q.id, q]));
+  const byId = new Map(poolQuestions.map(q => [q.id, q]));
   const last1 = seen.slice(-7).map(id => byId.get(id)).filter(Boolean);
   const last2 = seen.slice(-14, -7).map(id => byId.get(id)).filter(Boolean);
   const cooldown = {
@@ -248,14 +321,14 @@ export function selectEndless(bank, seen = [], rng = Math.random, run = 1) {
     recentFamilies2: new Set(last2.map(questionFamily))
   };
   const quota = Object.keys(targets).every(scope => {
-    const broadCount = bank.questions.filter(q=>q.scope===scope && q.answers.length>=BROAD_ANSWER_TARGET).length;
-    const shortCount = bank.questions.filter(q=>q.scope===scope && q.answers.length<BROAD_ANSWER_TARGET).length;
+    const broadCount = poolQuestions.filter(q=>q.scope===scope && q.answers.length>=BROAD_ANSWER_TARGET).length;
+    const shortCount = poolQuestions.filter(q=>q.scope===scope && q.answers.length<BROAD_ANSWER_TARGET).length;
     return broadCount >= 2 && shortCount >= Math.max(targets[scope] - 2, 15);
   }) ? { thai:2, world:2 } : null;
   // Cycle broad and smaller sets separately, so the broad set isn't exhausted
   // in the first few dives and every short set still gets a turn.
   for (const [scope, target] of Object.entries(targets)) {
-    const questions = bank.questions.filter(q => q.scope === scope);
+    const questions = poolQuestions.filter(q => q.scope === scope);
     const groups = quota ? [
       [questions.filter(q=>q.answers.length>=BROAD_ANSWER_TARGET),quota[scope]],
       [questions.filter(q=>q.answers.length<BROAD_ANSWER_TARGET),target-quota[scope]]
@@ -291,6 +364,10 @@ export function selectEndless(bank, seen = [], rng = Math.random, run = 1) {
 const segmenter = new Intl.Segmenter('th', { granularity: 'grapheme' });
 const graphemes = text => /^[\x20-\x7e]*$/.test(text) ? text : Array.from(segmenter.segment(text), s => s.segment);
 
+function punctCompact(text) {
+  return String(text || '').replace(/&/g, 'and').replace(/[-.\s·()'’!?:,/]/g, '');
+}
+
 function stripThaiSilent(text) {
   if (!/[\u0E00-\u0E7F]/.test(text)) return '';
   return text
@@ -309,9 +386,45 @@ function thaiSkeleton(text) {
     .replace(/[ณญ]/g, 'น').replace(/[พฟภ]/g, 'บ').replace(/[รฬ]/g, 'ล');
 }
 
+function thaiLooseSkeleton(text) {
+  const s = thaiSkeleton(text);
+  if (!s) return '';
+  return s
+    .replace(/\u0E35/g, '\u0E34')
+    .replace(/\u0E39/g, '\u0E38')
+    .replace(/\u0E37/g, '\u0E36')
+    .replace(/\u0E41/g, '\u0E40')
+    .replace(/([\u0E01-\u0E2E])\1+/g, '$1');
+}
+
+function enConsonantSkeleton(text) {
+  if (!/[a-z]/.test(text) || /[\u0E00-\u0E7F]/.test(text)) return '';
+  return text
+    .replace(/[-.\s·()'’!?:,/]/g, '')
+    .replace(/([a-z])\1+/g, '$1')
+    .replace(/[aeiou]/g, '');
+}
+
+function charMask(text) {
+  let mask = 0;
+  for (let i = 0; i < text.length; i++) {
+    const code = text.charCodeAt(i);
+    if (code >= 97 && code <= 122) mask |= 1 << (code - 97);
+    else if (code >= 48 && code <= 57) mask |= 1 << 26;
+    else if (code >= 0x0E01 && code <= 0x0E5B) mask |= 1 << (27 + (code % 5));
+  }
+  return mask >>> 0;
+}
+
+function popcountDiff(a, b) {
+  let x = (a ^ b) >>> 0, c = 0;
+  while (x) { x &= x - 1; c++; }
+  return c;
+}
+
 function fuzzyVariants(name) {
   const out = new Set([name]);
-  const clean = name.replace(/[-:.,!'’/()]/g, ' ').replace(/\s+/g, ' ').trim();
+  const clean = name.replace(/&/g, ' and ').replace(/[-:.,!'’·/()]/g, ' ').replace(/\s+/g, ' ').trim();
   if (clean.length >= 4) out.add(clean);
   if (/^the\s+/.test(clean) && clean.length >= 8) {
     out.add(clean.slice(4).trim());
@@ -325,38 +438,90 @@ function fuzzyVariants(name) {
   }
   const thSilent = stripThaiSilent(name);
   if (thSilent.length >= 3) out.add(thSilent);
+  for (const prefix of ['ดาว', 'แม่น้ำ', 'ขนมปัง', 'สโมสรฟุตบอล', 'รูปปั้น']) {
+    if (name.startsWith(prefix) && name.length >= prefix.length + 3) {
+      out.add(name.slice(prefix.length).trim());
+    }
+  }
   return [...out];
 }
 
-const answerIndexes = new WeakMap();
-function answerIndex(answers) {
-  if (answerIndexes.has(answers)) return answerIndexes.get(answers);
-  const exact = new Map(), fuzzyExact = new Map(), byLength = new Map();
-  for (const answer of answers) {
-    const names = new Set([answer.label, ...(answer.aliases || [])].map(normalize));
-    const indexedVariants = new Set();
-    for (const name of names) {
-      for (const form of answerForms(name)) {
-        if (!exact.has(form)) exact.set(form, new Set());
-        exact.get(form).add(answer);
-      }
-      for (const v of fuzzyVariants(name)) {
-        if (!fuzzyExact.has(v)) fuzzyExact.set(v, new Set());
-        fuzzyExact.get(v).add(answer);
-        if (v.length >= 4 && !indexedVariants.has(v)) {
-          indexedVariants.add(v);
-          if (!byLength.has(v.length)) byLength.set(v.length, []);
-          byLength.get(v.length).push({ name: v, answer, parts: null });
-        }
-      }
-      const skel = thaiSkeleton(name);
-      if (skel.length >= 3) {
-        if (!fuzzyExact.has(skel)) fuzzyExact.set(skel, new Set());
-        fuzzyExact.get(skel).add(answer);
-      }
+function addMapEntry(map, key, val) {
+  const prev = map.get(key);
+  if (prev === undefined) map.set(key, val);
+  else if (Array.isArray(prev)) { if (!prev.includes(val)) prev.push(val); }
+  else if (prev !== val) map.set(key, [prev, val]);
+}
+
+function collectMapHits(map, keys) {
+  let single = null;
+  let multi = null;
+  for (const key of keys) {
+    const hit = map.get(key);
+    if (!hit) continue;
+    if (Array.isArray(hit)) {
+      multi ??= new Set(single ? [single] : []);
+      for (const a of hit) multi.add(a);
+    } else {
+      if (multi) multi.add(hit);
+      else if (single === null) single = hit;
+      else if (single !== hit) multi = new Set([single, hit]);
     }
   }
-  const index = { exact, fuzzyExact, byLength };
+  if (multi) return multi;
+  return single ? new Set([single]) : new Set();
+}
+
+const answerIndexes = new WeakMap();
+export function prewarmQuestionIndex(question) {
+  if (question?.answers) answerIndex(question.answers);
+}
+function answerIndex(answers) {
+  if (answerIndexes.has(answers)) return answerIndexes.get(answers);
+  const exact = new Map(), punctExact = new Map();
+  for (const answer of answers) {
+    const names = [answer.label, ...(answer.aliases || [])];
+    for (let i = 0; i < names.length; i++) {
+      const name = normalize(names[i]);
+      const forms = answerForms(name);
+      for (let j = 0; j < forms.length; j++) addMapEntry(exact, forms[j], answer);
+      const pc = punctCompact(name);
+      if (pc.length >= 2) addMapEntry(punctExact, pc, answer);
+    }
+  }
+  let fuzzy = null;
+  const getFuzzy = () => {
+    if (fuzzy) return fuzzy;
+    const fuzzyExact = new Map(), byLength = new Map(), thaiByLength = new Map();
+    for (const answer of answers) {
+      const names = new Set([answer.label, ...(answer.aliases || [])].map(normalize));
+      const indexedVariants = new Set(), indexedThai = new Set();
+      for (const name of names) {
+        for (const v of fuzzyVariants(name)) {
+          addMapEntry(fuzzyExact, v, answer);
+          if (v.length >= 4 && !indexedVariants.has(v)) {
+            indexedVariants.add(v);
+            if (!byLength.has(v.length)) byLength.set(v.length, []);
+            byLength.get(v.length).push({ name: v, answer, parts: null, mask: charMask(v) });
+          }
+        }
+        const skel = thaiSkeleton(name);
+        if (skel.length >= 3) {
+          addMapEntry(fuzzyExact, skel, answer);
+          const loose = thaiLooseSkeleton(name);
+          if (loose.length >= 3) addMapEntry(fuzzyExact, loose, answer);
+          if (loose.length >= 4 && !indexedThai.has(loose)) {
+            indexedThai.add(loose);
+            if (!thaiByLength.has(loose.length)) thaiByLength.set(loose.length, []);
+            thaiByLength.get(loose.length).push({ name: loose, answer, parts: null, mask: charMask(loose) });
+          }
+        }
+      }
+    }
+    fuzzy = { fuzzyExact, byLength, thaiByLength };
+    return fuzzy;
+  };
+  const index = { exact, punctExact, getFuzzy };
   answerIndexes.set(answers, index);
   return index;
 }
@@ -382,15 +547,23 @@ export function matchAnswer(question, raw) {
   const value = normalize(raw);
   if (!value) return { kind: 'empty' };
   const index = answerIndex(question.answers);
-  const exact = new Set(answerForms(value).flatMap(form => [...(index.exact.get(form) || [])]));
+  const exact = collectMapHits(index.exact, answerForms(value));
   if (exact.size === 1) return { kind: 'exact', answer: exact.values().next().value };
   if (exact.size > 1) return { kind: 'ambiguous' };
+  const pcVal = punctCompact(value);
+  if (pcVal.length >= 2) {
+    const pHit = collectMapHits(index.punctExact, [pcVal]);
+    if (pHit.size === 1) return { kind: 'exact', answer: pHit.values().next().value };
+  }
   if (value.length < 4) return { kind: 'unknown' };
 
+  const { fuzzyExact, byLength, thaiByLength } = index.getFuzzy();
   const fuzzyKeys = [...fuzzyVariants(value)];
   const skel = thaiSkeleton(value);
+  const looseSkel = thaiLooseSkeleton(value);
   if (skel.length >= 3) fuzzyKeys.push(skel);
-  const fuzzyHits = new Set(fuzzyKeys.flatMap(k => [...(index.fuzzyExact.get(k) || [])]));
+  if (looseSkel.length >= 3 && looseSkel !== skel) fuzzyKeys.push(looseSkel);
+  const fuzzyHits = collectMapHits(fuzzyExact, fuzzyKeys);
   if (fuzzyHits.size === 1) return { kind: 'correction', answer: fuzzyHits.values().next().value };
 
   const limit = value.length >= 14 ? 3 : value.length >= 7 ? 2 : 1;
@@ -401,10 +574,12 @@ export function matchAnswer(question, raw) {
   let best = new Set(), bestDistance = limit;
   for (const qVal of queryForms) {
     const parts = graphemes(qVal);
+    const qMask = charMask(qVal);
     for (let length = Math.max(4, qVal.length - limit); length <= qVal.length + limit; length++) {
       if (Math.abs(length - qVal.length) > bestDistance) continue;
-      for (const entry of index.byLength.get(length) || []) {
+      for (const entry of byLength.get(length) || []) {
         if (bestDistance === 1 && qVal[0] !== entry.name[0] && qVal.at(-1) !== entry.name.at(-1)) continue;
+        if (popcountDiff(qMask, entry.mask) > bestDistance * 2) continue;
         entry.parts ??= graphemes(entry.name);
         if (Math.abs(parts.length - entry.parts.length) > bestDistance) continue;
         const delta = distance(parts, entry.parts, bestDistance);
@@ -414,18 +589,51 @@ export function matchAnswer(question, raw) {
       }
     }
   }
+  if (best.size === 0 && looseSkel.length >= 4) {
+    const thLimit = looseSkel.length >= 7 ? 2 : 1;
+    let thBest = new Set(), thBestDist = thLimit;
+    const parts = graphemes(looseSkel);
+    const qMask = charMask(looseSkel);
+    for (let length = Math.max(4, looseSkel.length - thLimit); length <= looseSkel.length + thLimit; length++) {
+      if (Math.abs(length - looseSkel.length) > thBestDist) continue;
+      for (const entry of thaiByLength.get(length) || []) {
+        if (thBestDist === 1 && looseSkel[0] !== entry.name[0] && looseSkel.at(-1) !== entry.name.at(-1)) continue;
+        if (popcountDiff(qMask, entry.mask) > thBestDist * 2) continue;
+        entry.parts ??= graphemes(entry.name);
+        if (Math.abs(parts.length - entry.parts.length) > thBestDist) continue;
+        const delta = distance(parts, entry.parts, thBestDist);
+        if (delta > thBestDist) continue;
+        if (delta < thBestDist) { thBest = new Set(); thBestDist = delta; }
+        thBest.add(entry.answer);
+      }
+    }
+    best = thBest;
+  }
   if (best.size === 1) return { kind: 'correction', answer: best.values().next().value };
+  if (best.size > 1 && best.size <= 6) {
+    const qCons = enConsonantSkeleton(value);
+    if (qCons.length >= 2) {
+      const narrowed = [...best].filter(ans =>
+        [ans.label, ...(ans.aliases || [])].some(n => enConsonantSkeleton(normalize(n)) === qCons)
+      );
+      if (narrowed.length === 1) return { kind: 'correction', answer: narrowed[0] };
+    }
+  }
   return { kind: 'unknown' };
 }
-export function createSession({ mode, bank, questions, date = dayKey(), now = Date.now(), run = 1 }) {
+export function createSession({ mode, bank, questions, date = dayKey(), now = Date.now(), run = 1, group = 'classic' }) {
   if (questions.length !== 7) throw new Error('A dive needs exactly seven questions.');
-  if (validateSurveyBank(bank).length || questions.some(q => validateSurveyQuestion(q).length || !bank.questions.some(item => item.id === q.id)))
+  if (validateSurveyBank(bank).length) throw new Error('A dive requires survey-backed questions.');
+  const bankIds = new Set(bank.questions.map(item => item.id));
+  if (questions.some(q => validateSurveyQuestion(q).length || !bankIds.has(q.id)))
     throw new Error('A dive requires survey-backed questions.');
   return {
-    schemaVersion: 1, id: mode + ':' + date + ':' + run + ':' + now, mode, date, run,
+    schemaVersion: 1, id: mode + ':' + date + ':' + run + ':' + now, mode,
+    ...(mode === 'endless' && group && group !== 'classic' ? { group } : {}),
+    date, run,
     bankVersion: bank.version, scoringMethod: bank.scoringMethod || HYBRID_SCORING, startedAt: now, phase: 'preview', index: 0,
     phaseUntil: now + PREVIEW_MS, deadline: now + PREVIEW_MS + ANSWER_MS,
-    questions: structuredClone(questions), results: [], score: 0, depth: 0,
+    questions: questions.map(q => isTrustedPreparedQuestion(q) ? q : structuredClone(q)), results: [], score: 0, depth: 0,
     correction: null, rejected: '', rejectedInputs: [], input: '', completedAt: null
   };
 }

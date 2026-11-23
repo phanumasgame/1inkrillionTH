@@ -1,6 +1,7 @@
 import { timingSafeEqual } from 'node:crypto';
 import { normalize } from '../src/answers.js';
 import { ensureSchema } from './schema.js';
+import { bangkokDateString, generateAdminDashboardData } from './analytics.js';
 
 const cleanStr = (v, max = 160) => String(v ?? '').replace(/\s+/g, ' ').trim().slice(0, max);
 const safeInt = (v, min = 0, max = 100000) => {
@@ -331,4 +332,47 @@ export async function handleRecordTelemetry(body, sql, { ensure = ensureSchema }
   }
 
   return { status: 201, body: { ok: true, deduplicated: false, roundsSaved, rejectedSaved } };
+}
+
+export async function handleAdminDashboard(query, sql, questionMeta = [], { ensure = ensureSchema } = {}) {
+  const days = safeInt(query?.days ?? 14, 1, 90);
+  const limit = safeInt(query?.limit ?? 150, 10, 300);
+  const tz = 'Asia/Bangkok';
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(String(query?.date || '')) ? String(query.date) : bangkokDateString();
+  const data = await generateAdminDashboardData(sql, questionMeta, { date, tz, days, limit, ensure });
+  return { status: 200, body: { ok: true, ...data } };
+}
+
+export async function handleAdminAction(body, sql, { ensure = ensureSchema } = {}) {
+  if (!body || typeof body !== 'object') {
+    return { status: 400, body: { ok: false, error: 'Invalid JSON payload' } };
+  }
+  await ensure(sql);
+  const action = cleanStr(body.action, 40);
+  if (action === 'suggestion-status') {
+    const questionId = cleanStr(body.questionId, 80);
+    const normalizedAnswer = cleanStr(body.normalizedAnswer, 120);
+    const status = ['pending', 'added', 'ignored'].includes(body.status) ? body.status : '';
+    if (!questionId || !normalizedAnswer || !status) {
+      return { status: 400, body: { ok: false, error: 'Missing questionId, normalizedAnswer, or valid status' } };
+    }
+    const updated = await sql.query(
+      `UPDATE answer_suggestions SET status = $1 WHERE question_id = $2 AND normalized_answer = $3 RETURNING id`,
+      [status, questionId, normalizedAnswer]
+    );
+    return { status: 200, body: { ok: true, action, updated: updated.length, status } };
+  }
+  if (action === 'delete-rejected') {
+    const questionId = cleanStr(body.questionId, 80);
+    const normalizedInput = cleanStr(body.normalizedInput, 120);
+    if (!questionId || !normalizedInput) {
+      return { status: 400, body: { ok: false, error: 'Missing questionId or normalizedInput' } };
+    }
+    const deleted = await sql.query(
+      `DELETE FROM rejected_guesses WHERE question_id = $1 AND normalized_input = $2 RETURNING id`,
+      [questionId, normalizedInput]
+    );
+    return { status: 200, body: { ok: true, action, deleted: deleted.length } };
+  }
+  return { status: 400, body: { ok: false, error: 'Unknown admin action' } };
 }

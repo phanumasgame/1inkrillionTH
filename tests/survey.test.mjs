@@ -11,15 +11,15 @@ const make = () => createSession({mode:'daily',bank,questions:selectDaily(bank,'
 
 test('v1.0.13 unified 236-question bank has 390k+ answers, 154 1000+ pools, 16 10000+ ultra-mega pools, and calibrated tiers', () => {
   assert.deepEqual(validateSurveyBank(raw), []);
-  assert.equal(raw.version, '1.0.13');
+  assert.equal(raw.version, '1.1.0');
   assert.equal(raw.scoringMethod, HYBRID_SCORING);
-  assert.equal(raw.questions.length, 236);
-  assert.equal(raw.questions.filter(q => q.scope === 'thai').length, 118);
-  assert.equal(raw.questions.filter(q => q.scope === 'world').length, 118);
+  assert.equal(raw.questions.length, 256);
+  assert.equal(raw.questions.filter(q => q.scope === 'thai').length, 128);
+  assert.equal(raw.questions.filter(q => q.scope === 'world').length, 128);
   const surveyQuestions = raw.questions.filter(q => q.survey);
   const curatedQuestions = raw.questions.filter(q => q.curated);
   assert.equal(surveyQuestions.length, 6);
-  assert.equal(curatedQuestions.length, 230);
+  assert.equal(curatedQuestions.length, 250);
   assert.ok(raw.questions.reduce((sum, q) => sum + q.answers.length, 0) >= 380_000);
   assert.ok(raw.questions.filter(q => q.answers.length >= BROAD_ANSWER_TARGET).length >= 228);
   assert.ok(raw.questions.filter(q => q.answers.length >= 1000).length >= 150);

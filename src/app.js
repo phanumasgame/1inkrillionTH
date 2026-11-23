@@ -1,6 +1,6 @@
-import { ANSWER_MS, PREVIEW_MS, TIME_ZONE, TIERS, TIER_ORDER, dayKey, selectDaily, selectEndless,
-  createSession, tickSession, submitAnswer, confirmCorrection, skipRound, nextRound, shareText } from './game.js';
-import { readSave, writeSave, emptySave, ensureClientId, validSession, dailySlot, prepareSaveForBank, currentSavedSession, savedSessions } from './storage.js';
+import { ANSWER_MS, PREVIEW_MS, TIME_ZONE, TIERS, TIER_ORDER, DIVE_GROUPS, getDiveGroup, dayKey, selectDaily, selectEndless,
+  createSession, tickSession, submitAnswer, confirmCorrection, skipRound, nextRound, shareText, prewarmQuestionIndex } from './game.js';
+import { readSave, writeSave, emptySave, ensureClientId, validSession, dailySlot, endlessSlot, prepareSaveForBank, currentSavedSession, savedSessions } from './storage.js';
 import { curatedReason, isSurveySession, prepareSurveyBank, starterExample, surveyTiers, surveyValue } from './survey.js';
 import { answerForms } from './answers.js';
 import { DiveAudio } from './audio.js';
@@ -8,12 +8,23 @@ import { OceanScene } from './scene.js';
 import { descentDuration, PIXELS_PER_METER, METERS_PER_POINT } from './descent.js';
 import { focusAnswer } from './input.js';
 
-const APP_VERSION = '1.0.13';
+const APP_VERSION = '1.1.0';
 const app = document.getElementById('app');
 const modalRoot = document.getElementById('modal-root');
 let bank, audio, scene;
-let save = emptySave(), mode = location.pathname.startsWith('/unlimited') ? 'endless' : 'daily';
+let save = emptySave();
+function parseRoute(pathname = location.pathname) {
+  if (pathname === '/admin' || pathname.startsWith('/admin/')) return { route: 'admin', mode: 'daily', group: 'classic' };
+  if (pathname.startsWith('/unlimited')) {
+    const seg = pathname.replace(/^\/unlimited\/?/, '').split('/')[0] || 'classic';
+    const grp = DIVE_GROUPS.some(g => g.id === seg) ? seg : 'classic';
+    return { route: 'game', mode: 'endless', group: grp };
+  }
+  return { route: 'game', mode: 'daily', group: 'classic' };
+}
+let { route: activeRoute, mode, group: activeGroup } = parseRoute();
 let session = null, view = 'home', composing = false, lastTick = -1, lastTierLine = null, landed = false, inputSaveTimer, toastTimer;
+let prewarmTimer = null;
 let modalRestoreFocus = null, modalKind = null;
 let depthDisplay = null, displayedDepth = null, descentView = null;
 const openExamples = new Set();
@@ -37,9 +48,22 @@ function icon(name) {
 }
 
 async function load() {
+  if (activeRoute === 'admin') {
+    document.title = 'Krillion TH · Admin';
+    try {
+      const { mountAdminBackoffice } = await import('/src/admin.js?v=' + APP_VERSION);
+      scene = new OceanScene();
+      scene.set(1600, false, false, true);
+      mountAdminBackoffice(app, { version: APP_VERSION, onToast: toast });
+    } catch (error) {
+      app.innerHTML = '<div class="dialog" style="margin:20vh auto"><h2>Admin Load Error</h2><p class="thai">' + esc(error.message) + '</p></div>';
+      console.error(error);
+    }
+    return;
+  }
   try {
     const results = await Promise.allSettled([
-      fetch('/data/survey-bank.json?v=' + APP_VERSION, { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('คลังผลสำรวจโหลดไม่สำเร็จ'); return r.json(); }),
+      fetch('/data/survey-bank.json?v=' + APP_VERSION).then(r => { if (!r.ok) throw new Error('คลังผลสำรวจโหลดไม่สำเร็จ'); return r.json(); }),
       fetch('/assets/audio-cues.json?v=' + APP_VERSION).then(r => { if (!r.ok) throw new Error('ชุดเสียงโหลดไม่สำเร็จ'); return r.json(); })
     ]);
     if (results[0].status !== 'fulfilled') throw results[0].reason;
@@ -78,15 +102,26 @@ function applySettings() {
   document.body.classList.toggle('colorblind', save.settings.colorblind);
   audio?.setMuted(save.settings.muted);
 }
+function schedulePrewarm(targetSession) {
+  clearTimeout(prewarmTimer);
+  const q = targetSession?.questions?.[targetSession.index];
+  if (!q || !['preview', 'answer'].includes(targetSession?.phase)) return;
+  prewarmTimer = setTimeout(() => prewarmQuestionIndex(q), 40);
+}
+function currentSceneGroup() {
+  if (session?.mode === 'endless') return session.group || 'classic';
+  return mode === 'endless' ? activeGroup : 'classic';
+}
 function getSaved() {
-  const candidate = currentSavedSession(save,mode,dayKey(),bank.version);
+  const candidate = currentSavedSession(save, mode, dayKey(), bank.version, activeGroup);
   return surveySession(candidate) ? candidate : null;
 }
 function restoreCurrent() {
   const requested=savedSessions(save).find(s=>s.id===save.resumeSessionId&&s.phase!=='complete'&&surveySession(s));
-  const saved = requested?.mode===mode ? requested : getSaved();
+  const saved = requested?.mode===mode && (!requested?.group || requested.group === activeGroup) ? requested : getSaved();
   session = surveySession(saved) ? saved : null;
   view = session ? session.phase === 'complete' ? 'results' : 'play' : 'home';
+  scene?.setGroupTheme?.(currentSceneGroup());
   if (session) {
     session = tickSession(session);
     if (scene.reducedMotion && session.phase === 'sinking')
@@ -94,6 +129,7 @@ function restoreCurrent() {
     lastTierLine = null; landed = false;
     if (session.phase === 'sinking' && session.results.at(-1)?.points) syncScene();
     else scene.set(session.depth, true, save.settings.lowPower, true);
+    schedulePrewarm(session);
     persist();
   } else scene.set(0, false, save.settings.lowPower, true);
 }
@@ -102,11 +138,13 @@ function persist() {
   if (session && view !== 'history-result') {
     if (session.mode === 'daily') save.daily[dailySlot(session.date,session.bankVersion)] = session;
     else {
-      save.endlessByBank[session.bankVersion]=session;
-      if(session.bankVersion===bank.version)save.endless=session;
+      const slot = endlessSlot(session.bankVersion, session.group || 'classic');
+      save.endlessByBank[slot] = session;
+      if (session.bankVersion === bank.version && (!session.group || session.group === 'classic')) save.endless = session;
     }
     if (session.phase === 'complete' && !save.history.some(item => item.id === session.id)) {
-      save.history.unshift(structuredClone(session));
+      const { questions, ...rest } = session;
+      save.history.unshift({ ...structuredClone(rest), questions });
       let surveyCount = 0;
       save.history = save.history.filter(item => !surveySession(item) || ++surveyCount <= 40);
     }
@@ -132,30 +170,47 @@ function friend(diving = false) {
   return '<button class="friend' + (diving ? ' dive-friend' : atPrompt ? ' at-prompt' : '') + '" data-action="blub" aria-label="a friend"><img' + goldSprite(save.character) + ' src="' +
     sprite(save.character) + '" alt=""></button>';
 }
+function groupPacksStrip(compact = false) {
+  return '<div class="pack-grid' + (compact ? ' is-compact' : '') + '" role="navigation" aria-label="Themed dive expeditions">' +
+    DIVE_GROUPS.map(g => {
+      const selected = mode === 'endless' && activeGroup === g.id;
+      return '<button type="button" class="pack-pill pack-' + g.id + (selected ? ' is-active' : '') +
+        '" data-action="endless-group" data-group="' + g.id + '" title="' + esc(g.subtitle) + '">' +
+        '<span class="pack-emoji">' + g.emoji + '</span><span class="pack-name">' + esc(compact ? g.shortTitle : g.title) + '</span>' +
+        (compact ? '' : '<small>' + esc(g.subtitle) + '</small>') + '</button>';
+    }).join('') + '</div>';
+}
 function landing() {
   const today = dayKey();
   const saved = getSaved();
   const canResume = validSession(saved) && saved.phase !== 'complete';
   const completed = mode === 'daily' && saved?.phase === 'complete';
   const label = completed ? 'VIEW YOUR DIVE' : canResume ? 'RESUME DESCENT' : 'BEGIN DESCENT';
-  const title = mode === 'daily' ? 'THE DAILY DIVE' : 'THE ENDLESS DIVE';
+  const group = getDiveGroup(activeGroup);
+  const title = mode === 'daily' ? 'THE DAILY DIVE' : group.id === 'classic' ? 'THE ENDLESS DIVE' : group.title;
+  const sub = mode === 'daily'
+    ? '7 prompts · 30 seconds each · rarer answers sink deeper'
+    : (group.id === 'classic' ? 'dive after dive · 30 seconds each · rarer answers sink deeper' : group.oceanTitle + ' · ' + group.subtitle);
+  const currentRun = activeGroup === 'classic' ? save.run : (save.runByGroup?.[activeGroup] || 0);
   return '<main class="landing">' + controls() +
-    '<header class="hero"><div class="wordmark" aria-label="Krillion TH">KRILLION</div><h1>' + title + '</h1>' +
-    '<p>' + (mode === 'daily' ? '7 prompts · 25 seconds each · rarer answers sink deeper' : 'dive after dive · rarer answers sink deeper') + '</p></header>' +
+    '<header class="hero"><div class="wordmark" aria-label="Krillion TH">KRILLION</div><h1>' + esc(title) + '</h1>' +
+    '<p>' + esc(sub) + '</p></header>' +
     friend() + '<section class="landing-bottom">' +
     '<details class="howto"><summary>how to play</summary><ol>' +
-    '<li>SEVEN PROMPTS. A SHARED DAILY CHALLENGE.</li><li>25 SECONDS. TYPE ONE ANSWER THAT FITS.</li>' +
+    '<li>SEVEN PROMPTS. A SHARED DAILY CHALLENGE.</li><li>30 SECONDS. TYPE ONE ANSWER THAT FITS.</li>' +
     '<li>LOWER OR RARER RANKS CAN SINK DEEPER.</li><li>ONLY ANSWERS IN THIS DIVE’S BANK CAN SCORE.</li>' +
-    '<li>ONE POINT = 10 METRES. AIM FOR 7,000M.</li><li>ONE DAILY ATTEMPT. ENDLESS DIVES ANYTIME.</li></ol></details>' +
+    '<li>ONE POINT = 10 METRES. AIM FOR 7,000M.</li><li>ONE DAILY ATTEMPT. PICK AN EXPEDITION GROUP ANYTIME.</li></ol></details>' +
     '<div class="landing-credits"><button class="small-link" data-action="about">About this dive</button>' +
     '<button class="landing-patch-btn" data-action="patchnotes">✦ Patch Notes · v' + APP_VERSION + '</button></div>' +
-    (mode === 'daily' ? '<button class="discovery-card" data-action="endless"><span class="discovery-tag">DIVE AFTER DIVE</span><img src="' +
-      sprite('schooler') + '" alt=""><span>ENDLESS DIVE</span><small>∞</small></button>' : '') +
+    (mode === 'daily'
+      ? '<button class="discovery-card" data-action="endless"><span class="discovery-tag">DIVE AFTER DIVE · EXPEDITIONS</span><img src="' +
+        sprite('schooler') + '" alt=""><span>ENDLESS &amp; THEMED DIVES</span><small>∞</small></button>' + groupPacksStrip(true)
+      : groupPacksStrip(false)) +
     '<button class="begin" data-action="begin">▼ ' + label + ' ▼</button>' +
-    '<div class="landing-nav"><span>' + (mode === 'daily' ? 'DIVE · ' + today : 'ENDLESS DIVE #' + (canResume ? saved.run : save.run + 1)) + '</span>' +
+    '<div class="landing-nav"><span>' + (mode === 'daily' ? 'DIVE · ' + today : group.shortTitle + ' DIVE #' + (canResume ? saved.run : currentRun + 1)) + '</span>' +
     '<div><button data-action="history">DIVE LOG ⟲</button><button data-action="' + (mode === 'daily' ? 'endless' : 'daily') + '">' +
     (mode === 'daily' ? 'UNLIMITED ∞' : 'TODAY’S DIVE') + '</button></div></div></section>' +
-    '<div class="reference-footer">KRILLION TH · LOCAL EDITION</div></main>';
+    '<div class="reference-footer">KRILLION TH · v' + APP_VERSION + '</div></main>';
 }
 function hud() {
   const activeIndex = session.phase === 'reveal' ? Math.min(6, session.index + 1) : session.index;
@@ -186,7 +241,7 @@ function answerDock() {
     esc(session.correction.label) + '</strong><div class="correction-actions"><button data-action="confirm">YES, DIVE ▼</button>' +
     '<button data-action="edit">KEEP TYPING ↵</button></div></div>' : '';
   return '<section class="answer-dock" aria-label="Answer this prompt">' +
-    '<div class="timer-row"><span>MAKE IT COUNT.</span><span class="timer-number" id="timer" role="timer" aria-label="Seconds remaining">25</span></div>' +
+    '<div class="timer-row"><span>MAKE IT COUNT.</span><span class="timer-number" id="timer" role="timer" aria-label="Seconds remaining">30</span></div>' +
     '<div class="timer-track" id="timer-track"><span id="timer-fill"></span></div>' + correction +
     (session.rejected ? '<div class="reject-text" role="status">คำนี้ยังไม่มีข้อมูลในคลัง ลองตอบชื่ออื่นได้ก่อนหมดเวลา</div>' : '') +
     '<form class="answer-form" id="answer-form"><input id="answer" name="answer" aria-label="Your answer" maxlength="256" placeholder="type one answer…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" value="' +
@@ -244,8 +299,12 @@ function resultsView() {
   const gems = session.results.filter(r => r.tier === 'krillion').length;
   const title = session.score === 700 ? 'THE PERFECT DIVE' : session.score >= 450 ? 'INTO THE ABYSS' : session.score >= 250 ? 'A DEEPER KIND OF KNOWLEDGE' : 'BACK AT THE SURFACE';
   const totalRejected = session.results.reduce((sum, r) => sum + (Array.isArray(r.rejectedInputs) ? r.rejectedInputs.length : 0), 0);
+  const groupInfo = session.mode === 'endless' ? getDiveGroup(session.group || 'classic') : null;
+  const overline = session.mode === 'daily'
+    ? 'DAILY DIVE · ' + session.date
+    : (groupInfo && groupInfo.id !== 'classic' ? groupInfo.title + ' #' + session.run : 'ENDLESS DIVE #' + session.run);
   return '<main class="results-view">' + controls() +
-    '<p class="overline">' + (session.mode === 'daily' ? 'DAILY DIVE · ' + session.date : 'ENDLESS DIVE #' + session.run) + '</p>' +
+    '<p class="overline">' + esc(overline) + '</p>' +
     '<h1>' + title + '</h1><div class="results-depth">' + number(session.depth) + '<span style="font-size:35px">m</span></div>' +
     '<p class="results-sub">' + session.score + ' / 700 POINTS · ' + gems + ' KRILLION' + (gems === 1 ? '' : 'S') + '</p>' +
     '<div class="results-graph" aria-label="Score for each of seven prompts">' + session.results.map((r, i) =>
@@ -265,7 +324,8 @@ function resultsView() {
     esc(session.bankVersion) + '</p></main>';
 }
 function render(answerSelection = null) {
-  document.title = 'Krillion TH · ' + (mode === 'daily' ? 'the daily dive' : 'the endless dive');
+  const grp = getDiveGroup(activeGroup);
+  document.title = 'Krillion TH · ' + (mode === 'daily' ? 'the daily dive' : grp.id === 'classic' ? 'the endless dive' : grp.shortTitle.toLowerCase());
   app.innerHTML = view === 'home' ? landing() : view === 'play' ? playing() : resultsView();
   depthDisplay = app.querySelector('[data-live-depth]');
   displayedDepth = null;
@@ -290,6 +350,7 @@ function render(answerSelection = null) {
   updateTimer();
 }
 function syncScene() {
+  scene?.setGroupTheme?.(currentSceneGroup());
   const result = view === 'play' && session?.phase === 'sinking' ? session.results.at(-1) : null;
   if (result?.points) {
     const startedAt = Number.isFinite(result.answeredAt)
@@ -368,6 +429,9 @@ function transition(updated, answerSelection = null) {
   const previous = session;
   session = updated;
   if (session === previous) return;
+  if (session.phase !== previous?.phase || session.index !== previous?.index) {
+    schedulePrewarm(session);
+  }
   if (session.phase !== previous?.phase) {
     if (session.phase === 'answer' && previous?.phase === 'preview') audio.play('category');
     if (session.phase === 'sinking') {
@@ -434,6 +498,7 @@ function startDive(forceNew = false) {
     }
   }
   let questions;
+  let runNumber = 1;
   if (mode === 'daily') {
     questions = selectDaily(bank, date);
     for (const q of questions) {
@@ -443,22 +508,30 @@ function startDive(forceNew = false) {
       }
     }
   } else {
-    const selection = selectEndless(bank, save.seen, Math.random, save.run + 1);
-    questions = selection.questions; save.seen = selection.seen; save.run++;
+    save.runByGroup = save.runByGroup || {};
+    const prevRun = activeGroup === 'classic' ? save.run : (save.runByGroup[activeGroup] || 0);
+    runNumber = prevRun + 1;
+    const selection = selectEndless(bank, save.seen, Math.random, runNumber, activeGroup);
+    questions = selection.questions; save.seen = selection.seen;
+    if (activeGroup === 'classic') save.run = runNumber;
+    else save.runByGroup[activeGroup] = runNumber;
   }
-  session = createSession({mode,bank,questions,date,run: mode === 'daily' ? 1 : save.run});
-  view = 'play'; lastTick = -1; audio.play('begin'); persist(); render();
+  session = createSession({mode,bank,questions,date,run: runNumber, group: activeGroup});
+  view = 'play'; lastTick = -1; audio.play('begin'); schedulePrewarm(session); persist(); render();
   window.scrollTo({top:0,behavior:'instant'});
 }
-function changeMode(nextMode) {
+function changeMode(nextMode, nextGroup = activeGroup) {
   save.resumeSessionId=null;
   if (session && view !== 'history-result') persist();
   else writeSave(save, globalThis.localStorage, bank);
-  mode = nextMode; closeModal();
-  history.pushState({}, '', mode === 'daily' ? '/' : '/unlimited/classic');
+  mode = nextMode;
+  activeGroup = mode === 'endless' ? (DIVE_GROUPS.some(g => g.id === nextGroup) ? nextGroup : 'classic') : 'classic';
+  closeModal();
+  history.pushState({}, '', mode === 'daily' ? '/' : getDiveGroup(activeGroup).route);
   const saved = getSaved();
   session = surveySession(saved) ? saved : null;
   view = 'home';
+  scene?.setGroupTheme?.(currentSceneGroup());
   render(); window.scrollTo({top:0,behavior:'instant'});
 }
 function toast(text) {
@@ -503,10 +576,15 @@ function settingsDialog() {
 function menuDialog() {
   openModal('menu','Menu','<div class="nav-caption">DIVE IN</div><nav>' +
     '<button data-action="daily"' + (mode === 'daily' ? ' class="selected"' : '') + '>Daily dive</button>' +
-    '<button data-action="endless"' + (mode === 'endless' ? ' class="selected"' : '') + '>∞ Unlimited</button>' +
+    DIVE_GROUPS.map(g =>
+      '<button data-action="endless-group" data-group="' + g.id + '"' +
+      (mode === 'endless' && activeGroup === g.id ? ' class="selected"' : '') + '>' +
+      g.emoji + ' ' + esc(g.shortTitle) + '</button>'
+    ).join('') +
+    '</nav><div class="nav-caption" style="margin-top:16px">LOG &amp; EXTRAS</div><nav>' +
     '<button data-action="history">⟲ Dive log</button><button data-action="wardrobe">Wardrobe</button>' +
     '<button data-action="patchnotes">✦ Patch Notes <span>v' + APP_VERSION + '</span></button>' +
-    '<button data-action="settings">Settings</button><button data-action="about">About & sources</button></nav>' +
+    '<button data-action="settings">Settings</button><button data-action="about">About &amp; sources</button></nav>' +
     '<div class="drawer-bottom">one in a krillion.<br><span style="font-size:13px;letter-spacing:1px">A THAI KNOWLEDGE DIVE.</span></div>', true);
 }
 function aboutDialog() {
@@ -538,6 +616,11 @@ function wardrobeDialog() {
     (unlocked ? save.character === id ? 'EQUIPPED' : 'SELECT' : '🔒 ' + detail) + '</small></button>').join('') +
     '</div><p class="method-info">ตัวละครปลดล็อกจากประวัติการเล่นในเครื่องนี้</p>');
 }
+function sessionHistoryLabel(s) {
+  if (s.mode === 'daily') return 'Daily · ' + esc(s.date);
+  const grp = getDiveGroup(s.group || 'classic');
+  return (grp.id === 'classic' ? 'Endless' : grp.shortTitle) + ' #' + s.run;
+}
 function historyDialog() {
   const history=save.history.map((s,i)=>({s,i})).filter(item=>surveySession(item.s));
   const legacyCount=save.history.length-history.length;
@@ -547,11 +630,11 @@ function historyDialog() {
     '</strong><small>DIVES</small></div><div><strong>' + best + '</strong><small>BEST SCORE</small></div><div><strong>' +
     gems + '</strong><small>KRILLIONS</small></div></div>' +
     (unfinished.length ? '<p class="nav-caption">DIVES IN PROGRESS</p>'+unfinished.map(s=>
-      '<button class="history-item" data-resume="'+esc(s.id)+'"><span>'+(s.mode==='daily'?'Daily · '+esc(s.date):'Endless #'+s.run)+
+      '<button class="history-item" data-resume="'+esc(s.id)+'"><span>'+sessionHistoryLabel(s)+
       '<small>เล่นต่อ · ข้อ '+(s.index+1)+'/7'+(s.bankVersion!==bank.version?' · ชุดก่อนหน้า':'')+
       '</small></span><strong>RESUME →</strong></button>').join(''):'') +
     (history.length ? history.map(({s,i}) =>
-    '<button class="history-item" data-history="' + i + '"><span>' + (s.mode === 'daily' ? 'Daily · ' + esc(s.date) : 'Endless #' + s.run) +
+    '<button class="history-item" data-history="' + i + '"><span>' + sessionHistoryLabel(s) +
     '<small>' + s.results.map(r => r.tier ? TIERS[r.tier].emoji : '⬛').join('') + '</small></span><strong>' +
     number(s.depth) + 'm</strong></button>').join('') : '<p class="empty-history">ยังไม่มีประวัติการดำน้ำ<br>เล่นให้ครบ 7 ข้อ แล้วกลับมาดูผลงานได้ที่นี่</p>') +
     (legacyCount ? '<p class="method-info">ประวัติรุ่นก่อน ' + legacyCount + ' รอบยังเก็บไว้ในเครื่อง แต่คะแนนรุ่นนั้นไม่ได้ใช้ผลสำรวจจึงไม่แสดงรวม</p>' : ''));
@@ -569,10 +652,15 @@ function wireEvidenceList(q, tiers) {
     ? [...q.answers].sort((a,b)=>TIERS[tiers.get(a.id)].score-TIERS[tiers.get(b.id)].score || a.label.localeCompare(b.label,'th'))
     : [...q.answers].sort((a,b)=>surveyValue(q,b)-surveyValue(q,a));
   let shown = EVIDENCE_PAGE_SIZE;
-  const names = ordered.map(a => [a.label, ...a.aliases].flatMap(answerForms));
+  let names = null;
+  function ensureNames() {
+    if (!names) names = ordered.map(a => [a.label, ...a.aliases].flatMap(answerForms));
+    return names;
+  }
   function draw() {
     const terms = answerForms(filter.value).filter(Boolean);
-    const matches = terms.length ? ordered.filter((_, i) => terms.some(t=>names[i].some(n=>n.includes(t)))) : ordered;
+    const searchNames = terms.length ? ensureNames() : null;
+    const matches = terms.length ? ordered.filter((_, i) => terms.some(t=>searchNames[i].some(n=>n.includes(t)))) : ordered;
     rows.innerHTML = matches.slice(0,shown).map(a => {
       const tier=tiers.get(a.id);
       return '<div class="bank-row"><span>' + esc(a.label) + '</span><small style="--tier:' + tierColor(tier) +
@@ -670,8 +758,48 @@ function sendTelemetryIfNeeded(doneSession) {
 function getPatchHistory(totalAnswers, megaCount) {
   return [
     {
-      version: '1.0.13',
+      version: '1.1.0',
       badge: 'ล่าสุด',
+      headline: 'มีอะไรใหม่ในอัปเดต v1.1.0',
+      subtitle: 'เพิ่มโหมดดำน้ำแยกตามหมวดหมู่พร้อมฉากท้องทะเลเฉพาะธีม ขยายเวลาคิดเป็น 30 วินาที เพิ่มโจทย์เฉพาะทางยอดฮิต 20 หมวด และอัปเกรดระบบ Alias ทั้งคลัง',
+      stats: [
+        { value: number(bank.questions.length), label: 'โจทย์ทั้งหมด (' + (bank.questions.length / 2) + '/' + (bank.questions.length / 2) + ')' },
+        { value: '30s', label: 'เวลาคิดต่อข้อ' },
+        { value: '5 ธีม', label: 'โหมดดำน้ำแยกหมวด' },
+      ],
+      cards: [
+        {
+          tag: 'EXPEDITIONS & ART',
+          tagClass: 'is-new',
+          title: 'แยกหมวดดำน้ำ 5 ธีม พร้อมงานศิลป์ใต้ทะเลเฉพาะแต่ละหมวด',
+          bullets: [
+            'เลือกดำน้ำเฉพาะทางได้ในโหมด <strong>Krillion Entertain</strong> (หนัง/อนิเมะ/เพลง/เกม), <strong>Krillion Geography</strong> (ภูมิศาสตร์/ประเทศ/เมือง/วัฒนธรรม), <strong>Krillion Nature &amp; Sci</strong> (ธรรมชาติ/วิทยาศาสตร์/กีฬา) และ <strong>Krillion Food &amp; Daily</strong> (อาหาร/แบรนด์/ของใช้/เล่นคำ)',
+            'แต่ละหมวดมาพร้อม<strong>โทนสีน้ำทะเล แสง และฉากใต้น้ำเฉพาะธีม</strong> แต่ยังคงคอนเซ็ปต์การดำน้ำลึกแบบ Krillion เช่นเดิม',
+          ],
+        },
+        {
+          tag: 'MASS PROMPTS & TIMER',
+          tagClass: 'is-gold',
+          title: 'ขยายเวลาคิดเป็น 30 วินาที & เพิ่มโจทย์เฉพาะทางยอดฮิต 20 หมวด',
+          bullets: [
+            'ปรับเวลาตอบคำถามแต่ละข้อจาก 25 วินาที เป็น <strong>30 วินาที</strong> เพื่อให้นึกคำตอบสายลึกได้ถนัดยิ่งขึ้น',
+            'เพิ่มโจทย์เฉพาะทางยอดฮิตอีก <strong>20 หมวด (10 โจทย์ไทย + 10 โจทย์ทั่วไป)</strong> เช่น หมวดตัวละครจากเรื่องดังระดับโลก จักรวาลการ์ตูน เกมฮิต และวรรณคดี/บันเทิงไทย',
+          ],
+        },
+        {
+          tag: 'ALIASES & PERFORMANCE',
+          tagClass: '',
+          title: 'อัปเกรดระบบ Alias ทั้งคลัง & ปรับแต่งประสิทธิภาพความเร็ว',
+          bullets: [
+            'ปรับปรุงระบบจับคู่ชื่อเรียกอื่น (<strong>Alias</strong>) และคำแก้สะกดให้รองรับชื่อย่อ ชื่อไทย–อังกฤษ คำทับศัพท์ และเครื่องหมายวรรคตอนได้ครอบคลุมกว่าเดิมมาก รวมถึงเติมคำเรียกภาษาไทยให้หมวดสากลนับหมื่นรายการ',
+            'ปรับโครงสร้างการตรวจสอบคลัง การสร้างรอบ และการวาดฉากหลังให้ตอบสนองรวดเร็วขึ้นอย่างเห็นได้ชัด ลดอาการหน่วงขณะเริ่มรอบและขณะตรวจคำตอบ',
+          ],
+        },
+      ],
+    },
+    {
+      version: '1.0.13',
+      badge: '',
       headline: 'มีอะไรใหม่ในอัปเดต v1.0.13',
       subtitle: 'เพิ่มโจทย์ใหม่อีก 100 ข้อ ขยายหมวดเดิมขึ้นหลักพันรวม 154 หมวด แชร์ผลเป็นรูปการ์ดสวยงาม และเพิ่มฉากใต้ทะเลลึกตามระดับความลึก',
       stats: [
@@ -1367,9 +1495,12 @@ async function renderShareCardCanvas(canvas, targetSession, showAnswers = false)
   ctx.textAlign = 'center';
   ctx.fillStyle = '#8ecae6';
   ctx.font = '600 22px VT323, monospace';
+  const grpInfo = targetSession.mode === 'endless' ? getDiveGroup(targetSession.group || 'classic') : null;
   const modeLabel = targetSession.mode === 'daily'
     ? `KRILLION TH · DAILY DIVE · ${targetSession.date}`
-    : `KRILLION TH · ENDLESS DIVE #${targetSession.run} · ${targetSession.date}`;
+    : (grpInfo && grpInfo.id !== 'classic'
+      ? `KRILLION TH · ${grpInfo.title} #${targetSession.run} · ${targetSession.date}`
+      : `KRILLION TH · ENDLESS DIVE #${targetSession.run} · ${targetSession.date}`);
   ctx.fillText(modeLabel, W * 0.5, 76);
 
   const title = targetSession.score === 700
@@ -1591,16 +1722,21 @@ document.addEventListener('click', async event => {
   if (historyItem) {
     const selected=save.history[Number(historyItem.dataset.history)];
     if (!surveySession(selected)) return;
-    session = structuredClone(selected);
+    const { questions, ...rest } = selected;
+    session = { ...structuredClone(rest), questions };
     closeModal(); view = 'history-result'; render(); window.scrollTo({top:0,behavior:'instant'}); return;
   }
   const resumeItem=event.target.closest('[data-resume]');
   if(resumeItem) {
     const old=savedSessions(save).find(s=>s.id===resumeItem.dataset.resume&&surveySession(s));
     if(!old)return;
-    session=tickSession(structuredClone(old));mode=session.mode;view='play';save.resumeSessionId=session.id;
-    history.pushState({},'',mode==='daily'?'/':'/unlimited/classic');
-    closeModal();persist();render();window.scrollTo({top:0,behavior:'instant'});return;
+    const { questions, ...rest } = old;
+    session=tickSession({ ...structuredClone(rest), questions });
+    mode=session.mode;
+    activeGroup = session.mode === 'endless' ? (session.group || 'classic') : 'classic';
+    view='play';save.resumeSessionId=session.id;
+    history.pushState({},'',mode==='daily'?'/':getDiveGroup(activeGroup).route);
+    closeModal();schedulePrewarm(session);persist();render();window.scrollTo({top:0,behavior:'instant'});return;
   }
   const button = event.target.closest('[data-action]');
   if (!button) { if (event.target.classList.contains('overlay')) closeModal(); return; }
@@ -1614,11 +1750,12 @@ document.addEventListener('click', async event => {
     case 'wardrobe': wardrobeDialog(); break;
     case 'history': historyDialog(); break;
     case 'close': closeModal(); break;
-    case 'daily': changeMode('daily'); break;
-    case 'endless': changeMode('endless'); break;
-    case 'home': closeModal(); save.resumeSessionId=null;persist();view = 'home'; session = null; render(); window.scrollTo({top:0,behavior:'instant'}); break;
+    case 'daily': changeMode('daily', 'classic'); break;
+    case 'endless': changeMode('endless', activeGroup); break;
+    case 'endless-group': changeMode('endless', button.dataset.group || 'classic'); break;
+    case 'home': closeModal(); save.resumeSessionId=null;persist();view = 'home'; session = null; scene?.setGroupTheme?.(currentSceneGroup()); render(); window.scrollTo({top:0,behavior:'instant'}); break;
     case 'begin': startDive(); break;
-    case 'new-endless': changeMode('endless'); startDive(true); break;
+    case 'new-endless': changeMode('endless', session?.group || activeGroup); startDive(true); break;
     case 'next': audio.play(session.index === 6 ? 'surface' : 'descend'); transition(nextRound(session)); break;
     case 'skip': transition(skipRound(session)); break;
     case 'confirm': transition(confirmCorrection(session)); break;
@@ -1663,7 +1800,7 @@ document.addEventListener('keydown',event => {
     }
   }
 });
-addEventListener('popstate',()=>{mode=location.pathname.startsWith('/unlimited')?'endless':'daily';closeModal();restoreCurrent();render();});
+addEventListener('popstate',()=>{const p=parseRoute();if(p.route==='admin'){location.reload();return;}mode=p.mode;activeGroup=p.group;closeModal();restoreCurrent();render();});
 addEventListener('pagehide',()=>{clearTimeout(inputSaveTimer);persist();});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)pulse();});
 load();

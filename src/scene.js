@@ -10,10 +10,35 @@ const NOTES = [
   [5200, 'THE HADAL ZONE'], [6100, 'golden krillion & abyssal aurora'],
   [7000, 'the trench floor — a perfect dive']
 ];
-const WATER_COLORS = [
-  [0, '#267a9e'], [120, '#206a91'], [400, '#185776'], [980, '#113e5c'],
-  [2100, '#0b273e'], [4300, '#08192c'], [9000, '#050d1a'], [14800, '#030812']
-];
+const WATER_PALETTES = {
+  classic: [
+    [0, '#267a9e'], [120, '#206a91'], [400, '#185776'], [980, '#113e5c'],
+    [2100, '#0b273e'], [4300, '#08192c'], [9000, '#050d1a'], [14800, '#030812']
+  ],
+  entertainment: [
+    [0, '#27598f'], [120, '#22477d'], [400, '#1e3269'], [980, '#241e59'],
+    [2100, '#1a1442'], [4300, '#120d2e'], [9000, '#09061a'], [14800, '#050410']
+  ],
+  geography: [
+    [0, '#1d767a'], [120, '#18646a'], [400, '#14525a'], [980, '#0f3d47'],
+    [2100, '#0a2a33'], [4300, '#071c24'], [9000, '#040f16'], [14800, '#02080d']
+  ],
+  nature: [
+    [0, '#1e7b6b'], [120, '#19695e'], [400, '#13564e'], [980, '#0d403d'],
+    [2100, '#092c2b'], [4300, '#061d1e'], [9000, '#031012'], [14800, '#02090b']
+  ],
+  lifestyle: [
+    [0, '#2b778b'], [120, '#236378'], [400, '#1b4f64'], [980, '#133b4f'],
+    [2100, '#0c2738'], [4300, '#081926'], [9000, '#050e17'], [14800, '#03080e']
+  ],
+};
+const THEME_GLOW_COLORS = {
+  classic: '75,222,244',
+  entertainment: '245,83,136',
+  geography: '96,232,212',
+  nature: '104,231,180',
+  lifestyle: '255,212,122',
+};
 const RAY_DEPTH = 1120;
 const RAYS = [
   [.04, .18, -.12, .25], [.18, .29, -.15, .21], [.37, .22, -.09, .24],
@@ -74,7 +99,8 @@ export class OceanScene {
     this.noteMarks = this.notes.appendChild(document.createElement('div'));
     this.onFrame = onFrame;
     this.depth = 0; this.target = 0; this.active = false; this.lowPower = false; this.dive = null;
-    this.diveIntensity = 0; this.diveTier = ''; this.burst = null;
+    this.diveIntensity = 0; this.diveTier = ''; this.burst = null; this.groupTheme = 'classic';
+    this.cachedGradient = null; this.cachedGradientSurface = NaN; this.cachedGradientTheme = '';
     this.reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.fish = Array.from({ length: 24 }, (_, i) => ({
       x: Math.random(), y: .12 + Math.random() * .82, size: 3 + Math.random() * 5,
@@ -162,6 +188,15 @@ export class OceanScene {
     this.lowPower = lowPower;
     this.resizeCanvas();
   }
+  setGroupTheme(groupId = 'classic') {
+    const next = WATER_PALETTES[groupId] ? groupId : 'classic';
+    if (this.groupTheme === next) return;
+    this.groupTheme = next;
+    this.cachedGradient = null;
+    this.dirty = true;
+    if (this.world) this.world.dataset.pack = next;
+    document.body?.setAttribute('data-pack', next);
+  }
   setWorldState(tier = '', diving = false) {
     if (!this.world) return;
     this.world.classList.toggle('is-diving', diving && !this.reducedMotion);
@@ -194,7 +229,12 @@ export class OceanScene {
     this.setWorldState(this.diveTier, true);
   }
   frame(time) {
-    const rate = this.lowPower && !this.dive ? 1000 / 24 : 0;
+    if (document.hidden && !this.dive && !this.dirty) {
+      this.frameId = requestAnimationFrame(this.frame);
+      return;
+    }
+    const idleRate = this.lowPower ? 1000 / 18 : 1000 / 32;
+    const rate = this.dive ? 0 : idleRate;
     if (this.dirty || time - this.lastPaint >= rate) {
       const delta = Math.min(100, time - this.lastPaint);
       this.lastPaint = time;
@@ -239,9 +279,15 @@ export class OceanScene {
   }
   draw(time, surface) {
     const c = this.ctx, w = this.width, h = this.height;
-    const water = c.createLinearGradient(0, surface, 0, surface + 14800);
-    for (const [distance, color] of WATER_COLORS) water.addColorStop(distance / 14800, color);
-    c.fillStyle = water;
+    if (!this.cachedGradient || this.cachedGradientTheme !== this.groupTheme || Math.abs(this.cachedGradientSurface - surface) > 2) {
+      const palette = WATER_PALETTES[this.groupTheme] || WATER_PALETTES.classic;
+      const water = c.createLinearGradient(0, surface, 0, surface + 14800);
+      for (const [distance, color] of palette) water.addColorStop(distance / 14800, color);
+      this.cachedGradient = water;
+      this.cachedGradientSurface = surface;
+      this.cachedGradientTheme = this.groupTheme;
+    }
+    c.fillStyle = this.cachedGradient;
     const waveOnScreen = surface > -12;
     const waveY = x => surface + Math.sin(x * .021 + time * 1.05) * 3.5 + Math.sin(x * .008 - time * .82) * 4;
     if (waveOnScreen) {
@@ -259,30 +305,34 @@ export class OceanScene {
     }
     c.fillRect(0, 0, w, h);
 
-    // Depth-zone ambient luminescence & seafloor ember aura
-    if (!this.lowPower && this.active) {
-      const bioFade = clamp((this.depth - 220) / 800, 0, 1);
-      const midGlow = c.createRadialGradient(w * .5, h * .46, 20, w * .5, h * .46, Math.max(w, h) * .72);
-      if (this.depth < 900) {
-        midGlow.addColorStop(0, `rgba(75,222,244,${.07 + .04 * (1 - bioFade)})`);
-        midGlow.addColorStop(1, 'rgba(75,222,244,0)');
-      } else {
-        const pulse = .055 + .025 * Math.sin(time * .9);
-        midGlow.addColorStop(0, `rgba(75,222,244,${pulse * bioFade})`);
-        midGlow.addColorStop(.52, `rgba(245,83,136,${pulse * .55 * bioFade})`);
-        midGlow.addColorStop(1, 'rgba(8,25,44,0)');
-      }
-      c.fillStyle = midGlow;
-      c.fillRect(0, Math.max(0, surface), w, h);
+    // Theme-specific underwater ambient luminescence & background art layer
+    if (!this.lowPower) {
+      const themeRgb = THEME_GLOW_COLORS[this.groupTheme] || THEME_GLOW_COLORS.classic;
+      if (this.active) {
+        const bioFade = clamp((this.depth - 220) / 800, 0, 1);
+        const midGlow = c.createRadialGradient(w * .5, h * .46, 20, w * .5, h * .46, Math.max(w, h) * .72);
+        if (this.depth < 900) {
+          midGlow.addColorStop(0, `rgba(${themeRgb},${.08 + .04 * (1 - bioFade)})`);
+          midGlow.addColorStop(1, `rgba(${themeRgb},0)`);
+        } else {
+          const pulse = .055 + .025 * Math.sin(time * .9);
+          midGlow.addColorStop(0, `rgba(${themeRgb},${pulse * bioFade})`);
+          midGlow.addColorStop(.52, `rgba(245,83,136,${pulse * .5 * bioFade})`);
+          midGlow.addColorStop(1, 'rgba(8,25,44,0)');
+        }
+        c.fillStyle = midGlow;
+        c.fillRect(0, Math.max(0, surface), w, h);
 
-      if (this.depth > 3800) {
-        const ventAlpha = clamp((this.depth - 3800) / 2400, 0, 1) * (.07 + .03 * Math.sin(time * 1.4));
-        const vent = c.createLinearGradient(0, h * .55, 0, h);
-        vent.addColorStop(0, 'rgba(255,150,90,0)');
-        vent.addColorStop(1, `rgba(255,175,95,${ventAlpha})`);
-        c.fillStyle = vent;
-        c.fillRect(0, h * .55, w, h * .45);
+        if (this.depth > 3800) {
+          const ventAlpha = clamp((this.depth - 3800) / 2400, 0, 1) * (.07 + .03 * Math.sin(time * 1.4));
+          const vent = c.createLinearGradient(0, h * .55, 0, h);
+          vent.addColorStop(0, 'rgba(255,150,90,0)');
+          vent.addColorStop(1, `rgba(255,175,95,${ventAlpha})`);
+          c.fillStyle = vent;
+          c.fillRect(0, h * .55, w, h * .45);
+        }
       }
+      this.drawGroupThemeArt(c, w, h, time, surface);
     }
 
     // Dual-layer animated sunlight & caustic beams near surface
@@ -619,6 +669,97 @@ export class OceanScene {
 
     c.globalAlpha = 1;
     if (waveOnScreen) c.restore();
+  }
+  drawGroupThemeArt(c, w, h, time, surface) {
+    if (this.groupTheme === 'classic') return;
+    c.save();
+    const topClip = Math.max(0, surface + 6);
+    if (this.groupTheme === 'entertainment') {
+      // Underwater Neon Coral Stage spotlights & floating pixel starlight
+      for (let i = 0; i < 3; i++) {
+        const sx = w * (.2 + i * .3) + Math.sin(time * .4 + i * 1.8) * 28;
+        const beam = c.createLinearGradient(sx, topClip, sx + (i - 1) * 90, h);
+        const col = i === 1 ? '245,83,136' : '122,216,255';
+        beam.addColorStop(0, `rgba(${col},.11)`);
+        beam.addColorStop(1, `rgba(${col},0)`);
+        c.fillStyle = beam;
+        c.beginPath();
+        c.moveTo(sx - 22, topClip);
+        c.lineTo(sx + 22, topClip);
+        c.lineTo(sx + (i - 1) * 90 + 130, h);
+        c.lineTo(sx + (i - 1) * 90 - 130, h);
+        c.closePath();
+        c.fill();
+      }
+      for (let i = 0; i < 14; i++) {
+        const px = ((i * 193 + 70) % w);
+        const py = wrap(((i * 131) % h) - this.scroll * .22 - time * 8, h - topClip) + topClip;
+        const tw = .22 + .32 * Math.abs(Math.sin(time * 2.2 + i));
+        c.fillStyle = i % 2 ? `rgba(255,227,135,${tw})` : `rgba(245,83,136,${tw})`;
+        c.fillRect(px - 3, py - 1, 6, 2);
+        c.fillRect(px - 1, py - 3, 2, 6);
+      }
+    } else if (this.groupTheme === 'geography') {
+      // Sunken Atlas Ruins, sunken classical pillars & subtle latitude/compass sonar rings
+      c.strokeStyle = 'rgba(104,231,207,.10)';
+      c.lineWidth = 1;
+      const cx = w * .5, cy = Math.max(topClip + 120, h * .48);
+      for (const r of [140, 240, 340]) {
+        c.beginPath(); c.arc(cx, cy, r, 0, Math.PI * 2); c.stroke();
+      }
+      // Subtle cardinal compass crosshair ticks
+      const rot = time * .06;
+      c.beginPath();
+      for (let k = 0; k < 4; k++) {
+        const a = rot + k * Math.PI * .5;
+        c.moveTo(cx + Math.cos(a) * 125, cy + Math.sin(a) * 125);
+        c.lineTo(cx + Math.cos(a) * 155, cy + Math.sin(a) * 155);
+      }
+      c.stroke();
+      // Sunken ruined colonnade silhouette on outer edges when diving
+      if (this.active) {
+        c.fillStyle = 'rgba(4,22,28,.34)';
+        for (let i = 0; i < 4; i++) {
+          const py = wrap(210 + i * 240 - this.scroll * .16, h + 260) - 100;
+          if (py < topClip || py > h) continue;
+          const leftSide = i % 2 === 0;
+          const x = leftSide ? 18 : w - 42;
+          c.fillRect(x, py, 24, 92);
+          c.fillRect(x - 5, py, 34, 8);
+          c.fillRect(x - 5, py + 84, 34, 8);
+        }
+      }
+    } else if (this.groupTheme === 'nature') {
+      // Extra tall emerald kelp fronds swaying along margins + golden spore shafts
+      c.strokeStyle = 'rgba(72,218,168,.18)';
+      c.lineWidth = 3.5;
+      for (let i = 0; i < 10; i++) {
+        const left = i % 2 === 0;
+        const kx = left ? 16 + (i % 3) * 12 : w - 16 - (i % 3) * 12;
+        const ky = wrap(i * 115 - this.scroll * .25, h + 160) - 60;
+        if (ky < topClip || ky > h + 50) continue;
+        const sway = Math.sin(time * 1.2 + i) * 13 * (left ? 1 : -1);
+        c.beginPath();
+        c.moveTo(kx, ky + 75);
+        c.quadraticCurveTo(kx + sway, ky + 38, kx + sway * 1.2, ky);
+        c.stroke();
+      }
+    } else if (this.groupTheme === 'lifestyle') {
+      // Warm Golden Harbor Lantern Buoys & coral reef warm bubbles
+      for (let i = 0; i < 6; i++) {
+        const left = i % 2 === 0;
+        const lx = left ? w * .08 : w * .92;
+        const ly = wrap(90 + i * 165 - this.scroll * .2, h + 180) - 60;
+        if (ly < topClip + 12 || ly > h) continue;
+        const pulse = .24 + .18 * Math.sin(time * 2.1 + i * 1.3);
+        c.strokeStyle = 'rgba(255,212,122,.16)';
+        c.lineWidth = 1;
+        c.beginPath(); c.moveTo(lx, Math.max(topClip, ly - 50)); c.lineTo(lx, ly); c.stroke();
+        c.fillStyle = `rgba(255,215,120,${pulse})`;
+        c.beginPath(); c.arc(lx, ly, 4.5, 0, Math.PI * 2); c.fill();
+      }
+    }
+    c.restore();
   }
   drawGlider(c, g, x, y, time, fade) {
     c.save();

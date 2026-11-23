@@ -1,0 +1,2306 @@
+[
+  {
+    "id": "th-nbtc-digital-tv-channels-2025",
+    "scope": "thai",
+    "theme": "screen",
+    "category": "ช่องทีวีไทย",
+    "prompt": "เปิดทีวีดิจิทัล จะเลือกดูช่องไหน?",
+    "answerCount": 21,
+    "kind": "survey"
+  },
+  {
+    "id": "th-nso-bangkok-districts-census-2010",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "เขตในกรุงเทพฯ",
+    "prompt": "นึกถึงเขตในกรุงเทพฯ สักเขต",
+    "answerCount": 50,
+    "kind": "survey"
+  },
+  {
+    "id": "th-acfs-market-vegetables",
+    "scope": "thai",
+    "theme": "ingredients",
+    "category": "ผักและเห็ด",
+    "prompt": "เดินผ่านแผงผักในตลาด จะซื้อผักหรือเห็ดอะไรดี?",
+    "answerCount": 109,
+    "kind": "survey"
+  },
+  {
+    "id": "th-acfs-named-snacks",
+    "scope": "thai",
+    "theme": "dessert",
+    "category": "ขนมและของกินเล่น",
+    "prompt": "เดินตลาดหรือแวะร้านขนม จะหยิบของกินเล่นอะไร?",
+    "answerCount": 143,
+    "kind": "survey"
+  },
+  {
+    "id": "th-tunorms-household-objects",
+    "scope": "thai",
+    "theme": "everyday",
+    "category": "ของใช้ในบ้าน",
+    "prompt": "มองไปรอบบ้าน นึกชื่อของใช้ในบ้านได้สักอย่างไหม?",
+    "answerCount": 244,
+    "kind": "survey"
+  },
+  {
+    "id": "world-favourite-pokemon-reddit-2019",
+    "scope": "world",
+    "theme": "games",
+    "category": "เกมและการ์ตูน",
+    "prompt": "นึกชื่อโปเกมอนจากเจ็ดเจเนอเรชันแรกสักตัว!",
+    "answerCount": 805,
+    "kind": "survey"
+  },
+  {
+    "id": "th-thai-films",
+    "scope": "thai",
+    "theme": "screen",
+    "category": "หนังไทย",
+    "prompt": "หนังไทยที่จำได้สักเรื่อง!",
+    "answerCount": 1515,
+    "kind": "curated"
+  },
+  {
+    "id": "th-thai-dramas",
+    "scope": "thai",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "ละครไทยหรือซีรีส์ไทยที่ยังจำได้สักเรื่อง!",
+    "answerCount": 1718,
+    "kind": "curated"
+  },
+  {
+    "id": "th-temples",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "ชวนกันไปเที่ยว",
+    "prompt": "นึกถึงวัดในไทยที่เคยได้ยินสักวัด",
+    "answerCount": 12001,
+    "kind": "curated"
+  },
+  {
+    "id": "th-solo-singers",
+    "scope": "thai",
+    "theme": "music",
+    "category": "เปิดเพลงกัน",
+    "prompt": "นึกถึงนักร้องเดี่ยวไทยสักคน",
+    "answerCount": 1519,
+    "kind": "curated"
+  },
+  {
+    "id": "th-thai-bands",
+    "scope": "thai",
+    "theme": "music",
+    "category": "วงและกลุ่มศิลปินไทย",
+    "prompt": "วงหรือกลุ่มศิลปินไทยสักวง",
+    "answerCount": 1050,
+    "kind": "curated"
+  },
+  {
+    "id": "th-isaan-food",
+    "scope": "thai",
+    "theme": "food",
+    "category": "อร่อยทั่วไทย",
+    "prompt": "ตั้งวงอาหารอีสาน สั่งอะไรดี?",
+    "answerCount": 273,
+    "kind": "curated"
+  },
+  {
+    "id": "th-stir-fry",
+    "scope": "thai",
+    "theme": "food",
+    "category": "กินอะไรดี",
+    "prompt": "ร้านตามสั่ง เปิดกระทะผัดอะไรดี?",
+    "answerCount": 159,
+    "kind": "curated"
+  },
+  {
+    "id": "th-rice-plates",
+    "scope": "thai",
+    "theme": "food",
+    "category": "กินอะไรดี",
+    "prompt": "จานนี้ขอเป็นเมนูข้าว!",
+    "answerCount": 140,
+    "kind": "curated"
+  },
+  {
+    "id": "th-curries",
+    "scope": "thai",
+    "theme": "food",
+    "category": "กินอะไรดี",
+    "prompt": "หม้อแกงวันนี้มีแกงอะไร?",
+    "answerCount": 131,
+    "kind": "curated"
+  },
+  {
+    "id": "th-spicy-salads",
+    "scope": "thai",
+    "theme": "food",
+    "category": "กินอะไรดี",
+    "prompt": "มื้อนี้อยากกินยำหรือส้มตำอะไร?",
+    "answerCount": 125,
+    "kind": "curated"
+  },
+  {
+    "id": "th-street-food",
+    "scope": "thai",
+    "theme": "food",
+    "category": "กินอะไรดี",
+    "prompt": "เดินตลาดเย็น ซื้ออะไรกินดี?",
+    "answerCount": 1100,
+    "kind": "curated"
+  },
+  {
+    "id": "th-shabu-pot",
+    "scope": "thai",
+    "theme": "ingredients",
+    "category": "กินอะไรดี",
+    "prompt": "หม้อชาบูเดือดแล้ว หยิบอะไรลงหม้อ?",
+    "answerCount": 127,
+    "kind": "curated"
+  },
+  {
+    "id": "th-noodle-dishes",
+    "scope": "thai",
+    "theme": "food",
+    "category": "กินอะไรดี",
+    "prompt": "เมนูเส้นสักจาน!",
+    "answerCount": 135,
+    "kind": "curated"
+  },
+  {
+    "id": "th-desserts",
+    "scope": "thai",
+    "theme": "food",
+    "category": "หวานอีกนิด",
+    "prompt": "ขนมไทยสักอย่าง",
+    "answerCount": 178,
+    "kind": "curated"
+  },
+  {
+    "id": "th-cold-drinks",
+    "scope": "thai",
+    "theme": "food",
+    "category": "ดื่มอะไรดี",
+    "prompt": "สั่งน้ำเย็นสักแก้ว เอาอะไรดี?",
+    "answerCount": 140,
+    "kind": "curated"
+  },
+  {
+    "id": "th-convenience-food",
+    "scope": "thai",
+    "theme": "food",
+    "category": "แวะร้านสะดวกซื้อ",
+    "prompt": "ของกินในร้านสะดวกซื้อสักอย่าง",
+    "answerCount": 162,
+    "kind": "curated"
+  },
+  {
+    "id": "th-condiments",
+    "scope": "thai",
+    "theme": "ingredients",
+    "category": "ของกินรอบตัว",
+    "prompt": "บนโต๊ะอาหารมีเครื่องปรุงอะไร?",
+    "answerCount": 113,
+    "kind": "curated"
+  },
+  {
+    "id": "th-kitchen-herbs",
+    "scope": "thai",
+    "theme": "nature",
+    "category": "ของกินรอบตัว",
+    "prompt": "ครัวไทยหอมเครื่องอะไรอยู่?",
+    "answerCount": 1100,
+    "kind": "curated"
+  },
+  {
+    "id": "th-acfs-fresh-fruit",
+    "scope": "thai",
+    "theme": "food",
+    "category": "ผลไม้สด",
+    "prompt": "เดินผ่านแผงผลไม้ในตลาดไทย จะหยิบอะไร?",
+    "answerCount": 1050,
+    "kind": "curated"
+  },
+  {
+    "id": "th-acfs-rice-noodles-starches",
+    "scope": "thai",
+    "theme": "food",
+    "category": "ข้าว เส้น และแป้ง",
+    "prompt": "นึกชื่อข้าว เส้น หรือของกินจากแป้งสักอย่าง!",
+    "answerCount": 108,
+    "kind": "curated"
+  },
+  {
+    "id": "th-acfs-market-proteins",
+    "scope": "thai",
+    "theme": "food",
+    "category": "เนื้อ ไข่ และอาหารทะเล",
+    "prompt": "ที่ตลาดสด นึกชื่อเนื้อ ไข่ หรืออาหารทะเลสักอย่าง!",
+    "answerCount": 89,
+    "kind": "curated"
+  },
+  {
+    "id": "th-ssa-sports-played-2025",
+    "scope": "thai",
+    "theme": "sport",
+    "category": "กีฬาในไทย",
+    "prompt": "ชวนเพื่อนไปเล่นหรือดูแข่งกีฬา นึกถึงกีฬาอะไรสักอย่าง?",
+    "answerCount": 218,
+    "kind": "curated"
+  },
+  {
+    "id": "th-national-parks",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "ชวนกันไปเที่ยว",
+    "prompt": "ถ้าไปอุทยานแห่งชาติ จะไปที่ไหนดี?",
+    "answerCount": 151,
+    "kind": "curated"
+  },
+  {
+    "id": "th-waterfalls",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "เที่ยวน้ำตก",
+    "prompt": "น้ำตกในไทยที่อยากไปสักแห่ง",
+    "answerCount": 289,
+    "kind": "curated"
+  },
+  {
+    "id": "th-islands",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "เกาะในไทย",
+    "prompt": "เกาะในไทยที่นึกออกสักเกาะ",
+    "answerCount": 304,
+    "kind": "curated"
+  },
+  {
+    "id": "th-beaches",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "ชวนกันไปเที่ยว",
+    "prompt": "อยากนั่งริมทะเล เลือกหาดไหนดี?",
+    "answerCount": 173,
+    "kind": "curated"
+  },
+  {
+    "id": "th-bangkok-places",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "ชวนกันไปเที่ยว",
+    "prompt": "มีวันว่างในกรุงเทพ ไปเดินเล่นที่ไหนดี?",
+    "answerCount": 1150,
+    "kind": "curated"
+  },
+  {
+    "id": "th-thai-tv",
+    "scope": "thai",
+    "theme": "screen",
+    "category": "รายการทีวีไทย",
+    "prompt": "เกมโชว์หรือวาไรตี้ไทยที่คุ้นหู?",
+    "answerCount": 1150,
+    "kind": "curated"
+  },
+  {
+    "id": "th-childhood-cartoons",
+    "scope": "thai",
+    "theme": "screen",
+    "category": "หน้าจอวันหยุด",
+    "prompt": "นึกถึงการ์ตูนที่เคยดูตอนเด็กสักเรื่อง",
+    "answerCount": 1300,
+    "kind": "curated"
+  },
+  {
+    "id": "th-festivals",
+    "scope": "thai",
+    "theme": "culture",
+    "category": "เทศกาลและประเพณี",
+    "prompt": "นึกถึงงานประเพณีไทยสักงาน",
+    "answerCount": 134,
+    "kind": "curated"
+  },
+  {
+    "id": "th-childhood-games",
+    "scope": "thai",
+    "theme": "games",
+    "category": "ย้อนวัย",
+    "prompt": "การละเล่นตอนเด็ก ๆ สักอย่าง",
+    "answerCount": 119,
+    "kind": "curated"
+  },
+  {
+    "id": "th-snack-brands",
+    "scope": "thai",
+    "theme": "brands",
+    "category": "ขนมในความทรงจำ",
+    "prompt": "ยี่ห้อขนมสักยี่ห้อ",
+    "answerCount": 137,
+    "kind": "curated"
+  },
+  {
+    "id": "th-car-brands",
+    "scope": "thai",
+    "theme": "brands",
+    "category": "บนถนน",
+    "prompt": "ยี่ห้อรถยนต์สักยี่ห้อ",
+    "answerCount": 1050,
+    "kind": "curated"
+  },
+  {
+    "id": "th-flowers",
+    "scope": "thai",
+    "theme": "nature",
+    "category": "ธรรมชาติใกล้ตัว",
+    "prompt": "นึกถึงดอกไม้สักดอก",
+    "answerCount": 1100,
+    "kind": "curated"
+  },
+  {
+    "id": "th-garden-insects",
+    "scope": "thai",
+    "theme": "nature",
+    "category": "สัตว์รอบตัว",
+    "prompt": "เดินสวนหลังบ้าน เจอแมลงอะไร?",
+    "answerCount": 1050,
+    "kind": "curated"
+  },
+  {
+    "id": "th-thai-birds",
+    "scope": "thai",
+    "theme": "nature",
+    "category": "สัตว์รอบตัว",
+    "prompt": "มองขึ้นฟ้า เจอนกอะไรได้บ้าง?",
+    "answerCount": 1050,
+    "kind": "curated"
+  },
+  {
+    "id": "th-freshwater-fish",
+    "scope": "thai",
+    "theme": "nature",
+    "category": "สัตว์รอบตัว",
+    "prompt": "นึกถึงปลาน้ำจืดสักชนิด",
+    "answerCount": 1100,
+    "kind": "curated"
+  },
+  {
+    "id": "th-home-creatures",
+    "scope": "thai",
+    "theme": "nature",
+    "category": "สัตว์ใกล้ตัวในบ้าน",
+    "prompt": "สัตว์อะไรบ้างที่เจอโผล่ในบ้านหรือรอบรั้วบ้านในไทยได้?",
+    "answerCount": 112,
+    "kind": "curated"
+  },
+  {
+    "id": "th-pets",
+    "scope": "thai",
+    "theme": "nature",
+    "category": "สัตว์รอบตัว",
+    "prompt": "ถ้าจะมีสัตว์เลี้ยง นึกถึงตัวอะไร?",
+    "answerCount": 121,
+    "kind": "curated"
+  },
+  {
+    "id": "th-instruments",
+    "scope": "thai",
+    "theme": "music",
+    "category": "เสียงดนตรี",
+    "prompt": "ได้ยินเสียงเครื่องดนตรีไทยอะไร?",
+    "answerCount": 111,
+    "kind": "curated"
+  },
+  {
+    "id": "th-tunorms-leading-ko-kai",
+    "scope": "thai",
+    "theme": "wordplay",
+    "category": "เล่นคำ ก.ไก่",
+    "prompt": "นึกชื่อสิ่งของ ของกิน หรือสัตว์ที่เขียนขึ้นต้นด้วย ก!",
+    "answerCount": 1500,
+    "kind": "curated"
+  },
+  {
+    "id": "th-tunorms-khwam",
+    "scope": "thai",
+    "theme": "wordplay",
+    "category": "เล่นคำ ความ...",
+    "prompt": "เติมคำหลัง “ความ” ให้เป็นคำที่ใช้จริงสักคำ!",
+    "answerCount": 1050,
+    "kind": "curated"
+  },
+  {
+    "id": "th-province-trips",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "เที่ยวไทย",
+    "prompt": "ชวนเพื่อนไปเที่ยวจังหวัดในไทย ไปจังหวัดไหนดี?",
+    "answerCount": 77,
+    "kind": "curated"
+  },
+  {
+    "id": "th-rail-stations",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่อสถานีรถไฟฟ้าในกรุงเทพฯ และปริมณฑลสักสถานี!",
+    "answerCount": 181,
+    "kind": "curated"
+  },
+  {
+    "id": "th-shopping-malls",
+    "scope": "thai",
+    "theme": "brands",
+    "category": "brands",
+    "prompt": "ชวนเพื่อนไปเดินตากแอร์ นึกชื่อห้างหรือศูนย์การค้าในไทยสักแห่ง!",
+    "answerCount": 180,
+    "kind": "curated"
+  },
+  {
+    "id": "th-proverbs",
+    "scope": "thai",
+    "theme": "culture",
+    "category": "culture",
+    "prompt": "นึกสำนวนไทยหรือสุภาษิตที่เคยได้ยินสักสำนวน!",
+    "answerCount": 243,
+    "kind": "curated"
+  },
+  {
+    "id": "th-ghosts-folklore",
+    "scope": "thai",
+    "theme": "culture",
+    "category": "culture",
+    "prompt": "เรื่องเล่าผีไทยหรือสัตว์ในตำนานไทย นึกชื่ออะไรออก?",
+    "answerCount": 164,
+    "kind": "curated"
+  },
+  {
+    "id": "th-literary",
+    "scope": "thai",
+    "theme": "culture",
+    "category": "culture",
+    "prompt": "นึกชื่อวรรณคดีไทย นิทานพื้นบ้าน หรือตัวละครในวรรณคดีสักชื่อ!",
+    "answerCount": 1054,
+    "kind": "curated"
+  },
+  {
+    "id": "th-trees",
+    "scope": "thai",
+    "theme": "nature",
+    "category": "nature",
+    "prompt": "มองไปรอบเมืองไทย นึกชื่อต้นไม้ที่พบเห็นได้ในไทยสักต้น!",
+    "answerCount": 1150,
+    "kind": "curated"
+  },
+  {
+    "id": "th-breakfast",
+    "scope": "thai",
+    "theme": "food",
+    "category": "food",
+    "prompt": "ตื่นเช้าในไทย มื้อเช้านี้จะกินอะไรดี?",
+    "answerCount": 120,
+    "kind": "curated"
+  },
+  {
+    "id": "th-restaurant-chains",
+    "scope": "thai",
+    "theme": "brands",
+    "category": "brands",
+    "prompt": "เข้าห้างหรือนัดเพื่อนกินข้าว นึกชื่อร้านอาหารหรือคาเฟ่เชนดังในไทย!",
+    "answerCount": 146,
+    "kind": "curated"
+  },
+  {
+    "id": "th-bkk-roads",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "ขับรถหรือนั่งรถในกรุงเทพฯ นึกถึงชื่อถนนสายไหน?",
+    "answerCount": 233,
+    "kind": "curated"
+  },
+  {
+    "id": "th-rivers",
+    "scope": "thai",
+    "theme": "nature",
+    "category": "nature",
+    "prompt": "นึกชื่อแม่น้ำหรือลำคลองในประเทศไทยสักสาย!",
+    "answerCount": 111,
+    "kind": "curated"
+  },
+  {
+    "id": "th-universities",
+    "scope": "thai",
+    "theme": "everyday",
+    "category": "everyday",
+    "prompt": "นึกชื่อมหาวิทยาลัยหรือสถาบันอุดมศึกษาในไทยสักแห่ง!",
+    "answerCount": 166,
+    "kind": "curated"
+  },
+  {
+    "id": "th-songs",
+    "scope": "thai",
+    "theme": "music",
+    "category": "music",
+    "prompt": "เปิดคาราโอเกะ นึกชื่อเพลงไทยที่เคยร้องตามได้สักเพลง!",
+    "answerCount": 1148,
+    "kind": "curated"
+  },
+  {
+    "id": "world-anime",
+    "scope": "world",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่ออนิเมะญี่ปุ่นสักเรื่อง!",
+    "answerCount": 11000,
+    "kind": "curated"
+  },
+  {
+    "id": "world-famous-movies",
+    "scope": "world",
+    "theme": "screen",
+    "category": "หนังต่างประเทศ",
+    "prompt": "ถ้าชวนเพื่อนดูหนังคืนนี้ นึกถึงหนังต่างประเทศสักเรื่อง!",
+    "answerCount": 11000,
+    "kind": "curated"
+  },
+  {
+    "id": "world-famous-series",
+    "scope": "world",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "วันหยุดจะดูซีรีส์รวดเดียว นึกเรื่องอะไรออก?",
+    "answerCount": 2553,
+    "kind": "curated"
+  },
+  {
+    "id": "world-animation-films",
+    "scope": "world",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "เลือกหนังแอนิเมชันมาดูสักเรื่อง",
+    "answerCount": 1175,
+    "kind": "curated"
+  },
+  {
+    "id": "world-video-games",
+    "scope": "world",
+    "theme": "games",
+    "category": "เกมที่เคยเล่น",
+    "prompt": "เกมหรือซีรีส์เกมที่เคยเล่น?",
+    "answerCount": 11001,
+    "kind": "curated"
+  },
+  {
+    "id": "world-famous-artists",
+    "scope": "world",
+    "theme": "music",
+    "category": "ศิลปินและวงดนตรีสากล",
+    "prompt": "จะจัดเพลย์ลิสต์เพลงสากลหรือเอเชีย นึกถึงศิลปินหรือวงดังสักชื่อ!",
+    "answerCount": 10500,
+    "kind": "curated"
+  },
+  {
+    "id": "world-famous-cities",
+    "scope": "world",
+    "theme": "travel",
+    "category": "เมืองดังต่างประเทศ",
+    "prompt": "นึกชื่อเมืองดังในต่างประเทศสักเมือง!",
+    "answerCount": 12010,
+    "kind": "curated"
+  },
+  {
+    "id": "world-animals",
+    "scope": "world",
+    "theme": "nature",
+    "category": "สัตว์โลก",
+    "prompt": "นึกชื่อสัตว์สักตัว!",
+    "answerCount": 11000,
+    "kind": "curated"
+  },
+  {
+    "id": "world-cartoon-characters",
+    "scope": "world",
+    "theme": "screen",
+    "category": "ตัวการ์ตูน",
+    "prompt": "นึกถึงตัวการ์ตูนสักตัว",
+    "answerCount": 1199,
+    "kind": "curated"
+  },
+  {
+    "id": "world-superheroes",
+    "scope": "world",
+    "theme": "screen",
+    "category": "โลกภาพยนตร์",
+    "prompt": "นึกถึงซูเปอร์ฮีโร่สักคน",
+    "answerCount": 1200,
+    "kind": "curated"
+  },
+  {
+    "id": "world-game-characters",
+    "scope": "world",
+    "theme": "games",
+    "category": "ตัวละครในเกม",
+    "prompt": "นึกถึงตัวละครจากเกมสักตัว",
+    "answerCount": 1401,
+    "kind": "curated"
+  },
+  {
+    "id": "world-dog-breeds",
+    "scope": "world",
+    "theme": "nature",
+    "category": "เพื่อนสี่ขา",
+    "prompt": "ถ้าเจอสุนัข นึกถึงพันธุ์อะไร?",
+    "answerCount": 1050,
+    "kind": "curated"
+  },
+  {
+    "id": "world-cat-breeds",
+    "scope": "world",
+    "theme": "nature",
+    "category": "เพื่อนสี่ขา",
+    "prompt": "เหล่าทาสแมว นึกถึงแมวพันธุ์อะไร?",
+    "answerCount": 114,
+    "kind": "curated"
+  },
+  {
+    "id": "world-dinosaurs",
+    "scope": "world",
+    "theme": "nature",
+    "category": "โลกดึกดำบรรพ์",
+    "prompt": "นึกถึงไดโนเสาร์สักตัว!",
+    "answerCount": 1050,
+    "kind": "curated"
+  },
+  {
+    "id": "world-sea-creatures",
+    "scope": "world",
+    "theme": "nature",
+    "category": "โลกใต้ทะเล",
+    "prompt": "ดำลงไปแล้วเจอสัตว์ทะเลอะไร?",
+    "answerCount": 10500,
+    "kind": "curated"
+  },
+  {
+    "id": "world-zoo-animals",
+    "scope": "world",
+    "theme": "nature",
+    "category": "เดินสวนสัตว์",
+    "prompt": "เดินสวนสัตว์ เจอสัตว์อะไรได้บ้าง?",
+    "answerCount": 1300,
+    "kind": "curated"
+  },
+  {
+    "id": "world-board-games",
+    "scope": "world",
+    "theme": "games",
+    "category": "บอร์ดเกมและเกมกระดาน",
+    "prompt": "ชวนเพื่อนนั่งเล่นเกมกระดาน จะหยิบเกมไหนมาเล่น?",
+    "answerCount": 407,
+    "kind": "curated"
+  },
+  {
+    "id": "world-card-games",
+    "scope": "world",
+    "theme": "games",
+    "category": "เกมไพ่และการ์ดเกม",
+    "prompt": "ชวนเพื่อนหยิบสำรับมาเล่นเกมไพ่หรือการ์ดเกม จะเล่นเกมอะไร?",
+    "answerCount": 133,
+    "kind": "curated"
+  },
+  {
+    "id": "world-game-consoles",
+    "scope": "world",
+    "theme": "games",
+    "category": "เครื่องเล่นเกม",
+    "prompt": "เปิดตู้แล้วเจอเครื่องเล่นเกมอะไร?",
+    "answerCount": 104,
+    "kind": "curated"
+  },
+  {
+    "id": "world-music-genres",
+    "scope": "world",
+    "theme": "music",
+    "category": "เปิดเพลงกัน",
+    "prompt": "กดเพลย์เพลงแนวไหนดี?",
+    "answerCount": 533,
+    "kind": "curated"
+  },
+  {
+    "id": "world-languages",
+    "scope": "world",
+    "theme": "culture",
+    "category": "ภาษาทั่วโลก",
+    "prompt": "นึกชื่อภาษาที่ใช้พูดหรือเขียนกันในโลกสักภาษา!",
+    "answerCount": 386,
+    "kind": "curated"
+  },
+  {
+    "id": "world-occupations",
+    "scope": "world",
+    "theme": "everyday",
+    "category": "อาชีพ",
+    "prompt": "นึกชื่ออาชีพที่คนทำจริงสักอาชีพ!",
+    "answerCount": 541,
+    "kind": "curated"
+  },
+  {
+    "id": "world-planets-space",
+    "scope": "world",
+    "theme": "science",
+    "category": "ดาราศาสตร์และอวกาศ",
+    "prompt": "มองขึ้นท้องฟ้าหรืออวกาศ นึกชื่อดาวหรือวัตถุท้องฟ้าสักอย่าง!",
+    "answerCount": 164,
+    "kind": "curated"
+  },
+  {
+    "id": "world-tech-apps",
+    "scope": "world",
+    "theme": "brands",
+    "category": "แอปและแพลตฟอร์ม",
+    "prompt": "เปิดมือถือหรือคอมขึ้นมา นึกถึงแอปหรือเว็บอะไรบ้าง?",
+    "answerCount": 1100,
+    "kind": "curated"
+  },
+  {
+    "id": "world-phone-brands",
+    "scope": "world",
+    "theme": "brands",
+    "category": "มือถือที่เคยใช้",
+    "prompt": "มือถือยี่ห้ออะไรที่ยังจำได้?",
+    "answerCount": 234,
+    "kind": "curated"
+  },
+  {
+    "id": "world-meals",
+    "scope": "world",
+    "theme": "food",
+    "category": "มื้อนี้กินอะไร",
+    "prompt": "วันนี้อยากลองอาหารชาติไหน จานอะไร?",
+    "answerCount": 1200,
+    "kind": "curated"
+  },
+  {
+    "id": "world-desserts",
+    "scope": "world",
+    "theme": "dessert",
+    "category": "ของหวาน",
+    "prompt": "ขนมหวานจากทั่วโลกสักอย่าง",
+    "answerCount": 169,
+    "kind": "curated"
+  },
+  {
+    "id": "world-cake",
+    "scope": "world",
+    "theme": "dessert",
+    "category": "ของหวาน",
+    "prompt": "วันเกิดนี้อยากได้เค้กอะไร?",
+    "answerCount": 112,
+    "kind": "curated"
+  },
+  {
+    "id": "world-bakery",
+    "scope": "world",
+    "theme": "dessert",
+    "category": "แวะร้านเบเกอรี",
+    "prompt": "เดินเข้าร้านเบเกอรี หยิบอะไรดี?",
+    "answerCount": 114,
+    "kind": "curated"
+  },
+  {
+    "id": "world-breads",
+    "scope": "world",
+    "theme": "dessert",
+    "category": "แวะร้านเบเกอรี",
+    "prompt": "นึกถึงขนมปังสักแบบ",
+    "answerCount": 130,
+    "kind": "curated"
+  },
+  {
+    "id": "world-coffee-orders",
+    "scope": "world",
+    "theme": "food",
+    "category": "แวะคาเฟ่",
+    "prompt": "ต่อคิวร้านกาแฟ จะสั่งเมนูอะไร?",
+    "answerCount": 118,
+    "kind": "curated"
+  },
+  {
+    "id": "world-pizza-toppings",
+    "scope": "world",
+    "theme": "ingredients",
+    "category": "มื้อนี้กินอะไร",
+    "prompt": "ถาดพิซซ่าของคุณ ใส่หน้าอะไร?",
+    "answerCount": 107,
+    "kind": "curated"
+  },
+  {
+    "id": "world-sushi",
+    "scope": "world",
+    "theme": "food",
+    "category": "มื้อนี้กินอะไร",
+    "prompt": "ถ้าไปร้านซูชิ จะสั่งหน้าอะไร?",
+    "answerCount": 117,
+    "kind": "curated"
+  },
+  {
+    "id": "world-hobbies",
+    "scope": "world",
+    "theme": "everyday",
+    "category": "วันว่างของเรา",
+    "prompt": "มีเวลาว่าง อยากทำกิจกรรมอะไร?",
+    "answerCount": 104,
+    "kind": "curated"
+  },
+  {
+    "id": "world-move-body",
+    "scope": "world",
+    "theme": "sport",
+    "category": "ขยับร่างกาย",
+    "prompt": "วันนี้อยากออกกำลังกายแบบไหน?",
+    "answerCount": 125,
+    "kind": "curated"
+  },
+  {
+    "id": "world-ball-sports",
+    "scope": "world",
+    "theme": "sport",
+    "category": "กีฬาใช้ลูกบอล",
+    "prompt": "กีฬาที่มีลูกบอลอยู่ในเกม?",
+    "answerCount": 104,
+    "kind": "curated"
+  },
+  {
+    "id": "world-school-subjects",
+    "scope": "world",
+    "theme": "everyday",
+    "category": "วิชาเรียน",
+    "prompt": "นึกถึงวิชาที่เคยเรียนในโรงเรียนสักวิชา!",
+    "answerCount": 118,
+    "kind": "curated"
+  },
+  {
+    "id": "world-ice-cream-flavors-idfa-2024",
+    "scope": "world",
+    "theme": "dessert",
+    "category": "อาหาร",
+    "prompt": "ไอศกรีมรสอะไรอร่อย?",
+    "answerCount": 114,
+    "kind": "curated"
+  },
+  {
+    "id": "world-banks-connell-tool",
+    "scope": "world",
+    "theme": "everyday",
+    "category": "เครื่องมือช่าง",
+    "prompt": "เปิดกล่องเครื่องมือช่าง นึกถึงอะไรสักอย่าง!",
+    "answerCount": 118,
+    "kind": "curated"
+  },
+  {
+    "id": "world-banks-connell-colour",
+    "scope": "world",
+    "theme": "everyday",
+    "category": "สี",
+    "prompt": "นึกชื่อสีสักสี เฉดไหนก็ได้!",
+    "answerCount": 110,
+    "kind": "curated"
+  },
+  {
+    "id": "world-banks-connell-vehicle",
+    "scope": "world",
+    "theme": "travel",
+    "category": "ยานพาหนะ",
+    "prompt": "ถ้าออกเดินทาง นึกชื่อยานพาหนะสักอย่าง!",
+    "answerCount": 120,
+    "kind": "curated"
+  },
+  {
+    "id": "world-banks-connell-musical-instrument",
+    "scope": "world",
+    "theme": "music",
+    "category": "เครื่องดนตรี",
+    "prompt": "ถ้าจะตั้งวงดนตรี นึกถึงเครื่องดนตรีสักชิ้น!",
+    "answerCount": 309,
+    "kind": "curated"
+  },
+  {
+    "id": "world-banks-connell-clothing",
+    "scope": "world",
+    "theme": "everyday",
+    "category": "เสื้อผ้า",
+    "prompt": "เปิดตู้เสื้อผ้า นึกชื่อของที่ใส่ออกบ้านได้สักอย่าง!",
+    "answerCount": 141,
+    "kind": "curated"
+  },
+  {
+    "id": "world-asia-trip",
+    "scope": "world",
+    "theme": "travel",
+    "category": "ชวนกันไปเที่ยว",
+    "prompt": "ถ้าได้เที่ยวเอเชีย อยากไปประเทศไหน?",
+    "answerCount": 51,
+    "kind": "curated"
+  },
+  {
+    "id": "world-europe-trip",
+    "scope": "world",
+    "theme": "travel",
+    "category": "ชวนกันไปเที่ยว",
+    "prompt": "ถ้าได้เที่ยวยุโรป อยากไปประเทศไหน?",
+    "answerCount": 45,
+    "kind": "curated"
+  },
+  {
+    "id": "world-countries",
+    "scope": "world",
+    "theme": "travel",
+    "category": "ประเทศทั่วโลก",
+    "prompt": "นึกชื่อประเทศในโลกสักประเทศ!",
+    "answerCount": 196,
+    "kind": "curated"
+  },
+  {
+    "id": "world-us-states",
+    "scope": "world",
+    "theme": "travel",
+    "category": "รัฐในสหรัฐฯ",
+    "prompt": "ถ้าไปเที่ยวสหรัฐอเมริกา ลองนึกชื่อรัฐมาให้ได้สักรัฐ!",
+    "answerCount": 50,
+    "kind": "curated"
+  },
+  {
+    "id": "world-chemical-elements",
+    "scope": "world",
+    "theme": "science",
+    "category": "ตารางธาตุ",
+    "prompt": "นึกชื่อธาตุในตารางธาตุสักธาตุ!",
+    "answerCount": 118,
+    "kind": "curated"
+  },
+  {
+    "id": "world-olympic-sports",
+    "scope": "world",
+    "theme": "sport",
+    "category": "กีฬาโอลิมปิก",
+    "prompt": "นึกถึงกีฬาในโอลิมปิกสักชนิด!",
+    "answerCount": 48,
+    "kind": "curated"
+  },
+  {
+    "id": "world-landmarks",
+    "scope": "world",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกถึงแลนด์มาร์กหรือสิ่งมหัศจรรย์ชื่อดังของโลกสักแห่ง!",
+    "answerCount": 1200,
+    "kind": "curated"
+  },
+  {
+    "id": "world-historical-figures",
+    "scope": "world",
+    "theme": "culture",
+    "category": "culture",
+    "prompt": "นึกชื่อบุคคลสำคัญในประวัติศาสตร์โลกสักคน!",
+    "answerCount": 1400,
+    "kind": "curated"
+  },
+  {
+    "id": "world-mythology",
+    "scope": "world",
+    "theme": "culture",
+    "category": "culture",
+    "prompt": "นึกชื่อเทพเจ้า สัตว์ในตำนาน หรือสิ่งมีชีวิตแฟนตาซีสักชื่อ!",
+    "answerCount": 234,
+    "kind": "curated"
+  },
+  {
+    "id": "world-fashion-brands",
+    "scope": "world",
+    "theme": "brands",
+    "category": "brands",
+    "prompt": "นึกชื่อแบรนด์แฟชั่น เสื้อผ้า รองเท้า หรือเครื่องประดับสักแบรนด์!",
+    "answerCount": 150,
+    "kind": "curated"
+  },
+  {
+    "id": "world-gems-minerals",
+    "scope": "world",
+    "theme": "science",
+    "category": "science",
+    "prompt": "นึกชื่ออัญมณี แร่ธาตุ หรือหินล้ำค่าสักชนิด!",
+    "answerCount": 229,
+    "kind": "curated"
+  },
+  {
+    "id": "world-stationery",
+    "scope": "world",
+    "theme": "everyday",
+    "category": "everyday",
+    "prompt": "เปิดกล่องดินสอหรือโต๊ะทำงาน นึกชื่อเครื่องเขียนสักชิ้น!",
+    "answerCount": 107,
+    "kind": "curated"
+  },
+  {
+    "id": "world-weather-nature",
+    "scope": "world",
+    "theme": "nature",
+    "category": "nature",
+    "prompt": "นึกชื่อสภาพอากาศหรือปรากฏการณ์ธรรมชาติสักอย่าง!",
+    "answerCount": 107,
+    "kind": "curated"
+  },
+  {
+    "id": "world-body-parts",
+    "scope": "world",
+    "theme": "science",
+    "category": "science",
+    "prompt": "นึกชื่ออวัยวะหรือส่วนต่าง ๆ ในร่างกายมนุษย์สักส่วน!",
+    "answerCount": 792,
+    "kind": "curated"
+  },
+  {
+    "id": "world-books",
+    "scope": "world",
+    "theme": "culture",
+    "category": "culture",
+    "prompt": "เดินเข้าร้านหนังสือ นึกชื่อหนังสือหรือนิยายดังระดับโลกสักเล่ม!",
+    "answerCount": 1402,
+    "kind": "curated"
+  },
+  {
+    "id": "world-songs",
+    "scope": "world",
+    "theme": "music",
+    "category": "music",
+    "prompt": "นึกชื่อเพลงสากลหรือเพลงฮิตระดับโลกที่เคยฮัมตามสักเพลง!",
+    "answerCount": 2501,
+    "kind": "curated"
+  },
+  {
+    "id": "th-actors",
+    "scope": "thai",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อนักแสดง ดารา หรือนักแสดงตลกไทยสักคน!",
+    "answerCount": 2400,
+    "kind": "curated"
+  },
+  {
+    "id": "th-schools",
+    "scope": "thai",
+    "theme": "everyday",
+    "category": "everyday",
+    "prompt": "นึกชื่อโรงเรียนในประเทศไทยสักแห่ง!",
+    "answerCount": 12000,
+    "kind": "curated"
+  },
+  {
+    "id": "th-thai-athletes",
+    "scope": "thai",
+    "theme": "sport",
+    "category": "sport",
+    "prompt": "นึกชื่อนักกีฬาไทยสักคน!",
+    "answerCount": 1800,
+    "kind": "curated"
+  },
+  {
+    "id": "th-historical-icons",
+    "scope": "thai",
+    "theme": "culture",
+    "category": "culture",
+    "prompt": "นึกชื่อบุคคลสำคัญ กษัตริย์ วีรชน กวี หรือศิลปินแห่งชาติของไทยสักท่าน!",
+    "answerCount": 2000,
+    "kind": "curated"
+  },
+  {
+    "id": "th-companies",
+    "scope": "thai",
+    "theme": "brands",
+    "category": "brands",
+    "prompt": "นึกชื่อบริษัท หุ้นไทย ธนาคาร รัฐวิสาหกิจ หรือองค์กรธุรกิจในไทยสักชื่อ!",
+    "answerCount": 1509,
+    "kind": "curated"
+  },
+  {
+    "id": "th-dictionary-words",
+    "scope": "thai",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำศัพท์ภาษาไทยที่มีความหมายในพจนานุกรม (ความยาว 3–10 ตัวอักษร) สักคำ!",
+    "answerCount": 15000,
+    "kind": "curated"
+  },
+  {
+    "id": "th-famous-people",
+    "scope": "thai",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อคนดัง บุคคลมีชื่อเสียง ศิลปิน นักแสดง นักร้อง นักกีฬา หรือบุคคลสำคัญของไทยสักคน!",
+    "answerCount": 10500,
+    "kind": "curated"
+  },
+  {
+    "id": "th-living-things",
+    "scope": "thai",
+    "theme": "nature",
+    "category": "nature",
+    "prompt": "นึกชื่อสิ่งมีชีวิตในธรรมชาติของไทย ทั้งสัตว์ ปลา นก แมลง ต้นไม้ ดอกไม้ หรือพืชสมุนไพรสักชนิด!",
+    "answerCount": 10500,
+    "kind": "curated"
+  },
+  {
+    "id": "world-actors-directors",
+    "scope": "world",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อดารา นักแสดง หรือผู้กำกับภาพยนตร์ต่างประเทศสักคน!",
+    "answerCount": 11000,
+    "kind": "curated"
+  },
+  {
+    "id": "world-athletes",
+    "scope": "world",
+    "theme": "sport",
+    "category": "sport",
+    "prompt": "นึกชื่อนักกีฬาระดับโลก (ทุกชนิดกีฬา ทุกยุค) สักคน!",
+    "answerCount": 2300,
+    "kind": "curated"
+  },
+  {
+    "id": "world-manga",
+    "scope": "world",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อมังงะ เว็บตูน หรือหนังสือการ์ตูนดังสักเรื่อง!",
+    "answerCount": 2400,
+    "kind": "curated"
+  },
+  {
+    "id": "world-football-clubs",
+    "scope": "world",
+    "theme": "sport",
+    "category": "sport",
+    "prompt": "นึกชื่อสโมสรฟุตบอลดังจากลีกใดในโลกก็ได้สักทีม!",
+    "answerCount": 1973,
+    "kind": "curated"
+  },
+  {
+    "id": "world-global-companies",
+    "scope": "world",
+    "theme": "brands",
+    "category": "brands",
+    "prompt": "นึกชื่อบริษัทยักษ์ใหญ่ สตูดิโอเกม/หนัง หรือองค์กรธุรกิจระดับโลกสักชื่อ!",
+    "answerCount": 2101,
+    "kind": "curated"
+  },
+  {
+    "id": "world-wordle-words",
+    "scope": "world",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำศัพท์ภาษาอังกฤษที่มี 5 ตัวอักษร (เหมือนในเกม Wordle) สักคำ!",
+    "answerCount": 14855,
+    "kind": "curated"
+  },
+  {
+    "id": "world-fictional-characters",
+    "scope": "world",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อตัวละครจากอนิเมะ มังงะ การ์ตูน ภาพยนตร์ ซีรีส์ หรือวิดีโอเกมระดับโลกสักตัว!",
+    "answerCount": 10502,
+    "kind": "curated"
+  },
+  {
+    "id": "world-living-fish",
+    "scope": "world",
+    "theme": "nature",
+    "category": "nature",
+    "prompt": "นึกชื่อปลาที่มีชีวิตอยู่ในโลก (ปลาน้ำจืดหรือปลาทะเล พิมพ์ไทยหรืออังกฤษก็ได้) สักชนิด!",
+    "answerCount": 11000,
+    "kind": "curated"
+  },
+  {
+    "id": "th-words-kan",
+    "scope": "thai",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "เติมคำหลัง “การ” ให้เป็นคำนามที่ใช้จริงในภาษาไทยสักคำ!",
+    "answerCount": 1100,
+    "kind": "curated"
+  },
+  {
+    "id": "th-words-nak-phu",
+    "scope": "thai",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำภาษาไทยที่ขึ้นต้นด้วย “นัก” หรือ “ผู้” (เช่น นักเรียน, นักร้อง, ผู้จัดการ) สักคำ!",
+    "answerCount": 600,
+    "kind": "curated"
+  },
+  {
+    "id": "th-words-nam",
+    "scope": "thai",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำภาษาไทย ชื่ออาหาร หรือสิ่งของที่ขึ้นต้นด้วยคำว่า “น้ำ” สักคำ!",
+    "answerCount": 1050,
+    "kind": "curated"
+  },
+  {
+    "id": "th-words-chai",
+    "scope": "thai",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำภาษาไทยที่มีคำว่า “ใจ” อยู่ในคำ (เช่น หัวใจ, ใจดี, เข้าใจ, ตั้งใจ) สักคำ!",
+    "answerCount": 1050,
+    "kind": "curated"
+  },
+  {
+    "id": "th-words-short-3to4",
+    "scope": "thai",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำศัพท์ภาษาไทยสั้น ๆ ที่มีความยาว 3–4 ตัวอักษร (เช่น รัก, ดาว, ทะเล, ภูเขา) สักคำ!",
+    "answerCount": 1500,
+    "kind": "curated"
+  },
+  {
+    "id": "th-words-long-7plus",
+    "scope": "thai",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำศัพท์ภาษาไทยที่มีความยาวตั้งแต่ 7 ตัวอักษรขึ้นไปสักคำ!",
+    "answerCount": 1500,
+    "kind": "curated"
+  },
+  {
+    "id": "th-words-mo-ma",
+    "scope": "thai",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำภาษาไทย ชื่ออาหาร สัตว์ หรือสิ่งของที่ขึ้นต้นด้วยพยัญชนะ “ม” (ม ม้า) สักคำ!",
+    "answerCount": 789,
+    "kind": "curated"
+  },
+  {
+    "id": "th-words-so-suea",
+    "scope": "thai",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำภาษาไทย ชื่ออาหาร สัตว์ หรือสิ่งของที่ขึ้นต้นด้วยพยัญชนะ “ส” (ส เสือ) สักคำ!",
+    "answerCount": 1200,
+    "kind": "curated"
+  },
+  {
+    "id": "th-words-to-tao",
+    "scope": "thai",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำภาษาไทย ชื่อต้นไม้ สัตว์ หรือสิ่งของที่ขึ้นต้นด้วยพยัญชนะ “ต” (ต เต่า) สักคำ!",
+    "answerCount": 908,
+    "kind": "curated"
+  },
+  {
+    "id": "th-words-po-pla",
+    "scope": "thai",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำภาษาไทย ชื่อปลา อาหาร หรือสิ่งของที่ขึ้นต้นด้วยพยัญชนะ “ป” (ป ปลา) สักคำ!",
+    "answerCount": 1150,
+    "kind": "curated"
+  },
+  {
+    "id": "th-words-kho-khai-khwai",
+    "scope": "thai",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำภาษาไทย ชื่อของกิน หรือสิ่งของที่ขึ้นต้นด้วย “ข” (ข ไข่) หรือ “ค” (ค ควาย) สักคำ!",
+    "answerCount": 1200,
+    "kind": "curated"
+  },
+  {
+    "id": "th-words-cho-chang-chan",
+    "scope": "thai",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำภาษาไทย ชื่อสัตว์ หรือสิ่งของที่ขึ้นต้นด้วย “ช” (ช ช้าง) หรือ “จ” (จ จาน) สักคำ!",
+    "answerCount": 1088,
+    "kind": "curated"
+  },
+  {
+    "id": "th-words-bo-baimai-pho-phan",
+    "scope": "thai",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำภาษาไทย ชื่อสถานที่ หรือสิ่งของที่ขึ้นต้นด้วย “บ” (บ ใบไม้) หรือ “พ” (พ พาน) สักคำ!",
+    "answerCount": 1200,
+    "kind": "curated"
+  },
+  {
+    "id": "th-words-ro-ruea-lo-ling",
+    "scope": "thai",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำภาษาไทยที่ขึ้นต้นด้วยพยัญชนะ “ร” (ร เรือ) หรือ “ล” (ล ลิง) สักคำ!",
+    "answerCount": 1201,
+    "kind": "curated"
+  },
+  {
+    "id": "th-temples-central-bkk",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่อวัดในกรุงเทพมหานคร ปริมณฑล หรือภาคกลางของไทยสักวัด!",
+    "answerCount": 1301,
+    "kind": "curated"
+  },
+  {
+    "id": "th-temples-north",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่อวัดในภาคเหนือของไทย (เช่น เชียงใหม่ เชียงราย ลำปาง น่าน แพร่ พิษณุโลก) สักวัด!",
+    "answerCount": 1193,
+    "kind": "curated"
+  },
+  {
+    "id": "th-temples-isaan",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่อวัดในภาคอีสาน (ภาคตะวันออกเฉียงเหนือ) หรือวัดป่าสายกรรมฐานในไทยสักวัด!",
+    "answerCount": 1198,
+    "kind": "curated"
+  },
+  {
+    "id": "th-temples-south-east",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่อวัดในภาคใต้หรือภาคตะวันออกของไทย (เช่น นครศรีฯ สุราษฎร์ สงขลา ชลบุรี ระยอง) สักวัด!",
+    "answerCount": 1140,
+    "kind": "curated"
+  },
+  {
+    "id": "th-schools-bangkok-central",
+    "scope": "thai",
+    "theme": "everyday",
+    "category": "everyday",
+    "prompt": "นึกชื่อโรงเรียนในกรุงเทพมหานคร ปริมณฑล หรือภาคกลางของไทยสักแห่ง!",
+    "answerCount": 1300,
+    "kind": "curated"
+  },
+  {
+    "id": "th-schools-north",
+    "scope": "thai",
+    "theme": "everyday",
+    "category": "everyday",
+    "prompt": "นึกชื่อโรงเรียนในภาคเหนือของไทยสักแห่ง!",
+    "answerCount": 1190,
+    "kind": "curated"
+  },
+  {
+    "id": "th-schools-isaan",
+    "scope": "thai",
+    "theme": "everyday",
+    "category": "everyday",
+    "prompt": "นึกชื่อโรงเรียนในภาคอีสาน (ภาคตะวันออกเฉียงเหนือ) ของไทยสักแห่ง!",
+    "answerCount": 1196,
+    "kind": "curated"
+  },
+  {
+    "id": "th-schools-south-east",
+    "scope": "thai",
+    "theme": "everyday",
+    "category": "everyday",
+    "prompt": "นึกชื่อโรงเรียนในภาคใต้หรือภาคตะวันออกของไทยสักแห่ง!",
+    "answerCount": 1140,
+    "kind": "curated"
+  },
+  {
+    "id": "th-water-destinations",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่อเกาะ ชายหาด น้ำตก แม่น้ำ หรือคลองในประเทศไทยสักแห่ง!",
+    "answerCount": 1021,
+    "kind": "curated"
+  },
+  {
+    "id": "th-parks-mountains-landmarks",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่ออุทยานแห่งชาติ ภูเขา ดอย น้ำตก หรือสถานที่ท่องเที่ยวธรรมชาติในไทยสักแห่ง!",
+    "answerCount": 1100,
+    "kind": "curated"
+  },
+  {
+    "id": "th-urban-transit-roads",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่อถนน ซอย ย่าน หรือสถานีรถไฟฟ้าในกรุงเทพฯ และปริมณฑลสักชื่อ!",
+    "answerCount": 1050,
+    "kind": "curated"
+  },
+  {
+    "id": "th-malls-universities-places",
+    "scope": "thai",
+    "theme": "everyday",
+    "category": "everyday",
+    "prompt": "นึกชื่อห้างสรรพสินค้า มหาวิทยาลัย หรือโรงเรียนดังในประเทศไทยสักแห่ง!",
+    "answerCount": 1150,
+    "kind": "curated"
+  },
+  {
+    "id": "th-provinces-districts-towns",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่อจังหวัด เขตในกรุงเทพฯ หรือเมือง/ย่านท่องเที่ยวในไทยสักแห่ง!",
+    "answerCount": 1050,
+    "kind": "curated"
+  },
+  {
+    "id": "th-sacred-and-heritage-places",
+    "scope": "thai",
+    "theme": "culture",
+    "category": "culture",
+    "prompt": "นึกชื่อวัด พระธาตุ โบราณสถาน หรือสถานที่สำคัญทางวัฒนธรรมในไทยสักแห่ง!",
+    "answerCount": 1250,
+    "kind": "curated"
+  },
+  {
+    "id": "th-screen-titles-all",
+    "scope": "thai",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อภาพยนตร์ไทย ละครไทย หรือซีรีส์ไทยเรื่องใดก็ได้สักเรื่อง!",
+    "answerCount": 1500,
+    "kind": "curated"
+  },
+  {
+    "id": "th-actors-singers-entertainers",
+    "scope": "thai",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อดารา นักแสดง หรือนักร้องศิลปินเพลงไทยสักคน!",
+    "answerCount": 1500,
+    "kind": "curated"
+  },
+  {
+    "id": "th-music-artists-and-bands",
+    "scope": "thai",
+    "theme": "music",
+    "category": "music",
+    "prompt": "นึกชื่อนักร้องเดี่ยว วงดนตรี หรือกลุ่มไอดอลของไทยสักชื่อ!",
+    "answerCount": 1250,
+    "kind": "curated"
+  },
+  {
+    "id": "th-karaoke-and-hit-songs",
+    "scope": "thai",
+    "theme": "music",
+    "category": "music",
+    "prompt": "นึกชื่อเพลงไทยสตริง เพลงป๊อป เพลงร็อก หรือเพลงลูกทุ่งฮิตสักเพลง!",
+    "answerCount": 1147,
+    "kind": "curated"
+  },
+  {
+    "id": "th-tv-shows-and-cartoons",
+    "scope": "thai",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อรายการทีวีไทย เกมโชว์ วาไรตี้ ช่องทีวี หรือการ์ตูนที่ฉายในไทยสักชื่อ!",
+    "answerCount": 1150,
+    "kind": "curated"
+  },
+  {
+    "id": "th-football-and-muaythai-stars",
+    "scope": "thai",
+    "theme": "sport",
+    "category": "sport",
+    "prompt": "นึกชื่อนักฟุตบอล นักมวย หรือนักกีฬาทีมชาติไทยสักคน!",
+    "answerCount": 1400,
+    "kind": "curated"
+  },
+  {
+    "id": "th-sports-and-childhood-games",
+    "scope": "thai",
+    "theme": "sport",
+    "category": "sport",
+    "prompt": "นึกชื่อกีฬา การละเล่นไทย หรือนักกีฬาไทยที่คุ้นชื่อสักชื่อ!",
+    "answerCount": 1102,
+    "kind": "curated"
+  },
+  {
+    "id": "th-royals-heroes-and-artists",
+    "scope": "thai",
+    "theme": "culture",
+    "category": "culture",
+    "prompt": "นึกชื่อบุคคลในประวัติศาสตร์ไทย วีรชน กวี หรือศิลปินแห่งชาติสักท่าน!",
+    "answerCount": 1400,
+    "kind": "curated"
+  },
+  {
+    "id": "th-folklore-literature-festivals",
+    "scope": "thai",
+    "theme": "culture",
+    "category": "culture",
+    "prompt": "นึกชื่อวรรณคดีไทย ตัวละครวรรณคดี ตำนานผีไทย งานประเพณี หรือสุภาษิตไทยสักชื่อ!",
+    "answerCount": 1100,
+    "kind": "curated"
+  },
+  {
+    "id": "th-brands-and-enterprises",
+    "scope": "thai",
+    "theme": "brands",
+    "category": "brands",
+    "prompt": "นึกชื่อบริษัท แบรนด์ขนม ร้านอาหารเชน หรือห้างร้านในไทยสักชื่อ!",
+    "answerCount": 1300,
+    "kind": "curated"
+  },
+  {
+    "id": "th-people-starting-k-to-n",
+    "scope": "thai",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อคนดัง นักแสดง นักร้อง หรือนักกีฬาไทยที่ชื่อขึ้นต้นด้วยพยัญชนะ ก ถึง น สักคน!",
+    "answerCount": 1250,
+    "kind": "curated"
+  },
+  {
+    "id": "th-people-starting-b-to-h",
+    "scope": "thai",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อคนดัง นักแสดง นักร้อง หรือนักกีฬาไทยที่ชื่อขึ้นต้นด้วยพยัญชนะ บ ถึง ฮ สักคน!",
+    "answerCount": 1251,
+    "kind": "curated"
+  },
+  {
+    "id": "th-all-savory-dishes",
+    "scope": "thai",
+    "theme": "food",
+    "category": "food",
+    "prompt": "นึกชื่อเมนูอาหารคาวไทย (ต้ม ผัด แกง ทอด ยำ ส้มตำ หรืออาหารจานเดียว) สักเมนู!",
+    "answerCount": 1150,
+    "kind": "curated"
+  },
+  {
+    "id": "th-desserts-snacks-drinks",
+    "scope": "thai",
+    "theme": "food",
+    "category": "food",
+    "prompt": "นึกชื่อขนมไทย ของหวาน ของกินในเซเว่น หรือเครื่องดื่มเย็นในไทยสักอย่าง!",
+    "answerCount": 1100,
+    "kind": "curated"
+  },
+  {
+    "id": "th-fruits-vegetables-herbs",
+    "scope": "thai",
+    "theme": "nature",
+    "category": "nature",
+    "prompt": "นึกชื่อผลไม้ ผักพื้นบ้าน หรือสมุนไพรเครื่องเทศในครัวไทยสักชนิด!",
+    "answerCount": 1150,
+    "kind": "curated"
+  },
+  {
+    "id": "th-aquatic-animals-fish",
+    "scope": "thai",
+    "theme": "nature",
+    "category": "nature",
+    "prompt": "นึกชื่อปลา กุ้ง ปู หอย หรือสัตว์น้ำที่พบในแม่น้ำและทะเลไทยสักชนิด!",
+    "answerCount": 1150,
+    "kind": "curated"
+  },
+  {
+    "id": "th-land-animals-birds-insects",
+    "scope": "thai",
+    "theme": "nature",
+    "category": "nature",
+    "prompt": "นึกชื่อสัตว์บก นก แมลง หรือสัตว์เลี้ยงที่พบในเมืองไทยสักชนิด!",
+    "answerCount": 1200,
+    "kind": "curated"
+  },
+  {
+    "id": "th-trees-flowers-orchids",
+    "scope": "thai",
+    "theme": "nature",
+    "category": "nature",
+    "prompt": "นึกชื่อต้นไม้ ดอกไม้ กล้วยไม้ หรือพรรณไม้ในประเทศไทยสักชนิด!",
+    "answerCount": 1200,
+    "kind": "curated"
+  },
+  {
+    "id": "th-market-and-shabu-ingredients",
+    "scope": "thai",
+    "theme": "ingredients",
+    "category": "ingredients",
+    "prompt": "นึกชื่อวัตถุดิบทำอาหาร เนื้อสัตว์ ผัก ลูกชิ้น เส้น หรือเครื่องปรุงในครัวไทยสักอย่าง!",
+    "answerCount": 1101,
+    "kind": "curated"
+  },
+  {
+    "id": "th-nature-starting-prefix",
+    "scope": "thai",
+    "theme": "nature",
+    "category": "nature",
+    "prompt": "นึกชื่อสัตว์หรือพืชในไทยที่ชื่อขึ้นต้นด้วยคำว่า “ปลา”, “นก”, “ต้น” หรือ “ดอก” สักชนิด!",
+    "answerCount": 1400,
+    "kind": "curated"
+  },
+  {
+    "id": "th-nature-invertebrates-reptiles",
+    "scope": "thai",
+    "theme": "nature",
+    "category": "nature",
+    "prompt": "นึกชื่อแมลง ผีเสื้อ ด้วง งู เต่า กบ หรือสัตว์เลื้อยคลานในไทยสักชนิด!",
+    "answerCount": 1100,
+    "kind": "curated"
+  },
+  {
+    "id": "th-household-and-daily-items",
+    "scope": "thai",
+    "theme": "everyday",
+    "category": "everyday",
+    "prompt": "นึกชื่อของใช้ในบ้าน เครื่องครัว เครื่องดนตรีไทย หรือสิ่งของรอบตัวในชีวิตประจำวันสักชิ้น!",
+    "answerCount": 723,
+    "kind": "curated"
+  },
+  {
+    "id": "world-action-adventure-movies",
+    "scope": "world",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อภาพยนตร์แนวแอ็กชันหรือผจญภัย (Action / Adventure) ระดับโลกสักเรื่อง!",
+    "answerCount": 1380,
+    "kind": "curated"
+  },
+  {
+    "id": "world-comedy-romcom-movies",
+    "scope": "world",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อภาพยนตร์แนวตลกหรือโรแมนติกคอมเมดี้ (Comedy / Rom-Com) สักเรื่อง!",
+    "answerCount": 1380,
+    "kind": "curated"
+  },
+  {
+    "id": "world-scifi-fantasy-movies",
+    "scope": "world",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อภาพยนตร์แนวไซไฟหรือแฟนตาซี (Sci-Fi / Fantasy) ระดับโลกสักเรื่อง!",
+    "answerCount": 1382,
+    "kind": "curated"
+  },
+  {
+    "id": "world-horror-thriller-movies",
+    "scope": "world",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อภาพยนตร์แนวสยองขวัญ ลึกลับ หรือระทึกขวัญ (Horror / Thriller) สักเรื่อง!",
+    "answerCount": 1380,
+    "kind": "curated"
+  },
+  {
+    "id": "world-classic-movies-90s",
+    "scope": "world",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อภาพยนตร์คลาสสิกต่างประเทศที่ออกฉายในยุค 90s หรือก่อนหน้านั้นสักเรื่อง!",
+    "answerCount": 1480,
+    "kind": "curated"
+  },
+  {
+    "id": "world-anime-movies",
+    "scope": "world",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อภาพยนตร์อนิเมะ (Anime Movie / เดอะมูฟวี่) สักเรื่อง!",
+    "answerCount": 1374,
+    "kind": "curated"
+  },
+  {
+    "id": "world-shonen-isekai-anime",
+    "scope": "world",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่ออนิเมะแนวแอ็กชัน แฟนตาซี หรือต่างโลก (Shonen / Fantasy / Isekai) สักเรื่อง!",
+    "answerCount": 1500,
+    "kind": "curated"
+  },
+  {
+    "id": "world-kdrama-asian-series",
+    "scope": "world",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อซีรีส์เกาหลี (K-Drama) ซีรีส์ญี่ปุ่น จีน หรือซีรีส์ต่างประเทศยอดฮิตสักเรื่อง!",
+    "answerCount": 1300,
+    "kind": "curated"
+  },
+  {
+    "id": "world-anime-protagonists",
+    "scope": "world",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อตัวละครเอกหรือตัวละครดังจากอนิเมะและมังงะญี่ปุ่นสักตัว!",
+    "answerCount": 1601,
+    "kind": "curated"
+  },
+  {
+    "id": "world-comic-movie-heroes-villains",
+    "scope": "world",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อซูเปอร์ฮีโร่ ตัวร้าย หรือตัวละครดังจากคอมิกส์และภาพยนตร์ระดับโลกสักตัว!",
+    "answerCount": 1300,
+    "kind": "curated"
+  },
+  {
+    "id": "world-action-rpg-games",
+    "scope": "world",
+    "theme": "games",
+    "category": "games",
+    "prompt": "นึกชื่อวิดีโอเกมแนวแอ็กชัน ผจญภัย หรือ RPG บนพีซีและคอนโซลสักเกม!",
+    "answerCount": 1501,
+    "kind": "curated"
+  },
+  {
+    "id": "world-strategy-sim-indie-games",
+    "scope": "world",
+    "theme": "games",
+    "category": "games",
+    "prompt": "นึกชื่อวิดีโอเกมบน Steam เกมวางแผน จำลองสถานการณ์ หรือเกมอินดี้ดังสักเกม!",
+    "answerCount": 1360,
+    "kind": "curated"
+  },
+  {
+    "id": "world-board-and-card-games",
+    "scope": "world",
+    "theme": "games",
+    "category": "games",
+    "prompt": "นึกชื่อบอร์ดเกม เกมกระดาน เกมไพ่ หรือการ์ดเกมระดับโลกสักเกม!",
+    "answerCount": 1151,
+    "kind": "curated"
+  },
+  {
+    "id": "world-film-directors-producers",
+    "scope": "world",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อผู้กำกับภาพยนตร์หรือนักแสดงระดับตำนานของโลกสักคน!",
+    "answerCount": 1276,
+    "kind": "curated"
+  },
+  {
+    "id": "world-hollywood-stars-a-to-m",
+    "scope": "world",
+    "theme": "screen",
+    "category": "screen",
+    "prompt": "นึกชื่อนักแสดงภาพยนตร์ต่างประเทศที่ชื่อภาษาอังกฤษขึ้นต้นด้วยตัว A ถึง M สักคน!",
+    "answerCount": 1362,
+    "kind": "curated"
+  },
+  {
+    "id": "world-pop-rock-hits",
+    "scope": "world",
+    "theme": "music",
+    "category": "music",
+    "prompt": "นึกชื่อเพลงป๊อปหรือเพลงร็อกสากลยอดฮิตบน Spotify สักเพลง!",
+    "answerCount": 1601,
+    "kind": "curated"
+  },
+  {
+    "id": "world-hiphop-rnb-edm-hits",
+    "scope": "world",
+    "theme": "music",
+    "category": "music",
+    "prompt": "นึกชื่อเพลงฮิปฮอป แร็ป R&B หรือเพลงแดนซ์/EDM สากลสักเพลง!",
+    "answerCount": 1501,
+    "kind": "curated"
+  },
+  {
+    "id": "world-rock-metal-indie-bands",
+    "scope": "world",
+    "theme": "music",
+    "category": "music",
+    "prompt": "นึกชื่อวงร็อก เมทัล พังก์ หรือศิลปินอินดี้ระดับโลกสักชื่อ!",
+    "answerCount": 1500,
+    "kind": "curated"
+  },
+  {
+    "id": "world-kpop-jpop-asian-artists",
+    "scope": "world",
+    "theme": "music",
+    "category": "music",
+    "prompt": "นึกชื่อศิลปินหรือวง K-Pop, J-Pop หรือศิลปินเพลงเอเชียระดับโลกสักชื่อ!",
+    "answerCount": 1264,
+    "kind": "curated"
+  },
+  {
+    "id": "world-football-players",
+    "scope": "world",
+    "theme": "sport",
+    "category": "sport",
+    "prompt": "นึกชื่อนักฟุตบอลอาชีพชื่อดังระดับโลก (ทั้งยุคปัจจุบันและระดับตำนาน) สักคน!",
+    "answerCount": 1598,
+    "kind": "curated"
+  },
+  {
+    "id": "world-olympic-and-pro-athletes",
+    "scope": "world",
+    "theme": "sport",
+    "category": "sport",
+    "prompt": "นึกชื่อนักกีฬาโอลิมปิก บาสเกตบอล NBA เทนนิส F1 หรือมวยโลกสักคน!",
+    "answerCount": 1500,
+    "kind": "curated"
+  },
+  {
+    "id": "world-european-football-clubs",
+    "scope": "world",
+    "theme": "sport",
+    "category": "sport",
+    "prompt": "นึกชื่อสโมสรฟุตบอลในยุโรป อเมริกาใต้ หรือลีกอาชีพทั่วโลกสักสโมสร!",
+    "answerCount": 1500,
+    "kind": "curated"
+  },
+  {
+    "id": "world-tech-and-gaming-brands",
+    "scope": "world",
+    "theme": "brands",
+    "category": "brands",
+    "prompt": "นึกชื่อบริษัทเทคโนโลยี แอปพลิเคชัน ค่ายเกม หรือแบรนด์มือถือระดับโลกสักชื่อ!",
+    "answerCount": 1250,
+    "kind": "curated"
+  },
+  {
+    "id": "world-fashion-auto-consumer-brands",
+    "scope": "world",
+    "theme": "brands",
+    "category": "brands",
+    "prompt": "นึกชื่อแบรนด์แฟชั่น รถยนต์ สายการบิน หรือบริษัทยักษ์ใหญ่ระดับโลกสักชื่อ!",
+    "answerCount": 1300,
+    "kind": "curated"
+  },
+  {
+    "id": "world-authors-scientists-thinkers",
+    "scope": "world",
+    "theme": "culture",
+    "category": "culture",
+    "prompt": "นึกชื่อนักเขียน นักวิทยาศาสตร์ ผู้นำ หรือบุคคลสำคัญในประวัติศาสตร์โลกสักคน!",
+    "answerCount": 1300,
+    "kind": "curated"
+  },
+  {
+    "id": "world-artists-starting-a-to-m",
+    "scope": "world",
+    "theme": "music",
+    "category": "music",
+    "prompt": "นึกชื่อศิลปินหรือวงดนตรีสากลที่ชื่อภาษาอังกฤษขึ้นต้นด้วยตัว A ถึง M สักชื่อ!",
+    "answerCount": 1500,
+    "kind": "curated"
+  },
+  {
+    "id": "world-artists-starting-n-to-z",
+    "scope": "world",
+    "theme": "music",
+    "category": "music",
+    "prompt": "นึกชื่อศิลปินหรือวงดนตรีสากลที่ชื่อภาษาอังกฤษขึ้นต้นด้วยตัว N ถึง Z สักชื่อ!",
+    "answerCount": 1500,
+    "kind": "curated"
+  },
+  {
+    "id": "world-asian-cities",
+    "scope": "world",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่อเมืองในทวีปเอเชีย (เช่น ญี่ปุ่น จีน เกาหลี อินเดีย อาเซียน หรือตะวันออกกลาง) สักเมือง!",
+    "answerCount": 1561,
+    "kind": "curated"
+  },
+  {
+    "id": "world-european-cities",
+    "scope": "world",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่อเมืองในทวีปยุโรป (เช่น อังกฤษ ฝรั่งเศส อิตาลี เยอรมนี สเปน) สักเมือง!",
+    "answerCount": 1570,
+    "kind": "curated"
+  },
+  {
+    "id": "world-american-cities",
+    "scope": "world",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่อเมืองในทวีปอเมริกาเหนือหรืออเมริกาใต้ (เช่น สหรัฐฯ แคนาดา เม็กซิโก บราซิล) สักเมือง!",
+    "answerCount": 1568,
+    "kind": "curated"
+  },
+  {
+    "id": "world-states-and-provinces",
+    "scope": "world",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่อรัฐ มณฑล หรือจังหวัดของประเทศใดก็ได้ในโลก (State / Province / Prefecture) สักแห่ง!",
+    "answerCount": 1600,
+    "kind": "curated"
+  },
+  {
+    "id": "world-cities-starting-s-m-b-c",
+    "scope": "world",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่อเมืองในโลกที่ชื่อภาษาอังกฤษขึ้นต้นด้วยตัว S, M, B หรือ C สักเมือง!",
+    "answerCount": 1600,
+    "kind": "curated"
+  },
+  {
+    "id": "world-cities-starting-a-l-n-t",
+    "scope": "world",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่อเมืองในโลกที่ชื่อภาษาอังกฤษขึ้นต้นด้วยตัว A, L, N หรือ T สักเมือง!",
+    "answerCount": 1600,
+    "kind": "curated"
+  },
+  {
+    "id": "world-countries-and-major-cities",
+    "scope": "world",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่อประเทศในโลก เมืองหลวง หรือมหานครสำคัญของโลกสักชื่อ!",
+    "answerCount": 1192,
+    "kind": "curated"
+  },
+  {
+    "id": "world-landmarks-and-destinations",
+    "scope": "world",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่อแลนด์มาร์กโลก สิ่งมหัศจรรย์ของโลก หรือเมืองท่องเที่ยวระดับโลกสักแห่ง!",
+    "answerCount": 1150,
+    "kind": "curated"
+  },
+  {
+    "id": "world-cities-ending-n-r-a-o",
+    "scope": "world",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่อเมืองในโลกที่ชื่อภาษาอังกฤษลงท้ายด้วยตัว N, R, A หรือ O (เช่น LONDON, TOKYO, OSAKA) สักเมือง!",
+    "answerCount": 1600,
+    "kind": "curated"
+  },
+  {
+    "id": "world-one-word-cities",
+    "scope": "world",
+    "theme": "travel",
+    "category": "travel",
+    "prompt": "นึกชื่อเมืองในโลกที่ชื่อภาษาอังกฤษเป็นคำเดียวล้วน (ไม่มีเว้นวรรค เช่น PARIS, SEOUL, ROME) สักเมือง!",
+    "answerCount": 1600,
+    "kind": "curated"
+  },
+  {
+    "id": "world-animals-7plus-letters",
+    "scope": "world",
+    "theme": "nature",
+    "category": "nature",
+    "prompt": "นึกชื่อสัตว์หรือปลาที่ชื่อภาษาอังกฤษมีความยาวตั้งแต่ 7 ตัวอักษรขึ้นไป (เช่น ELEPHANT, DOLPHIN) สักชนิด!",
+    "answerCount": 1600,
+    "kind": "curated"
+  },
+  {
+    "id": "world-animals-with-color",
+    "scope": "world",
+    "theme": "nature",
+    "category": "nature",
+    "prompt": "นึกชื่อสัตว์หรือปลาที่มี “ชื่อสี” อยู่ในชื่อ (ทั้งไทยหรืออังกฤษ เช่น ฉลามขาว, Blue Whale, Goldfish) สักชนิด!",
+    "answerCount": 1400,
+    "kind": "curated"
+  },
+  {
+    "id": "world-sharks-rays-whales-dolphins",
+    "scope": "world",
+    "theme": "nature",
+    "category": "nature",
+    "prompt": "นึกชื่อฉลาม กระเบน วาฬ โลมา หรือสัตว์นักล่าในมหาสมุทรสักชนิด!",
+    "answerCount": 1180,
+    "kind": "curated"
+  },
+  {
+    "id": "world-shellfish-crustaceans-mollusks",
+    "scope": "world",
+    "theme": "nature",
+    "category": "nature",
+    "prompt": "นึกชื่อกุ้ง ปู กั้ง หมึก หอย หรือสัตว์ที่มีเปลือก/กระดองทั่วโลกสักชนิด!",
+    "answerCount": 1483,
+    "kind": "curated"
+  },
+  {
+    "id": "world-aquarium-and-reef-fish",
+    "scope": "world",
+    "theme": "nature",
+    "category": "nature",
+    "prompt": "นึกชื่อปลาสวยงาม ปลาแนวปะการัง หรือปลาที่คนนิยมเลี้ยงในตู้ปลาสักชนิด!",
+    "answerCount": 1400,
+    "kind": "curated"
+  },
+  {
+    "id": "world-commercial-and-game-fish",
+    "scope": "world",
+    "theme": "nature",
+    "category": "nature",
+    "prompt": "นึกชื่อปลาเศรษฐกิจ ปลาอาหาร หรือปลาเกมตกปลาระดับโลกสักชนิด!",
+    "answerCount": 1380,
+    "kind": "curated"
+  },
+  {
+    "id": "world-animals-starting-s-c-b-p",
+    "scope": "world",
+    "theme": "nature",
+    "category": "nature",
+    "prompt": "นึกชื่อสัตว์หรือสิ่งมีชีวิตในธรรมชาติที่ชื่อภาษาอังกฤษขึ้นต้นด้วยตัว S, C, B หรือ P สักชนิด!",
+    "answerCount": 1480,
+    "kind": "curated"
+  },
+  {
+    "id": "world-space-minerals-elements",
+    "scope": "world",
+    "theme": "science",
+    "category": "science",
+    "prompt": "นึกชื่อดาว กลุ่มดาว วัตถุอวกาศ ธาตุเคมี อัญมณี แร่ธาตุ หรืออวัยวะในร่างกายสักชื่อ!",
+    "answerCount": 1152,
+    "kind": "curated"
+  },
+  {
+    "id": "world-global-food-and-desserts",
+    "scope": "world",
+    "theme": "food",
+    "category": "food",
+    "prompt": "นึกชื่ออาหารนานาชาติ ซูชิ พิซซ่า ขนมปัง เค้ก เบเกอรี กาแฟ หรือไอศกรีมระดับโลกสักอย่าง!",
+    "answerCount": 1400,
+    "kind": "curated"
+  },
+  {
+    "id": "world-wordle-starting-s-c-b-p",
+    "scope": "world",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำศัพท์ภาษาอังกฤษ 5 ตัวอักษรที่ขึ้นต้นด้วยตัว S, C, B หรือ P (เช่น SMILE, CRANE, BEACH, PHONE) สักคำ!",
+    "answerCount": 2200,
+    "kind": "curated"
+  },
+  {
+    "id": "world-wordle-starting-a-to-m",
+    "scope": "world",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำศัพท์ภาษาอังกฤษ 5 ตัวอักษรที่ขึ้นต้นด้วยตัว A, D, F, G, H, L หรือ M (เช่น APPLE, DREAM, HOUSE, MUSIC) สักคำ!",
+    "answerCount": 2200,
+    "kind": "curated"
+  },
+  {
+    "id": "world-wordle-ending-e-y-t-r",
+    "scope": "world",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำศัพท์ภาษาอังกฤษ 5 ตัวอักษรที่ลงท้ายด้วยตัว E, Y, T หรือ R (เช่น WATER, HAPPY, HEART, SMILE) สักคำ!",
+    "answerCount": 2200,
+    "kind": "curated"
+  },
+  {
+    "id": "world-wordle-no-e",
+    "scope": "world",
+    "theme": "wordplay",
+    "category": "wordplay",
+    "prompt": "นึกคำศัพท์ภาษาอังกฤษ 5 ตัวอักษรที่ “ไม่มีตัว E” อยู่ในคำ (เช่น AUDIO, WORLD, MUSIC, PIZZA, TRAIN) สักคำ!",
+    "answerCount": 2200,
+    "kind": "curated"
+  },
+  {
+    "id": "world-harry-potter-characters",
+    "scope": "world",
+    "theme": "screen",
+    "category": "ตัวละครแฮร์รี่ พอตเตอร์",
+    "prompt": "นึกชื่อตัวละครจากโลกเวทมนตร์ แฮร์รี่ พอตเตอร์ (Harry Potter) สักตัวละคร!",
+    "answerCount": 60,
+    "kind": "curated"
+  },
+  {
+    "id": "world-one-piece-characters",
+    "scope": "world",
+    "theme": "screen",
+    "category": "ตัวละครวันพีซ",
+    "prompt": "ออกเรือแกรนด์ไลน์! นึกชื่อตัวละครจากเรื่อง วันพีซ (One Piece) สักคน!",
+    "answerCount": 265,
+    "kind": "curated"
+  },
+  {
+    "id": "world-marvel-mcu-characters",
+    "scope": "world",
+    "theme": "screen",
+    "category": "ตัวละครมาร์เวล",
+    "prompt": "รวมพลฮีโร่และวายร้าย! นึกชื่อตัวละครจากจักรวาล Marvel / MCU สักตัว!",
+    "answerCount": 129,
+    "kind": "curated"
+  },
+  {
+    "id": "world-disney-pixar-characters",
+    "scope": "world",
+    "theme": "screen",
+    "category": "ตัวละครดิสนีย์ & พิกซาร์",
+    "prompt": "นึกชื่อตัวละครจากแอนิเมชัน Disney หรือ Pixar สักตัว!",
+    "answerCount": 84,
+    "kind": "curated"
+  },
+  {
+    "id": "world-naruto-dragonball-characters",
+    "scope": "world",
+    "theme": "screen",
+    "category": "ตัวละครนารูโตะ & ดราก้อนบอล",
+    "prompt": "นึกชื่อตัวละครจากอนิเมะเรื่อง Naruto หรือ Dragon Ball สักตัว!",
+    "answerCount": 301,
+    "kind": "curated"
+  },
+  {
+    "id": "world-doraemon-conan-characters",
+    "scope": "world",
+    "theme": "screen",
+    "category": "ตัวละครโดราเอมอน & โคนัน",
+    "prompt": "นึกชื่อตัวละครจากการ์ตูน Doraemon หรือ ยอดนักสืบจิ๋วโคนัน สักตัว!",
+    "answerCount": 67,
+    "kind": "curated"
+  },
+  {
+    "id": "world-starwars-lotr-characters",
+    "scope": "world",
+    "theme": "screen",
+    "category": "ตัวละคร Star Wars & LOTR",
+    "prompt": "นึกชื่อตัวละครจากจักรวาล Star Wars หรือ The Lord of the Rings สักตัว!",
+    "answerCount": 57,
+    "kind": "curated"
+  },
+  {
+    "id": "world-minecraft-items-mobs",
+    "scope": "world",
+    "theme": "games",
+    "category": "ม็อบ & ไอเทม Minecraft",
+    "prompt": "เปิดโลกบล็อก! นึกชื่อม็อบ (Mob) บอส แร่ หรือไอเทมในเกม Minecraft สักอย่าง!",
+    "answerCount": 86,
+    "kind": "curated"
+  },
+  {
+    "id": "world-sanrio-crayon-mascots",
+    "scope": "world",
+    "theme": "screen",
+    "category": "ตัวละคร Sanrio & ชินจัง",
+    "prompt": "สายคาวาอี้! นึกชื่อตัวละครจาก Sanrio หรือ เครยอนชินจัง (Crayon Shin-chan) สักตัว!",
+    "answerCount": 43,
+    "kind": "curated"
+  },
+  {
+    "id": "world-valorant-lol-agents",
+    "scope": "world",
+    "theme": "games",
+    "category": "เอเจนต์ Valorant & แชมเปียน LoL",
+    "prompt": "เลือกตัวละครเข้าตี้! นึกชื่อเอเจนต์เกม Valorant หรือแชมเปียน League of Legends สักตัว!",
+    "answerCount": 203,
+    "kind": "curated"
+  },
+  {
+    "id": "th-ramakien-characters",
+    "scope": "thai",
+    "theme": "culture",
+    "category": "ตัวละครรามเกียรติ์",
+    "prompt": "นึกชื่อตัวละครในวรรณคดีเรื่อง รามเกียรติ์ สักตัว!",
+    "answerCount": 451,
+    "kind": "curated"
+  },
+  {
+    "id": "th-phra-aphai-khun-chang-chars",
+    "scope": "thai",
+    "theme": "culture",
+    "category": "ตัวละครวรรณคดีสุนทรภู่-ขุนช้างฯ",
+    "prompt": "นึกชื่อตัวละครในวรรณคดี พระอภัยมณี ขุนช้างขุนแผน หรือ สังข์ทอง สักตัว!",
+    "answerCount": 49,
+    "kind": "curated"
+  },
+  {
+    "id": "th-rov-heroes",
+    "scope": "thai",
+    "theme": "games",
+    "category": "ฮีโร่ RoV",
+    "prompt": "เข้าป้อมตีป้อม! นึกชื่อฮีโร่ในเกม RoV (Arena of Valor) สักตัว!",
+    "answerCount": 99,
+    "kind": "curated"
+  },
+  {
+    "id": "th-online-mobile-games",
+    "scope": "thai",
+    "theme": "games",
+    "category": "เกมออนไลน์ & เกมมือถือฮิตในไทย",
+    "prompt": "นัดเพื่อนเปิดตี้ในไทย! นึกชื่อเกมออนไลน์ เกมมือถือ หรือเกมร้านเน็ตสุดฮิตสักเกม!",
+    "answerCount": 67,
+    "kind": "curated"
+  },
+  {
+    "id": "th-gdh-gth-films",
+    "scope": "thai",
+    "theme": "screen",
+    "category": "หนังไทยค่าย GDH / GTH",
+    "prompt": "นึกชื่อภาพยนตร์ไทยชื่อดังจากค่าย GTH หรือ GDH สักเรื่อง!",
+    "answerCount": 62,
+    "kind": "curated"
+  },
+  {
+    "id": "th-famous-dramas-characters",
+    "scope": "thai",
+    "theme": "screen",
+    "category": "ละครไทย & ตัวละครในละครดัง",
+    "prompt": "เปิดจอหลังข่าว! นึกชื่อละครไทยยอดฮิต หรือตัวละครในตำนานจากละครไทยสักชื่อ!",
+    "answerCount": 519,
+    "kind": "curated"
+  },
+  {
+    "id": "th-bnk-tpops-groups",
+    "scope": "thai",
+    "theme": "music",
+    "category": "วง T-POP & เกิร์ลกรุ๊ป/บอยแบนด์ไทย",
+    "prompt": "เปิดเพลย์ลิสต์ T-POP! นึกชื่อวงไอดอล เกิร์ลกรุ๊ป หรือบอยแบนด์ไทยสักวง!",
+    "answerCount": 80,
+    "kind": "curated"
+  },
+  {
+    "id": "th-thai-comedians-youtubers",
+    "scope": "thai",
+    "theme": "screen",
+    "category": "ตลกไทย & ยูทูบเบอร์/ครีเอเตอร์",
+    "prompt": "สายฮาและสายคอนเทนต์! นึกชื่อนักแสดงตลกไทย หรือยูทูบเบอร์/สตรีมเมอร์ไทยสักคน!",
+    "answerCount": 504,
+    "kind": "curated"
+  },
+  {
+    "id": "th-thai-league-football-clubs",
+    "scope": "thai",
+    "theme": "sport",
+    "category": "สโมสรฟุตบอลไทยลีก",
+    "prompt": "เชียร์บอลไทย! นึกชื่อสโมสรฟุตบอลในไทยลีกหรือลีกไทยสักทีม!",
+    "answerCount": 51,
+    "kind": "curated"
+  },
+  {
+    "id": "th-markets-nightmarkets",
+    "scope": "thai",
+    "theme": "travel",
+    "category": "ตลาดนัด & ตลาดน้ำชื่อดัง",
+    "prompt": "เดินช้อปชิมชิล! นึกชื่อตลาดนัด ตลาดน้ำ ตลาดกลางคืน หรือถนนคนเดินชื่อดังในไทยสักแห่ง!",
+    "answerCount": 64,
+    "kind": "curated"
+  }
+]

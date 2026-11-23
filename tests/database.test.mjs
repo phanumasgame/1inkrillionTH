@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import {
   extractBearerToken,
+  handleAdminAction,
+  handleAdminDashboard,
   handleCreateSuggestions,
   handleListSuggestions,
   handleRecordTelemetry,
@@ -117,6 +119,13 @@ function createFakeSql() {
         return [...tables.answer_suggestions];
       }
 
+      if (sql.startsWith('DELETE FROM rejected_guesses')) {
+        const [qId, normIn] = params;
+        const before = tables.rejected_guesses.length;
+        tables.rejected_guesses = tables.rejected_guesses.filter(r => !(r.question_id === qId && r.normalized_input === normIn));
+        return Array.from({ length: before - tables.rejected_guesses.length }, () => ({ ok: true }));
+      }
+
       if (sql.includes('FROM rejected_guesses')) {
         const grouped = new Map();
         for (const r of tables.rejected_guesses) {
@@ -132,6 +141,18 @@ function createFakeSql() {
           grouped.set(k, prev);
         }
         return [...grouped.values()].sort((a, b) => b.miss_count - a.miss_count);
+      }
+
+      if (sql.startsWith('UPDATE answer_suggestions')) {
+        const [nextStatus, qId, normAns] = params;
+        const updated = [];
+        for (const r of tables.answer_suggestions) {
+          if (r.question_id === qId && r.normalized_answer === normAns) {
+            r.status = nextStatus;
+            updated.push(r);
+          }
+        }
+        return updated;
       }
 
       if (sql.includes('FROM round_attempts')) {
@@ -297,4 +318,52 @@ test('gameplay tracks unique rejected guesses per round and clientId persists cl
   const id2 = ensureClientId(save);
   assert.ok(id1.startsWith('c_'));
   assert.equal(id1, id2);
+});
+
+test('handleAdminAction updates suggestion status, deletes rejected rows, and rejects invalid payloads', async () => {
+  const fake = createFakeSql();
+  await handleCreateSuggestions({
+    questionId: 'th-pets',
+    questionPrompt: 'ถ้าจะมีสัตว์เลี้ยง นึกถึงตัวอะไร?',
+    suggestedAnswer: 'ลิง',
+  }, fake, { ensure: async () => {} });
+  await handleRecordTelemetry({
+    sessionId: 'daily:2026-11-23:1:7777',
+    clientId: 'c_admin',
+    mode: 'daily',
+    date: '2026-11-23',
+    bankVersion: '1.1.0',
+    score: 100,
+    depth: 1000,
+    gems: 0,
+    rounds: [{ questionId: 'world-board-games', reason: 'timeout', points: 0, elapsedMs: 30000, rejectedInputs: ['อั้ยยยะ'] }],
+  }, fake, { ensure: async () => {} });
+
+  const bad = await handleAdminAction({ action: 'unknown-op' }, fake, { ensure: async () => {} });
+  assert.equal(bad.status, 400);
+
+  const upd = await handleAdminAction({
+    action: 'suggestion-status',
+    status: 'added',
+    questionId: 'th-pets',
+    normalizedAnswer: 'ลิง',
+  }, fake, { ensure: async () => {} });
+  assert.equal(upd.status, 200);
+  assert.equal(upd.body.ok, true);
+  assert.equal(fake.tables.answer_suggestions[0].status, 'added');
+
+  const del = await handleAdminAction({
+    action: 'delete-rejected',
+    questionId: 'world-board-games',
+    normalizedInput: fake.tables.rejected_guesses[0].normalized_input,
+  }, fake, { ensure: async () => {} });
+  assert.equal(del.status, 200);
+  assert.equal(del.body.ok, true);
+  assert.equal(fake.tables.rejected_guesses.length, 0);
+
+  const meta = JSON.parse(await readFile(new URL('../data/question-meta.json', import.meta.url), 'utf8'));
+  const dash = await handleAdminDashboard({ days: '7', limit: '25' }, fake, meta, { ensure: async () => {} });
+  assert.equal(dash.status, 200);
+  assert.equal(dash.body.ok, true);
+  assert.equal(dash.body.bankMetaCount, 256);
 });
