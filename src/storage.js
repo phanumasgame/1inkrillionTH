@@ -4,7 +4,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
 });
 export function emptySave() {
   return { version: 1, settings: { ...DEFAULT_SETTINGS }, daily: {}, endless: null, endlessByBank: {},
-    history: [], seen: [], run: 0, runByGroup: {}, character: 'krillion', currentBankVersion: null, resumeSessionId: null,
+    history: [], seen: [], seenByGroup: {}, run: 0, runByGroup: {}, character: 'krillion', currentBankVersion: null, resumeSessionId: null,
     clientId: '', telemetrySent: [], seenPatchVersion: '' };
 }
 export function ensureClientId(save) {
@@ -77,6 +77,7 @@ export function readSave(storage = globalThis.localStorage, bank = null) {
       history: data.history.filter(s => validSession(s) && s.phase === 'complete'),
       endlessByBank: data.endlessByBank && typeof data.endlessByBank === 'object' && !Array.isArray(data.endlessByBank) ? data.endlessByBank : {},
       runByGroup: data.runByGroup && typeof data.runByGroup === 'object' && !Array.isArray(data.runByGroup) ? data.runByGroup : {},
+      seenByGroup: data.seenByGroup && typeof data.seenByGroup === 'object' && !Array.isArray(data.seenByGroup) ? data.seenByGroup : {},
       seen: Array.isArray(data.seen) ? data.seen : [] };
   } catch { return emptySave(); }
 }
@@ -97,6 +98,7 @@ export function prepareSaveForBank(saved,bank) {
     endlessByBank: Object.fromEntries(Object.entries(saved.endlessByBank || {}).map(([k, v]) => [k, cloneSession(v)])),
     history: Array.isArray(saved.history) ? saved.history.map(cloneSession) : [],
     seen: [...(saved.seen || [])],
+    seenByGroup: Object.fromEntries(Object.entries(saved.seenByGroup || {}).map(([k, v]) => [k, Array.isArray(v) ? [...v] : []])),
     runByGroup: { ...(saved.runByGroup || {}) },
     telemetrySent: [...(saved.telemetrySent || [])],
   };
@@ -116,6 +118,9 @@ export function prepareSaveForBank(saved,bank) {
     next.resumeSessionId=null;
     const ids=new Set(bank.questions.map(q=>q.id));
     next.seen=next.seen.filter(id=>ids.has(id));
+    for (const [grp, arr] of Object.entries(next.seenByGroup)) {
+      next.seenByGroup[grp] = arr.filter(id => ids.has(id));
+    }
   }
   next.endless=next.endlessByBank[bank.version]||null;
   return next;

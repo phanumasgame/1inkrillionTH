@@ -62,6 +62,18 @@ export const DIVE_GROUPS = Object.freeze([
     oceanTitle: 'AMBER HARBOR LAGOON',
     themes: ['food', 'dessert', 'ingredients', 'brands', 'everyday', 'wordplay'],
   }),
+  Object.freeze({
+    id: 'football',
+    route: '/unlimited/football',
+    title: 'KRILLION FOOTBALL',
+    shortTitle: 'FOOTBALL',
+    tag: 'PREMIER LEAGUE · THAI LEAGUE · WORLD CUP',
+    emoji: '⚽',
+    subtitle: 'พรีเมียร์ลีก ไทยลีก ช้างศึก นักเตะ โค้ช สนาม และฟุตบอลโลก',
+    oceanTitle: 'FLOODLIT PITCH ARENA',
+    themes: ['sport'],
+    filter: q => Boolean(q.football) || /foot|soccer|premier-league|world-cup|thai-league|muaythai-stars/i.test(q.id),
+  }),
 ]);
 const GROUP_BY_ID = new Map(DIVE_GROUPS.map(g => [g.id, g]));
 export function getDiveGroup(groupId = 'classic') {
@@ -69,6 +81,10 @@ export function getDiveGroup(groupId = 'classic') {
 }
 export function filterQuestionsByGroup(questions, groupId = 'classic') {
   const group = getDiveGroup(groupId);
+  if (typeof group.filter === 'function') {
+    const filtered = questions.filter(group.filter);
+    return filtered.length >= 14 ? filtered : questions;
+  }
   if (!group.themes) return questions;
   const allowed = new Set(group.themes);
   const filtered = questions.filter(q => allowed.has(q.theme));
@@ -130,7 +146,7 @@ export function questionFamily(question) {
   if (/islands|beaches|waterfalls|water-destinations|rivers/.test(id)) return 'water-places';
   if (/national-parks|parks-mountains/.test(id)) return 'parks-mountains';
   if (/bangkok-districts|bangkok-places|bkk-roads|rail-stations|urban-transit|provinces-districts|province-trips/.test(id)) return 'thai-places-transit';
-  if (/harry-potter|one-piece|marvel-mcu|disney-pixar|naruto-dragonball|doraemon-conan|starwars-lotr|minecraft|sanrio|valorant-lol|ramakien|phra-aphai|rov-heroes|online-mobile-games|gdh-gth|famous-dramas|bnk-tpops|comedians-youtubers|thai-league|somtum-yam/.test(id)) return id;
+  if (/harry-potter|one-piece|marvel-mcu|disney-pixar|naruto-characters|dragonball-characters|conan-characters|doraemon-characters|starwars-characters|lotr-characters|sanrio-characters|minecraft-items|lol-champions|valorant-overwatch|ramakien|phra-aphai|rov-heroes|online-mobile-games|gdh-gth|famous-dramas|bnk-tpops|comedians-youtubers|markets-nightmarkets|thai-horror-movies|thai-sitcoms-variety|retro-pc-console|traditional-sweets|proverbs-slang-idioms|cafe-bubbletea|english-common-abbrev|english-loanwords|premier-league-clubs|football-managers|football-stadiums|world-cup-national-teams|football-terms-leagues|thai-national-footballers|thai-football-stadiums|thai-football-managers|thai-football-competitions|thai-league-foreign/.test(id)) return id;
   if (/anime|manga|childhood-cartoons|tv-shows-and-cartoons/.test(id)) return 'anime-cartoon';
   if (/movie|films|famous-series|kdrama|thai-dramas|screen-titles/.test(id)) return 'movies-series';
   if (/character|superhero|protagonist|heroes-villains/.test(id)) return 'characters';
@@ -158,6 +174,8 @@ function orderCandidates(questions, rng, balanceRemaining, cooldown) {
   const recentThemes = cooldown?.recentThemes || new Set();
   const recentFam1 = cooldown?.recentFamilies1 || new Set();
   const recentFam2 = cooldown?.recentFamilies2 || new Set();
+  const seenRank = cooldown?.seenRank || null;
+  const wordleCooldown = Boolean(cooldown?.recentWordle);
   const famPenalty = q => {
     const f = questionFamily(q);
     return recentFam1.has(f) ? 2 : recentFam2.has(f) ? 1 : 0;
@@ -176,8 +194,8 @@ function orderCandidates(questions, rng, balanceRemaining, cooldown) {
       byFam.get(f).push(q);
     }
     const famKeys = [...byFam.keys()].sort((a, b) => {
-      const pa = recentFam1.has(a) ? 2 : recentFam2.has(a) ? 1 : 0;
-      const pb = recentFam1.has(b) ? 2 : recentFam2.has(b) ? 1 : 0;
+      const pa = (recentFam1.has(a) ? 2 : recentFam2.has(a) ? 1 : 0) + (wordleCooldown && a === 'wordle' ? 2 : 0);
+      const pb = (recentFam1.has(b) ? 2 : recentFam2.has(b) ? 1 : 0) + (wordleCooldown && b === 'wordle' ? 2 : 0);
       return pa - pb;
     });
     const interleaved = [];
@@ -190,7 +208,15 @@ function orderCandidates(questions, rng, balanceRemaining, cooldown) {
       }
       depth++;
     }
-    interleaved.sort((a, b) => famPenalty(a) - famPenalty(b));
+    interleaved.sort((a, b) => {
+      const sa = seenRank && seenRank.has(a.id) ? 1 : 0;
+      const sb = seenRank && seenRank.has(b.id) ? 1 : 0;
+      if (sa !== sb) return sa - sb;
+      if (sa === 1 && sb === 1) return Math.floor(seenRank.get(a.id) / 7) - Math.floor(seenRank.get(b.id) / 7);
+      const wa = wordleCooldown && questionFamily(a) === 'wordle' ? 1 : 0;
+      const wb = wordleCooldown && questionFamily(b) === 'wordle' ? 1 : 0;
+      return (famPenalty(a) + wa) - (famPenalty(b) + wb);
+    });
     byTheme.set(t, interleaved);
   }
   const themes = [...byTheme.keys()];
@@ -207,6 +233,8 @@ function orderCandidates(questions, rng, balanceRemaining, cooldown) {
       const rem = list.length - pass;
       let weight = balanceRemaining ? Math.pow(rem, 0.72) : 1;
       if (pass === 0 && recentThemes.has(t)) weight *= 0.35;
+      if (seenRank && seenRank.has(q.id)) weight *= 0.02;
+      if (wordleCooldown && questionFamily(q) === 'wordle') weight *= 0.15;
       const fp = famPenalty(q);
       if (fp === 2) weight *= 0.2;
       else if (fp === 1) weight *= 0.48;
@@ -311,49 +339,46 @@ export function selectEndless(bank, seen = [], rng = Math.random, run = 1, group
   const poolQuestions = filterQuestionsByGroup(bank.questions, groupId);
   const available = [], required = [];
   const nextSeen = [...seen];
+  const seenRank = new Map();
+  for (let idx = 0; idx < seen.length; idx++) seenRank.set(seen[idx], idx);
   const targets = scopeTargetsForRound(run);
   const byId = new Map(poolQuestions.map(q => [q.id, q]));
   const last1 = seen.slice(-7).map(id => byId.get(id)).filter(Boolean);
   const last2 = seen.slice(-14, -7).map(id => byId.get(id)).filter(Boolean);
+  const last3 = seen.slice(-21).map(id => byId.get(id)).filter(Boolean);
   const cooldown = {
     recentThemes: new Set(last1.map(questionTheme)),
     recentFamilies1: new Set(last1.map(questionFamily)),
-    recentFamilies2: new Set(last2.map(questionFamily))
+    recentFamilies2: new Set(last2.map(questionFamily)),
+    recentWordle: last3.some(q => questionFamily(q) === 'wordle'),
+    seenRank,
   };
   const quota = Object.keys(targets).every(scope => {
-    const broadCount = poolQuestions.filter(q=>q.scope===scope && q.answers.length>=BROAD_ANSWER_TARGET).length;
-    const shortCount = poolQuestions.filter(q=>q.scope===scope && q.answers.length<BROAD_ANSWER_TARGET).length;
+    const broadCount = poolQuestions.filter(q => q.scope === scope && q.answers.length >= BROAD_ANSWER_TARGET).length;
+    const shortCount = poolQuestions.filter(q => q.scope === scope && q.answers.length < BROAD_ANSWER_TARGET).length;
     return broadCount >= 2 && shortCount >= Math.max(targets[scope] - 2, 15);
-  }) ? { thai:2, world:2 } : null;
-  // Cycle broad and smaller sets separately, so the broad set isn't exhausted
-  // in the first few dives and every short set still gets a turn.
+  }) ? { thai: 2, world: 2 } : null;
+
   for (const [scope, target] of Object.entries(targets)) {
     const questions = poolQuestions.filter(q => q.scope === scope);
     const groups = quota ? [
-      [questions.filter(q=>q.answers.length>=BROAD_ANSWER_TARGET),quota[scope]],
-      [questions.filter(q=>q.answers.length<BROAD_ANSWER_TARGET),target-quota[scope]]
-    ] : [[questions,target]];
-    for (const [all,count] of groups) {
-      let remaining = shuffle(all.filter(q => !seen.includes(q.id)), rng);
+      [questions.filter(q => q.answers.length >= BROAD_ANSWER_TARGET), quota[scope]],
+      [questions.filter(q => q.answers.length < BROAD_ANSWER_TARGET), target - quota[scope]]
+    ] : [[questions, target]];
+    for (const [all, count] of groups) {
+      let remaining = shuffle(all.filter(q => !seenRank.has(q.id)), rng);
       if (remaining.length < count) {
-        required.push(...remaining.map(q=>q.id));
+        required.push(...remaining.map(q => q.id));
         const used = new Set(remaining.map(q => q.id));
         const refill = all.filter(q => !used.has(q.id));
-        refill.sort((a, b) => seen.lastIndexOf(a.id) - seen.lastIndexOf(b.id));
-        const releaseCount = Math.max(count * 3, Math.ceil(refill.length * 0.55));
-        const released = refill.slice(0, releaseCount);
-        remaining.push(...shuffle(released, rng));
-        const releasedIds = new Set(remaining.map(q => q.id));
-        for (const q of all) {
-          if (!releasedIds.has(q.id)) continue;
-          let i;
-          while ((i = nextSeen.indexOf(q.id)) >= 0) nextSeen.splice(i, 1);
-        }
+        refill.sort((a, b) => (seenRank.get(a.id) ?? -1) - (seenRank.get(b.id) ?? -1));
+        const releaseCount = Math.min(refill.length, Math.max(count - remaining.length + 4, Math.ceil(refill.length * 0.25)));
+        remaining.push(...refill.slice(0, releaseCount));
       }
       available.push(...remaining);
     }
   }
-  const picked = diverseRound(available,rng,required,true,targets,quota,cooldown);
+  const picked = diverseRound(available, rng, required, true, targets, quota, cooldown);
   for (const q of picked) {
     let i;
     while ((i = nextSeen.indexOf(q.id)) >= 0) nextSeen.splice(i, 1);
@@ -543,10 +568,7 @@ function distance(left, right, maxDist = Infinity) {
   }
   return previous[m];
 }
-export function matchAnswer(question, raw) {
-  const value = normalize(raw);
-  if (!value) return { kind: 'empty' };
-  const index = answerIndex(question.answers);
+function matchCore(index, value) {
   const exact = collectMapHits(index.exact, answerForms(value));
   if (exact.size === 1) return { kind: 'exact', answer: exact.values().next().value };
   if (exact.size > 1) return { kind: 'ambiguous' };
@@ -620,6 +642,26 @@ export function matchAnswer(question, raw) {
     }
   }
   return { kind: 'unknown' };
+}
+
+export function matchAnswer(question, raw) {
+  const value = normalize(raw);
+  if (!value) return { kind: 'empty' };
+  const index = answerIndex(question.answers);
+  const direct = matchCore(index, value);
+  if (direct.kind !== 'unknown') return direct;
+  // Support "Song Title - Artist" / "Artist - Song Title" inputs in music questions
+  if (question?.theme === 'music' && /\s+[-–—]\s+/.test(String(raw))) {
+    const segs = String(raw).split(/\s+[-–—]\s+/).map(normalize).filter(s => s.length >= 2);
+    let fallbackCorrection = null;
+    for (const seg of segs) {
+      const hit = matchCore(index, seg);
+      if (hit.kind === 'exact') return hit;
+      if (hit.kind === 'correction' && !fallbackCorrection) fallbackCorrection = hit;
+    }
+    if (fallbackCorrection) return fallbackCorrection;
+  }
+  return direct;
 }
 export function createSession({ mode, bank, questions, date = dayKey(), now = Date.now(), run = 1, group = 'classic' }) {
   if (questions.length !== 7) throw new Error('A dive needs exactly seven questions.');

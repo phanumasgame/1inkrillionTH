@@ -13,7 +13,8 @@ export function normalize(text) {
     return out.includes('  ') ? out.replace(/ +/g, ' ') : out;
   }
   return s.normalize('NFC').trim().toLowerCase()
-    .replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/[“”"‘’]/g, '').replace(/\s+/g, ' ');
+    .replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/[“”"‘’]/g, '')
+    .replace(/^[\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]+/, '').trim().replace(/\s+/g, ' ');
 }
 
 export function answerForms(text) {

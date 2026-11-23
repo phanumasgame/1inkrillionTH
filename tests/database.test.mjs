@@ -365,5 +365,5 @@ test('handleAdminAction updates suggestion status, deletes rejected rows, and re
   const dash = await handleAdminDashboard({ days: '7', limit: '25' }, fake, meta, { ensure: async () => {} });
   assert.equal(dash.status, 200);
   assert.equal(dash.body.ok, true);
-  assert.equal(dash.body.bankMetaCount, 256);
+  assert.equal(dash.body.bankMetaCount, meta.length);
 });

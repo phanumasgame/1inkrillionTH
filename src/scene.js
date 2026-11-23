@@ -31,6 +31,10 @@ const WATER_PALETTES = {
     [0, '#2b778b'], [120, '#236378'], [400, '#1b4f64'], [980, '#133b4f'],
     [2100, '#0c2738'], [4300, '#081926'], [9000, '#050e17'], [14800, '#03080e']
   ],
+  football: [
+    [0, '#1b6d62'], [120, '#165a55'], [400, '#114749'], [980, '#0c343c'],
+    [2100, '#08232d'], [4300, '#051721'], [9000, '#030d15'], [14800, '#02070c']
+  ],
 };
 const THEME_GLOW_COLORS = {
   classic: '75,222,244',
@@ -38,7 +42,18 @@ const THEME_GLOW_COLORS = {
   geography: '96,232,212',
   nature: '104,231,180',
   lifestyle: '255,212,122',
+  football: '98,235,148',
 };
+function isLoyKrathongSeason() {
+  try {
+    const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Bangkok', month: 'numeric', day: 'numeric' }).formatToParts(new Date());
+    const m = Number(parts.find(p => p.type === 'month')?.value || 0);
+    const d = Number(parts.find(p => p.type === 'day')?.value || 0);
+    return m === 11 && d >= 22 && d <= 30;
+  } catch {
+    return true;
+  }
+}
 const RAY_DEPTH = 1120;
 const RAYS = [
   [.04, .18, -.12, .25], [.18, .29, -.15, .21], [.37, .22, -.09, .24],
@@ -124,6 +139,13 @@ export class OceanScene {
       { kind: 'angler', minD: 1900, maxD: 8500, x: .24, y: .66, speed: .0032, dir: 1, size: .98 },
       { kind: 'dumbo', minD: 2600, maxD: 8500, x: .72, y: .38, speed: .0038, dir: -1, size: .95 },
       { kind: 'leviathan', minD: 4100, maxD: 9500, x: .32, y: .74, speed: .0042, dir: 1, size: 1.15 },
+    ];
+    this.krathongs = [
+      { x: .11, speed: .0042, scale: .88, petal: '#ff8ec6', leaf: '#39a85e', phase: .2 },
+      { x: .26, speed: .0035, scale: 1.02, petal: '#ffd86b', leaf: '#42b868', phase: 1.7 },
+      { x: .41, speed: .0031, scale: .78, petal: '#ffa4d2', leaf: '#339954', phase: 2.9 },
+      { x: .72, speed: .0039, scale: .96, petal: '#ff7fb8', leaf: '#3fae63', phase: 4.1 },
+      { x: .86, speed: .0033, scale: .84, petal: '#ffe07a', leaf: '#45bc6b', phase: 5.3 },
     ];
     this.kelp = Array.from({ length: 12 }, (_, i) => ({
       side: i % 2, y: (i * .11) % 1, len: 42 + (i % 4) * 16, phase: i * .9
@@ -669,6 +691,81 @@ export class OceanScene {
 
     c.globalAlpha = 1;
     if (waveOnScreen) c.restore();
+
+    // Loy Krathong floating lotus lanterns on landing water surface (Nov 22-30 Bangkok time)
+    if (!this.active && waveOnScreen && !this.lowPower && isLoyKrathongSeason()) {
+      this.drawLoyKrathongs(c, w, time, waveY);
+    }
+  }
+  drawLoyKrathongs(c, w, time, waveY) {
+    c.save();
+    for (const k of this.krathongs) {
+      const kx = wrap(k.x + time * k.speed, 1.08) * (w + 90) - 45;
+      const ky = waveY(kx) - 1;
+      const slope = Math.atan2(waveY(kx + 6) - waveY(kx - 6), 12) * .75;
+      const flicker = .82 + .18 * Math.sin(time * 8.5 + k.phase * 3);
+      const s = k.scale;
+
+      c.save();
+      c.translate(kx, ky);
+      c.rotate(slope);
+      c.scale(s, s);
+
+      // Warm candle reflection shimmer in shallow water beneath the krathong
+      const refAlpha = (.18 * flicker).toFixed(3);
+      c.fillStyle = `rgba(255,220,120,${refAlpha})`;
+      c.fillRect(-10, 4, 20, 2);
+      c.fillStyle = `rgba(255,190,90,${(.11 * flicker).toFixed(3)})`;
+      c.fillRect(-6, 8, 12, 2);
+
+      // Banana leaf cup base (krathong body)
+      c.fillStyle = '#185432';
+      c.fillRect(-13, -3, 26, 5);
+      c.fillStyle = k.leaf;
+      c.fillRect(-14, -6, 28, 4);
+      // Folded triangular leaf peaks (กลีบกระทง)
+      for (let bx = -12; bx <= 10; bx += 5) {
+        c.fillStyle = '#5ee088';
+        c.fillRect(bx, -9, 3, 3);
+      }
+
+      // Lotus/marigold flower trim + incense sticks
+      c.fillStyle = k.petal;
+      c.fillRect(-10, -8, 20, 3);
+      c.fillStyle = '#fff3b8';
+      c.fillRect(-4, -9, 8, 2);
+
+      // Three incense sticks
+      c.fillStyle = '#8b5e3c';
+      c.fillRect(-5, -18, 1, 9);
+      c.fillRect(-1, -19, 1, 10);
+      c.fillRect(4, -18, 1, 9);
+      c.fillStyle = '#ff6a4d';
+      c.fillRect(-5, -19, 1, 1);
+      c.fillRect(-1, -20, 1, 1);
+      c.fillRect(4, -19, 1, 1);
+
+      // Golden candle & warm radial glow halo
+      c.fillStyle = '#ffe074';
+      c.fillRect(0, -15, 3, 7);
+      const glow = c.createRadialGradient(1.5, -19, 1, 1.5, -19, 16 * flicker);
+      glow.addColorStop(0, `rgba(255,244,168,${(.55 * flicker).toFixed(3)})`);
+      glow.addColorStop(.5, `rgba(255,176,72,${(.22 * flicker).toFixed(3)})`);
+      glow.addColorStop(1, 'rgba(255,160,60,0)');
+      c.fillStyle = glow;
+      c.beginPath();
+      c.arc(1.5, -19, 16 * flicker, 0, Math.PI * 2);
+      c.fill();
+
+      // Pixel flame core
+      c.fillStyle = '#ff9d3b';
+      c.fillRect(0, -20, 3, 5);
+      c.fillStyle = '#fff9c9';
+      c.fillRect(1, -21, 1.5, 4);
+
+      c.restore();
+    }
+    c.restore();
   }
   drawGroupThemeArt(c, w, h, time, surface) {
     if (this.groupTheme === 'classic') return;
@@ -758,6 +855,30 @@ export class OceanScene {
         c.fillStyle = `rgba(255,215,120,${pulse})`;
         c.beginPath(); c.arc(lx, ly, 4.5, 0, Math.PI * 2); c.fill();
       }
+    } else if (this.groupTheme === 'football') {
+      // Sunken Stadium Floodlight Beams & Glowing Pitch Markings
+      for (const side of [-1, 1]) {
+        const fx = side < 0 ? w * .12 : w * .88;
+        const beam = c.createLinearGradient(fx, topClip, w * .5, h * .85);
+        beam.addColorStop(0, 'rgba(130,245,175,.11)');
+        beam.addColorStop(1, 'rgba(130,245,175,0)');
+        c.fillStyle = beam;
+        c.beginPath();
+        c.moveTo(fx - 18, topClip);
+        c.lineTo(fx + 18, topClip);
+        c.lineTo(w * .5 + side * -120, h);
+        c.lineTo(w * .5 + side * 200, h);
+        c.closePath();
+        c.fill();
+      }
+      c.strokeStyle = 'rgba(110,235,160,.11)';
+      c.lineWidth = 1.4;
+      const cy = Math.max(topClip + 120, h * .54);
+      c.beginPath();
+      c.arc(w * .5, cy, 86, 0, Math.PI * 2);
+      c.moveTo(w * .14, cy);
+      c.lineTo(w * .86, cy);
+      c.stroke();
     }
     c.restore();
   }

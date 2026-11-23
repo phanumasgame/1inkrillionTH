@@ -8,7 +8,7 @@ import { OceanScene } from './scene.js';
 import { descentDuration, PIXELS_PER_METER, METERS_PER_POINT } from './descent.js';
 import { focusAnswer } from './input.js';
 
-const APP_VERSION = '1.1.0';
+const APP_VERSION = '1.1.1';
 const app = document.getElementById('app');
 const modalRoot = document.getElementById('modal-root');
 let bank, audio, scene;
@@ -165,10 +165,31 @@ function controls(active = false) {
     (active ? '' : '<button class="icon-btn" data-action="settings" aria-label="Open settings">' + icon('settings') + '</button>' +
     '<button class="icon-btn" data-action="wardrobe" aria-label="Open wardrobe">' + icon('shirt') + '</button>') + '</div>';
 }
+const BUDDY_LINES = {
+  plankton: ['แพลงก์ตอนตัวจิ๋ว!', 'คำตอบธรรมดาก็ได้แต้มนะ', 'ค่อยๆ ลงลึกทีละเมตร~'],
+  krillion: ['บลุ๊บ~ ลงไปหา Krillion กัน!', 'ลองนึกคำเฉพาะทางดูสิ ✨', '30 วิเต็มที่เลย!'],
+  'krillion-gold': ['ทองวิบวับระดับตำนาน ✨', 'รอบนี้ต้องมี Krillion อีกแน่!', 'บลุ๊บ~ ฉลองเจ้าสมุทร!'],
+  schooler: ['ว่ายเป็นฝูงอุ่นใจกว่า', 'ลองคำที่คุ้นหูแต่ไม่แมสสุดดู', '30 แต้มก็นำทางลงลึกได้!'],
+  'schooler-gold': ['ฝูงทองนำทางสู่ก้นทะเล ✨', 'สายสม่ำเสมอตัวจริง!', 'ไปต่อให้ถึง Abyss เลย!'],
+  rare: ['ลึกขนาดนี้ต้องมี Rare 💎', 'ลองชื่อเฉพาะหรือคำลึกอีกนิด', 'จ้องดีๆ คำ Rare ซ่อนอยู่'],
+  deepcut: ['80 แต้มรออยู่ข้างล่าง...', 'มืดแล้วแต่อย่าเพิ่งยอมแพ้!', 'คำลึกซ่อนตัวอยู่ในความมืด'],
+  tooclever: ['ฮึ! คิดลึกไปหรือเปล่านะ?', 'พองลมรออยู่ตรงนี้แหละ!', 'ตอบหลุดคลังระวัง Too Clever~'],
+  axolotl: ['เร็วปานสายฟ้า~ ⚡', '30 วิเหลือเฟือ ลุยเลย!', 'ยิ้มสู้ไว้เดี๋ยวก็เจอ Krillion!'],
+  narwhal: ['ยูนิคอร์นแห่งท้องทะเล 🦄', 'นึกคำระดับ 500+ แต้ม!', 'เขาวิเศษชี้นำทางลงก้นสมุทร'],
+  seadragon: ['พลิ้วไหวดั่งมังกรทะเล 🌿', 'Rare รวด 7 ข้อทำได้ไหมนะ?', 'ใจเย็นๆ ค่อยๆ นึกคำคมๆ'],
+  kraken: ['เจ้าแห่งห้วงลึกตื่นแล้ว 🐙', '600+ แต้มอยู่แค่เอื้อม!', 'กางหนวดรับพลังแห่ง Abyss!']
+};
+const BUDDY_REACTIONS = ['is-hop', 'is-spin', 'is-dash'];
+const BUDDY_SPARK_IDS = new Set(['rare', 'deepcut', 'krillion', 'krillion-gold', 'schooler-gold', 'narwhal', 'seadragon', 'kraken']);
+
 function friend(diving = false) {
+  const buddyId = save.character || 'krillion';
   const atPrompt = !diving && view === 'play' && ['preview','answer','correction'].includes(session.phase);
-  return '<button class="friend' + (diving ? ' dive-friend' : atPrompt ? ' at-prompt' : '') + '" data-action="blub" aria-label="a friend"><img' + goldSprite(save.character) + ' src="' +
-    sprite(save.character) + '" alt=""></button>';
+  const tier = session?.results?.at(-1)?.tier;
+  const celebrate = diving && ['rare', 'deepcut', 'krillion'].includes(tier);
+  return '<button class="friend' + (diving ? ' dive-friend' : atPrompt ? ' at-prompt' : '') + (celebrate ? ' is-celebrate' : '') +
+    '" data-action="blub" data-buddy="' + esc(buddyId) + '" aria-label="a friend"><img' + goldSprite(buddyId) + ' src="' +
+    sprite(buddyId) + '" alt=""><span class="buddy-bubbles" aria-hidden="true"></span></button>';
 }
 function groupPacksStrip(compact = false) {
   return '<div class="pack-grid' + (compact ? ' is-compact' : '') + '" role="navigation" aria-label="Themed dive expeditions">' +
@@ -508,11 +529,23 @@ function startDive(forceNew = false) {
       }
     }
   } else {
+    save.seenByGroup = save.seenByGroup || {};
     save.runByGroup = save.runByGroup || {};
     const prevRun = activeGroup === 'classic' ? save.run : (save.runByGroup[activeGroup] || 0);
     runNumber = prevRun + 1;
-    const selection = selectEndless(bank, save.seen, Math.random, runNumber, activeGroup);
-    questions = selection.questions; save.seen = selection.seen;
+    const groupSeen = activeGroup === 'classic'
+      ? (Array.isArray(save.seen) ? save.seen : [])
+      : (Array.isArray(save.seenByGroup[activeGroup]) ? save.seenByGroup[activeGroup] : []);
+    const selection = selectEndless(bank, groupSeen, Math.random, runNumber, activeGroup);
+    questions = selection.questions;
+    if (activeGroup === 'classic') {
+      save.seen = selection.seen;
+      save.seenByGroup.classic = selection.seen;
+    } else {
+      save.seenByGroup[activeGroup] = selection.seen;
+      const merged = (Array.isArray(save.seen) ? save.seen : []).filter(id => !questions.some(q => q.id === id));
+      save.seen = [...merged, ...questions.map(q => q.id)].slice(-bank.questions.length);
+    }
     if (activeGroup === 'classic') save.run = runNumber;
     else save.runByGroup[activeGroup] = runNumber;
   }
@@ -601,20 +634,39 @@ function aboutDialog() {
     '<p style="font-size:11px;color:#7c9bb6">ภาพฉากและตัวละครสร้างใหม่สำหรับโปรเจกต์นี้ ที่มาและสิทธิ์ของฟอนต์อยู่ใน assets/README.md เกมนี้เป็นโปรเจกต์แยกจาก Krillion.io</p></div>');
 }
 function wardrobeDialog() {
-  const completed = save.history.length, gems = save.history.reduce((n,s) => n + s.results.filter(r => r.tier === 'krillion').length, 0);
+  const validHistory = save.history.filter(s => Array.isArray(s?.results));
+  const completed = save.history.length;
+  const gems = validHistory.reduce((n, s) => n + s.results.filter(r => r.tier === 'krillion').length, 0);
+  const bestScore = Math.max(0, ...validHistory.map(s => Number(s.score) || 0));
+  const maxGemsInRun = Math.max(0, ...validHistory.map(s => s.results.filter(r => r.tier === 'krillion').length));
+  const hasDaily = validHistory.some(s => s.mode === 'daily');
+  const hasEndless = validHistory.some(s => s.mode === 'endless');
+  const distinctGroups = new Set(validHistory.filter(s => s.mode === 'endless').map(s => s.group || 'classic')).size;
+  const fastPerfectDive = validHistory.some(s => {
+    if ((Number(s.score) || 0) < 400 || s.results.length < 7 || s.results.some(r => !r.points)) return false;
+    const times = s.results.map(r => (typeof r.elapsedMs === 'number' && r.elapsedMs > 0) ? r.elapsedMs : 99999);
+    return times.reduce((a, b) => a + b, 0) / s.results.length < 12000;
+  });
+  const rareSweepDive = validHistory.some(s => s.results.length >= 7 && s.results.every(r => ['rare', 'deepcut', 'krillion'].includes(r.tier)));
   const characters = [
-    ['krillion','a little friend',true,'your first dive buddy'],
-    ['schooler','schooler',completed >= 1,'finish one dive'],
-    ['rare','rare companion',completed >= 3,'finish three dives'],
-    ['deepcut','deep cut',completed >= 7,'finish seven dives'],
-    ['krillion-gold','golden buddy',gems >= 1,'find one Krillion'],
-    ['schooler-gold','golden schooler',gems >= 3,'find three Krillions']
+    ['krillion', 'a little friend', true, 'your first dive buddy'],
+    ['schooler', 'schooler', completed >= 1, 'finish 1 dive'],
+    ['rare', 'rare companion', completed >= 3, 'finish 3 dives'],
+    ['deepcut', 'deep cut', completed >= 7, 'finish 7 dives'],
+    ['krillion-gold', 'golden buddy', gems >= 1, 'find 1 Krillion'],
+    ['schooler-gold', 'golden schooler', gems >= 3, 'find 3 Krillions'],
+    ['plankton', 'plankton buddy', completed >= 10, 'ดำครบ 10 รอบ'],
+    ['tooclever', 'too clever', hasDaily && hasEndless && bestScore >= 350, 'Daily + Endless & ≥ 350 pts'],
+    ['axolotl', 'axolotl', fastPerfectDive, '≥ 400 pts · 7/7 < 12s'],
+    ['narwhal', 'narwhal', bestScore >= 500, 'ทำ ≥ 500 แต้มในรอบเดียว'],
+    ['seadragon', 'sea dragon', rareSweepDive, 'Rare+ รวดเดียว 7 ข้อ'],
+    ['kraken', 'abyssal kraken', bestScore >= 600 || maxGemsInRun >= 3 || distinctGroups >= 5, '≥ 600 pts · 3 Krillions · 5 หมวด']
   ];
   openModal('wardrobe','Your dive buddy','<div class="wardrobe-grid">' + characters.map(([id,title,unlocked,detail]) =>
     '<button class="wardrobe-item' + (save.character === id ? ' selected' : '') + '" data-character="' + id + '"' +
     (!unlocked ? ' disabled' : '') + '><img' + goldSprite(id) + ' src="' + sprite(id) + '" alt=""><span>' + title + '</span><small>' +
     (unlocked ? save.character === id ? 'EQUIPPED' : 'SELECT' : '🔒 ' + detail) + '</small></button>').join('') +
-    '</div><p class="method-info">ตัวละครปลดล็อกจากประวัติการเล่นในเครื่องนี้</p>');
+    '</div><p class="method-info">ตัวละคร 12 สายพันธุ์ปลดล็อกจากสถิติและภารกิจการดำน้ำในเครื่องนี้ (คลิก Buddy เพื่อคุยหรือดูท่าทางได้)</p>');
 }
 function sessionHistoryLabel(s) {
   if (s.mode === 'daily') return 'Daily · ' + esc(s.date);
@@ -758,8 +810,57 @@ function sendTelemetryIfNeeded(doneSession) {
 function getPatchHistory(totalAnswers, megaCount) {
   return [
     {
-      version: '1.1.0',
+      version: '1.1.1',
       badge: 'ล่าสุด',
+      headline: 'มีอะไรใหม่ใน v1.1.1 · Krillion Football & 12 Dive Buddies',
+      subtitle: 'แยกคลังแฟรนไชส์ดัง, Wordle 14,855 คำ, หมวดฟุตบอลเต็มรูปแบบ, 6 Buddies สายโหด และกระทงลอยวันลอยกระทง',
+      stats: [
+        { value: '278', label: 'โจทย์ไทย & สากล (139/139)' },
+        { value: number(totalAnswers), label: 'คำตอบทั้งหมดในคลัง' },
+        { value: '12', label: 'Dive Buddies (คลิกเล่นได้!)' },
+      ],
+      cards: [
+        {
+          tag: 'FOOTBALL ⚽',
+          tagClass: 'is-gold',
+          title: 'เปิด Dive Pack ใหม่: Krillion Football (/unlimited/football)',
+          bullets: [
+            'รวม <strong>15 โจทย์ฟุตบอลไทยและสากล</strong> ทั้งสโมสรไทยลีก นักเตะทีมชาติไทย สนาม โค้ช-บุคคลสำคัญ พรีเมียร์ลีก และตำนานฟุตบอลโลก',
+            'มาพร้อมธีม <strong>สนามฟุตบอลยามค่ำคืน & สปอตไลท์</strong> เฉพาะหมวดฟุตบอล',
+          ],
+        },
+        {
+          tag: 'EXPANDED',
+          tagClass: 'is-new',
+          title: 'แยกคลังแฟรนไชส์ยอดฮิต · เพิ่มชื่อเล่นดาราไทย & คำตกหล่น',
+          bullets: [
+            'ขยาย <strong>One Piece (918 ตัวละคร)</strong> พร้อมแยกคลังเฉพาะเรื่อง <strong>Naruto</strong>, <strong>Dragon Ball</strong>, <strong>โคนัน</strong>, <strong>โดราเอมอน</strong>, <strong>Star Wars</strong>, <strong>Lord of the Rings</strong>, <strong>Sanrio</strong>, <strong>LoL</strong> และ <strong>Valorant/Overwatch</strong>',
+            'เพิ่ม <strong>ชื่อเล่นและคำเรียกคนดังไทย 1,400+ รายการ</strong> (เช่น โดม ปกรลัม, อาไท, โยกเยก) พร้อมตัดวรรณยุกต์/การันต์ที่พิมพ์เกินหน้าคำ และเติม Samarkand, Kenshi, Nadia Comaneci',
+          ],
+        },
+        {
+          tag: 'WORDLE & LOOP',
+          tagClass: '',
+          title: 'ยกเครื่อง Wordle 14,855 คำ & แก้โจทย์ซ้ำ Endless',
+          bullets: [
+            'รองรับคำศัพท์ภาษาอังกฤษ 5 ตัวอักษรครบชุด <strong>14,855 คำ</strong> ทั้ง MYRRH, PARER, ปรับคำอธิบายช่วง A–M ให้ชัดเจน และเว้นระยะไม่ให้ Wordle ออกติดกัน',
+            'แก้ระบบเวียนโจทย์ <strong>Endless</strong> แบบแยกประวัติรายหมวด (FIFO) ให้ดำได้ยาวโดยไม่เจอข้อซ้ำเร็วเกินไป',
+          ],
+        },
+        {
+          tag: 'BUDDIES & LOY KRATHONG',
+          tagClass: 'is-gold',
+          title: '12 Dive Buddies แบบ Interactive & เทศกาลลอยกระทง 🪷',
+          bullets: [
+            'เพิ่ม 6 Buddy ใหม่ระดับท้าทาย: <strong>Plankton, Too Clever, Axolotl, Narwhal, Sea Dragon</strong> และ <strong>Abyssal Kraken</strong> พร้อมแอนิเมชันว่ายน้ำเฉพาะตัว',
+            'คลิกที่ Buddy ได้ทุกเวลา! เพื่อนจะกระโดด หมุนตัว พุ่งตัว ปล่อยฟอง/ประกายดาว และพูดให้กำลังใจตามสายพันธุ์ พร้อม <strong>กระทงลอยแสงเทียน</strong> บนผิวน้ำหน้าแรก',
+          ],
+        },
+      ],
+    },
+    {
+      version: '1.1.0',
+      badge: 'Dive Packs',
       headline: 'มีอะไรใหม่ในอัปเดต v1.1.0',
       subtitle: 'เพิ่มโหมดดำน้ำแยกตามหมวดหมู่พร้อมฉากท้องทะเลเฉพาะธีม ขยายเวลาคิดเป็น 30 วินาที เพิ่มโจทย์เฉพาะทางยอดฮิต 20 หมวด และอัปเกรดระบบ Alias ทั้งคลัง',
       stats: [
@@ -1766,8 +1867,30 @@ document.addEventListener('click', async event => {
     case 'sound':
       save.settings.muted = !save.settings.muted; applySettings(); persist(); render();
       if (!save.settings.muted) audio.play('blub'); break;
-    case 'blub':
-      audio.play('blub'); button.classList.add('blub'); setTimeout(()=>button.classList.remove('blub'),1000); break;
+    case 'blub': {
+      const buddyId = button.dataset.buddy || save.character || 'krillion';
+      const lines = BUDDY_LINES[buddyId] || BUDDY_LINES.krillion;
+      const lineIdx = ((Number(button.dataset.lineIdx || -1) + 1) % lines.length);
+      const animIdx = ((Number(button.dataset.animIdx || -1) + 1) % BUDDY_REACTIONS.length);
+      button.dataset.lineIdx = String(lineIdx);
+      button.dataset.animIdx = String(animIdx);
+      button.dataset.say = lines[lineIdx];
+      button.classList.remove('blub', ...BUDDY_REACTIONS);
+      void button.offsetWidth;
+      button.classList.add('blub', BUDDY_REACTIONS[animIdx]);
+      const bubblesEl = button.querySelector('.buddy-bubbles');
+      if (bubblesEl) {
+        const spark = BUDDY_SPARK_IDS.has(buddyId);
+        bubblesEl.innerHTML = Array.from({length: 5}, (_, i) =>
+          '<i' + (spark && i % 2 === 0 ? ' class="is-spark"' : '') +
+          ' style="--bx:' + (18 + i * 16) + '%;--dx:' + ((i - 2) * 11) + 'px;animation-delay:' + (i * 55) + 'ms"></i>'
+        ).join('');
+      }
+      audio.play('blub');
+      clearTimeout(button._blubTimer);
+      button._blubTimer = setTimeout(() => button.classList.remove('blub', ...BUDDY_REACTIONS), 1400);
+      break;
+    }
   }
 });
 modalRoot.addEventListener('change',event => {

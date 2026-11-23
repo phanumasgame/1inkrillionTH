@@ -24,7 +24,7 @@ const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; ch
   '.md': 'text/plain; charset=utf-8', '.txt': 'text/plain; charset=utf-8' };
 const routes = new Set([
   '/', '/daily', '/unlimited', '/unlimited/classic', '/unlimited/entertainment',
-  '/unlimited/geography', '/unlimited/nature', '/unlimited/lifestyle', '/admin',
+  '/unlimited/geography', '/unlimited/nature', '/unlimited/lifestyle', '/unlimited/football', '/admin',
 ]);
 const apiRoutes = new Map([
   ['/api/suggestions', suggestionsHandler],

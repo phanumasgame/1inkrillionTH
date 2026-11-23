@@ -101,9 +101,22 @@ button{color:inherit}
 .starter-hint{font-family:Sarabun,sans-serif;font-size:12px;line-height:1.5;color:#c9dbea;margin-top:6px}
 .starter-hint summary{cursor:pointer;color:#9fd5e9;width:max-content;max-width:100%}
 .starter-hint span{display:block;margin-top:3px}
-.friend{position:fixed;left:calc(50% - 320px);top:50%;width:64px;height:64px;object-fit:contain;image-rendering:pixelated;z-index:4;cursor:pointer;border:0;background:transparent;padding:0;transition:top 1.5s ease,left 1.5s ease;animation:friend 4s ease-in-out infinite}
-.friend img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
-.friend.blub:after{content:"blub!";position:absolute;bottom:65px;left:30px;color:#e7eff8;font-size:18px;white-space:nowrap}
+.friend{position:fixed;left:calc(50% - 320px);top:50%;width:64px;height:64px;object-fit:contain;image-rendering:pixelated;z-index:4;cursor:pointer;border:0;background:transparent;padding:0;transition:top 1.5s ease,left 1.5s ease,transform .2s ease;animation:friend 4s ease-in-out infinite}
+.landing .friend{left:max(18px,calc(50% - 395px));top:46%}
+.friend img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;display:block;pointer-events:none;transition:transform .28s ease}
+.friend[data-buddy="axolotl"]{animation:friend-dart 2.7s ease-in-out infinite}
+.friend[data-buddy="seadragon"]{animation:friend-glide 4.5s ease-in-out infinite}
+.friend[data-buddy="narwhal"]{animation:friend 3.4s ease-in-out infinite;filter:drop-shadow(0 0 8px rgba(130,225,255,.35))}
+.friend[data-buddy="kraken"]{animation:friend-royal 3.8s ease-in-out infinite;filter:drop-shadow(0 0 10px rgba(255,215,105,.45))}
+.friend[data-buddy="tooclever"]{animation:friend-dart 3.1s ease-in-out infinite}
+.friend.blub:after{content:attr(data-say);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#0a1e33ee;border:1px solid var(--cyan);color:#eaf6ff;font-family:Sarabun,VT323,sans-serif;font-size:13px;line-height:1.35;padding:4px 9px;white-space:nowrap;box-shadow:3px 3px 0 #040d18;pointer-events:none;animation:reveal .18s ease-out}
+.friend.is-hop img{animation:buddy-hop .55s ease-out}
+.friend.is-spin img{animation:buddy-spin .62s ease-in-out}
+.friend.is-dash img{animation:buddy-dash .58s ease-out}
+.friend.is-celebrate img{animation:buddy-celebrate .95s ease-in-out infinite;filter:drop-shadow(0 0 12px rgba(255,227,135,.65))}
+.buddy-bubbles{position:absolute;inset:0;pointer-events:none;overflow:visible}
+.buddy-bubbles i{position:absolute;left:var(--bx,50%);bottom:65%;width:7px;height:7px;border:1px solid var(--cyan);border-radius:50%;opacity:0;animation:buddy-bubble-up .85s ease-out forwards}
+.buddy-bubbles i.is-spark{border:0;border-radius:0;background:var(--gold);transform:rotate(45deg);width:6px;height:6px}
 .playing .friend{left:max(25px,calc(50% - 365px));top:47%;width:74px;height:74px}
 .preview-status{position:absolute;bottom:110px;left:50%;transform:translateX(-50%);padding:10px 18px;background:#091a2aee;font-size:17px;letter-spacing:2px;white-space:nowrap}
 .preview-status strong{color:var(--cyan);font-weight:400}
@@ -287,11 +300,11 @@ button{color:inherit}
 .answer-bank{display:grid;gap:5px;margin-top:16px}
 .bank-row{display:flex;justify-content:space-between;align-items:center;font-family:Sarabun,sans-serif;font-size:13px;line-height:1.5;border-bottom:1px solid #1f3a51;padding:8px 3px;gap:15px}
 .bank-row small{font-family:VT323,Sarabun,monospace;white-space:nowrap;font-size:17px;color:var(--tier)}
-.wardrobe-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.wardrobe-item{position:relative;background:#10283b;border:1px solid #355671;padding:8px 10px 14px;text-align:center;color:#a7c1d6}
+.wardrobe-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.wardrobe-item{position:relative;background:#10283b;border:1px solid #355671;padding:8px 8px 12px;text-align:center;color:#a7c1d6}
 .wardrobe-item.selected{border:2px solid var(--cyan);box-shadow:0 0 12px #4bdef426}
 .wardrobe-item:disabled{opacity:.5;cursor:not-allowed}
-.wardrobe-item img{width:100px;height:100px;object-fit:contain;image-rendering:pixelated}
+.wardrobe-item img{width:82px;height:82px;object-fit:contain;image-rendering:pixelated}
 .gold-variant{filter:sepia(1) saturate(2.5) hue-rotate(3deg) brightness(1.12)}
 .wardrobe-item span{display:block;font-size:20px}
 .wardrobe-item small{display:block;font-size:14px;color:#789bb6;margin-top:4px}
@@ -333,11 +346,12 @@ button{color:inherit}
 .pack-pill small{display:block;font-family:Sarabun,sans-serif;font-size:10px;line-height:1.35;color:#8bb0cb;margin-left:auto;text-align:right;max-width:58%}
 .pack-grid.is-compact .pack-pill{padding:5px 10px;gap:5px;flex:1 1 auto;justify-content:center}
 .pack-grid.is-compact .pack-pill .pack-name{font-size:16px}
-.pack-grid .pack-classic{grid-column:1 / -1;--pack-accent:#4bdef4}
+.pack-grid .pack-classic{--pack-accent:#4bdef4}
 .pack-grid .pack-entertainment{--pack-accent:#ff66b2}
 .pack-grid .pack-geography{--pack-accent:#68e7cf}
 .pack-grid .pack-nature{--pack-accent:#6ee7a8}
 .pack-grid .pack-lifestyle{--pack-accent:#ffd47a}
+.pack-grid .pack-football{--pack-accent:#62eb94}
 body[data-pack="entertainment"]{--cyan:#76e5ff;--pink:#ff5aa8}
 body[data-pack="entertainment"] #sky{background:radial-gradient(ellipse 145px 28px at 18% 11%,#f8d9ffb0,transparent 94%),linear-gradient(180deg,#5b6eb8,#9285d6 34%,#b7a2d9 61%,#243a71 62%,#0a0d26)}
 body[data-pack="geography"]{--cyan:#68e7cf}
@@ -346,6 +360,8 @@ body[data-pack="nature"]{--cyan:#6ee7a8}
 body[data-pack="nature"] #sky{background:radial-gradient(ellipse 145px 28px at 18% 11%,#e9ffefb0,transparent 94%),linear-gradient(180deg,#5ba992,#9cdcc3 34%,#cce9d6 61%,#1b584d 62%,#051618)}
 body[data-pack="lifestyle"]{--cyan:#ffd47a}
 body[data-pack="lifestyle"] #sky{background:radial-gradient(ellipse 145px 28px at 18% 11%,#fff4dbb0,transparent 94%),linear-gradient(180deg,#d29b75,#ebcba8 34%,#e5e2ce 61%,#28586e 62%,#081927)}
+body[data-pack="football"]{--cyan:#62eb94}
+body[data-pack="football"] #sky{background:radial-gradient(ellipse 160px 30px at 18% 11%,#dfffec99,transparent 94%),linear-gradient(180deg,#25546b,#458f83 34%,#9ed2bb 61%,#154c46 62%,#06171a)}
 .admin-shell{max-width:1040px;margin:0 auto;padding:24px 18px 60px;font-family:Sarabun,sans-serif;font-size:14px;color:#dcecf7}
 .admin-login{max-width:460px;margin:14vh auto;border:1px solid #355f7e;background:#0a1c2ef2;padding:28px 24px;box-shadow:0 16px 40px #0007}
 .admin-brand{font-family:VT323,monospace;font-size:18px;letter-spacing:3px;color:var(--cyan);margin-bottom:4px}
@@ -399,6 +415,14 @@ body[data-pack="lifestyle"] #sky{background:radial-gradient(ellipse 145px 28px a
 @media(max-width:740px){.admin-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-two-col{grid-template-columns:1fr}.admin-top-actions{width:100%}}
 @keyframes boat{0%,100%{transform:translateY(1px) rotate(-1deg)}50%{transform:translateY(-2px) rotate(2deg)}}
 @keyframes friend{0%,100%{margin-top:0}50%{margin-top:-9px}}
+@keyframes friend-dart{0%,100%{transform:translate(0,0) rotate(-3deg)}35%{transform:translate(6px,-6px) rotate(4deg)}70%{transform:translate(-4px,-10px) rotate(-2deg)}}
+@keyframes friend-glide{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-11px) rotate(4deg)}}
+@keyframes friend-royal{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.04)}}
+@keyframes buddy-hop{0%,100%{transform:translateY(0) scale(1)}35%{transform:translateY(-22px) scale(1.12,.94)}65%{transform:translateY(-6px) scale(.95,1.06)}}
+@keyframes buddy-spin{0%{transform:rotate(0deg) scale(1)}50%{transform:translateY(-14px) rotate(185deg) scale(1.1)}100%{transform:rotate(360deg) scale(1)}}
+@keyframes buddy-dash{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-14px) rotate(-14deg) scale(1.06)}60%{transform:translateX(16px) rotate(12deg) scale(1.06)}}
+@keyframes buddy-celebrate{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-10px) scale(1.08)}}
+@keyframes buddy-bubble-up{0%{opacity:.95;transform:translate(0,0) scale(.6)}100%{opacity:0;transform:translate(var(--dx,0),-46px) scale(1.25)}}
 @keyframes blink{50%{opacity:.45}}
 @keyframes reveal{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
 @keyframes prompt-submerge{from{opacity:1;translate:0 0}to{opacity:0;translate:0 -34px}}
@@ -429,6 +453,7 @@ body[data-pack="lifestyle"] #sky{background:radial-gradient(ellipse 145px 28px a
   .pack-pill small{display:none}
   .discovery-card{font-size:22px;letter-spacing:2px;height:64px;width:300px}
   .begin{font-size:25px;letter-spacing:3px;padding:17px 8px;min-height:66px}
+  .wardrobe-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .landing-nav{font-size:12px;letter-spacing:1px;gap:4px}
   .landing-nav button{font-size:13px;padding:7px 9px}
   .howto{font-size:14px;letter-spacing:.6px;margin-bottom:14px}

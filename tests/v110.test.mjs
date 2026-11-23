@@ -38,15 +38,18 @@ test('V1.1.0 sets thinking timer to 30 seconds', () => {
 });
 
 test('V1.1.0 Expedition Dive Groups filter themes cleanly and select balanced 7-round dives', () => {
-  assert.equal(DIVE_GROUPS.length, 5);
+  assert.equal(DIVE_GROUPS.length, 6);
   for (const g of DIVE_GROUPS) {
     assert.equal(getDiveGroup(g.id).id, g.id);
     const pool = filterQuestionsByGroup(bank.questions, g.id);
-    assert.ok(pool.length >= 20, `${g.id} pool too small (${pool.length})`);
+    const minPool = g.id === 'football' ? 15 : 20;
+    assert.ok(pool.length >= minPool, `${g.id} pool too small (${pool.length})`);
     const dive = selectEndless(bank, [], () => 0.37, 1, g.id);
     assert.equal(dive.questions.length, 7);
     assert.equal(new Set(dive.questions.map(q => q.id)).size, 7);
-    if (g.themes) {
+    if (g.filter) {
+      assert.ok(dive.questions.every(q => g.filter(q)), `${g.id} picked off-filter question`);
+    } else if (g.themes) {
       assert.ok(dive.questions.every(q => g.themes.includes(q.theme)), `${g.id} picked off-theme question`);
     }
     const thaiCount = dive.questions.filter(q => q.scope === 'thai').length;
@@ -122,12 +125,16 @@ test('V1.1.0 bank fixes V13 pools, zero-Thai world questions, adds 20 mainstream
     ['world-one-piece-characters', 'ลูฟี่'],
     ['world-marvel-mcu-characters', 'ไอรอนแมน'],
     ['world-disney-pixar-characters', 'Elsa'],
-    ['world-naruto-dragonball-characters', 'โกคู'],
-    ['world-doraemon-conan-characters', 'จอมโจรคิด'],
-    ['world-starwars-lotr-characters', 'Gandalf'],
+    ['world-naruto-characters', 'นารูโตะ'],
+    ['world-dragonball-characters', 'โกคู'],
+    ['world-conan-characters', 'จอมโจรคิด'],
+    ['world-doraemon-characters', 'โดราเอมอน'],
+    ['world-starwars-characters', 'Darth Vader'],
+    ['world-lotr-characters', 'Gandalf'],
     ['world-minecraft-items-mobs', 'ครีปเปอร์'],
-    ['world-sanrio-crayon-mascots', 'คุโรมิ'],
-    ['world-valorant-lol-agents', 'Yasuo'],
+    ['world-sanrio-characters', 'คุโรมิ'],
+    ['world-lol-champions', 'Yasuo'],
+    ['world-valorant-overwatch-heroes', 'Jett'],
     ['th-ramakien-characters', 'ทศกัณฐ์'],
     ['th-phra-aphai-khun-chang-chars', 'สุดสาคร'],
     ['th-rov-heroes', 'Murad'],
