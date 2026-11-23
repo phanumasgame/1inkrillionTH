@@ -2,10 +2,13 @@ import { descentFrame, visibleDepthRange, PIXELS_PER_METER } from './descent.js'
 
 const NOTES = [
   [60, 'light begins to fade'], [200, 'most sunlight stops here'], [332, 'deepest scuba dive — 332m'],
-  [535, 'emperor penguins dive this deep'], [1000, 'THE MIDNIGHT ZONE'],
-  [1800, 'giant squid territory'], [2500, '2°C. utterly black.'],
-  [3000, 'THE ABYSSAL ZONE'], [3800, 'the Titanic rests here — 3,800m'],
-  [5200, 'THE HADAL ZONE'], [7000, 'the trench floor — a perfect dive']
+  [535, 'emperor penguins dive this deep'], [800, 'giant oarfish & twilight hunters'],
+  [1000, 'THE MIDNIGHT ZONE'], [1450, 'bioluminescent lanternfish swarms'],
+  [1800, 'giant squid territory'], [2250, 'sperm whale deepest dive — 2,250m'],
+  [2500, '2°C. utterly black.'], [3000, 'THE ABYSSAL ZONE'],
+  [3800, 'the Titanic rests here — 3,800m'], [4500, 'hydrothermal black smokers'],
+  [5200, 'THE HADAL ZONE'], [6100, 'golden krillion & abyssal aurora'],
+  [7000, 'the trench floor — a perfect dive']
 ];
 const WATER_COLORS = [
   [0, '#267a9e'], [120, '#206a91'], [400, '#185776'], [980, '#113e5c'],
@@ -86,12 +89,32 @@ export class OceanScene {
       }))
     };
     this.gliders = [
-      { kind: 'manta', minD: 40, maxD: 1400, x: .18, y: .42, speed: .0075, dir: 1, size: 1.05 },
-      { kind: 'turtle', minD: 0, maxD: 750, x: .76, y: .27, speed: .0055, dir: -1, size: .9 },
-      { kind: 'whale', minD: 280, maxD: 3100, x: .12, y: .60, speed: .0036, dir: 1, size: 1.25 },
-      { kind: 'squid', minD: 1200, maxD: 6400, x: .82, y: .52, speed: .0048, dir: -1, size: 1.0 },
-      { kind: 'angler', minD: 2200, maxD: 8500, x: .24, y: .68, speed: .0032, dir: 1, size: .95 },
+      { kind: 'turtle', minD: 0, maxD: 820, x: .76, y: .25, speed: .0055, dir: -1, size: .92 },
+      { kind: 'manta', minD: 30, maxD: 1500, x: .18, y: .40, speed: .0075, dir: 1, size: 1.08 },
+      { kind: 'hammerhead', minD: 240, maxD: 1950, x: .64, y: .48, speed: .0082, dir: -1, size: 1.0 },
+      { kind: 'whale', minD: 350, maxD: 3200, x: .12, y: .58, speed: .0036, dir: 1, size: 1.28 },
+      { kind: 'oarfish', minD: 680, maxD: 3900, x: .45, y: .36, speed: .0052, dir: 1, size: 1.05 },
+      { kind: 'squid', minD: 1150, maxD: 6500, x: .82, y: .52, speed: .0048, dir: -1, size: 1.05 },
+      { kind: 'angler', minD: 1900, maxD: 8500, x: .24, y: .66, speed: .0032, dir: 1, size: .98 },
+      { kind: 'dumbo', minD: 2600, maxD: 8500, x: .72, y: .38, speed: .0038, dir: -1, size: .95 },
+      { kind: 'leviathan', minD: 4100, maxD: 9500, x: .32, y: .74, speed: .0042, dir: 1, size: 1.15 },
     ];
+    this.kelp = Array.from({ length: 12 }, (_, i) => ({
+      side: i % 2, y: (i * .11) % 1, len: 42 + (i % 4) * 16, phase: i * .9
+    }));
+    this.lanterns = Array.from({ length: 18 }, (_, i) => ({
+      dx: ((i % 6) * 22 - 55) + (i % 3) * 5,
+      dy: (Math.floor(i / 6) * 18 - 18) + (i % 2) * 7,
+      phase: i * .75, color: i % 3 === 0 ? '#ffe387' : '#4bdef4'
+    }));
+    this.ventPlumes = Array.from({ length: 38 }, (_, i) => ({
+      side: i % 2, offset: .02 + ((i * .031) % .14), y: (i * .13) % 1,
+      r: 1.4 + (i % 4) * .8, speed: .035 + (i % 5) * .012, phase: i * .8
+    }));
+    this.krillSwarm = Array.from({ length: 28 }, (_, i) => ({
+      angle: (i / 28) * Math.PI * 2, radius: 26 + (i % 5) * 22,
+      speed: .45 + (i % 4) * .15, size: 1.8 + (i % 3) * .7, phase: i * .5
+    }));
     this.jellies = Array.from({ length: 7 }, (_, i) => ({
       x: .08 + ((i * .19) % .84), y: (i * .17) % 1,
       speed: .004 + (i % 3) * .0016, size: 10 + (i % 4) * 3.5,
@@ -410,7 +433,127 @@ export class OceanScene {
     }
     c.fill();
 
-    // Majestic zone gliders (turtle, manta ray, whale, giant squid, anglerfish)
+    // Shallow Zone (0m–950m): Swaying kelp & coral reef strands on outer edges
+    if (this.active && !this.lowPower && this.depth < 980) {
+      const kelpFade = clamp(1 - (this.depth - 520) / 460, 0, 1) * .32;
+      if (kelpFade > .02) {
+        c.strokeStyle = `rgba(9,48,68,${kelpFade.toFixed(3)})`;
+        c.lineWidth = 3.2;
+        const span = h + 180;
+        for (let i = 0; i < this.kelp.length; i++) {
+          const k = this.kelp[i];
+          const ky = wrap(k.y * span - this.scroll * .26, span) - 90;
+          if (ky < surface + 35 || ky > h + 40) continue;
+          const kx = k.side === 0 ? 12 + (i % 3) * 8 : w - 12 - (i % 3) * 8;
+          const dir = k.side === 0 ? 1 : -1;
+          const sway = Math.sin(time * 1.4 + k.phase) * 10 * dir;
+          c.beginPath();
+          c.moveTo(kx, ky + k.len);
+          c.quadraticCurveTo(kx + sway, ky + k.len * .5, kx + sway * 1.3, ky);
+          c.stroke();
+        }
+      }
+    }
+
+    // Midnight Zone (900m–4600m): Bioluminescent lanternfish school with glowing photophores
+    if (this.active && !this.lowPower && this.depth > 850 && this.depth < 4700) {
+      const lFade = clamp((this.depth - 850) / 380, 0, 1) * clamp((4700 - this.depth) / 500, 0, 1);
+      const lx = wrap(.68 - time * .0065, 1.25) * (w + 180) - 90;
+      const span = h + 220;
+      const ly = wrap(.48 * span - this.scroll * .31, span) - 110;
+      if (ly > surface + 28 && ly < h - 16 && lFade > .03) {
+        for (const m of this.lanterns) {
+          const mx = lx + m.dx + Math.sin(time * 2.3 + m.phase) * 4;
+          const my = ly + m.dy + Math.cos(time * 1.9 + m.phase) * 3;
+          c.globalAlpha = lFade * .42;
+          c.fillStyle = '#061f33';
+          c.beginPath();
+          c.ellipse(mx, my, 4.2, 1.7, 0, 0, Math.PI * 2);
+          c.fill();
+          const glow = .45 + .55 * Math.sin(time * 3.8 + m.phase);
+          c.globalAlpha = lFade * glow * .82;
+          c.fillStyle = m.color;
+          c.fillRect(mx - 1.5, my - .6, 1.5, 1.5);
+          c.fillRect(mx + .8, my - .4, 1.3, 1.3);
+        }
+      }
+    }
+
+    // Abyssal Zone (2600m–5400m): Ghostly sunken shipwreck / ancient pillar silhouette on trench wall
+    if (this.active && !this.lowPower && this.depth > 2500 && this.depth < 5400) {
+      const wFade = clamp((this.depth - 2500) / 450, 0, 1) * clamp((5400 - this.depth) / 550, 0, 1) * .26;
+      const span = h + 460;
+      const wy = wrap(240 - this.scroll * .16, span) - 180;
+      if (wy > surface + 20 && wy < h + 80 && wFade > .02) {
+        c.globalAlpha = 1;
+        c.fillStyle = `rgba(4,16,30,${wFade.toFixed(3)})`;
+        c.beginPath();
+        c.moveTo(w - 92, wy + 52);
+        c.lineTo(w - 18, wy + 24);
+        c.lineTo(w, wy + 28);
+        c.lineTo(w, wy + 82);
+        c.lineTo(w - 78, wy + 82);
+        c.closePath();
+        c.fill();
+        // Ship mast & crow's nest silhouette
+        c.strokeStyle = `rgba(75,222,244,${(wFade * .45).toFixed(3)})`;
+        c.lineWidth = 1.4;
+        c.beginPath();
+        c.moveTo(w - 54, wy + 38); c.lineTo(w - 62, wy - 8);
+        c.moveTo(w - 74, wy + 6); c.lineTo(w - 46, wy + 2);
+        c.stroke();
+      }
+    }
+
+    // Deep Abyssal & Hadal Zone (3400m+): Hydrothermal vents & rising mineral ember plumes
+    if (this.active && !this.lowPower && this.depth > 3400) {
+      const vFade = clamp((this.depth - 3400) / 700, 0, 1);
+      for (const vp of this.ventPlumes) {
+        const vx = (vp.side === 0 ? vp.offset : 1 - vp.offset) * w + Math.sin(time * 1.6 + vp.phase) * 7;
+        const vy = wrap(vp.y * (h + 90) - time * vp.speed * h - this.scroll * .25, h + 90) - 45;
+        if (vy < surface + 15 || vy > h) continue;
+        const pulse = .45 + .55 * Math.sin(time * 2.8 + vp.phase);
+        c.globalAlpha = vFade * pulse * .58;
+        c.fillStyle = vp.phase % 2 > 1 ? '#ffe387' : '#ff9a5a';
+        c.beginPath();
+        c.arc(vx, vy, vp.r, 0, Math.PI * 2);
+        c.fill();
+      }
+    }
+
+    // Hadal Krillion Trench (4800m+): Abyssal bioluminescent aurora curtains & Golden Krillion vortex
+    if (this.active && !this.lowPower && this.depth > 4800) {
+      const hFade = clamp((this.depth - 4800) / 900, 0, 1);
+      c.save();
+      for (let band = 0; band < 3; band++) {
+        const ay = h * (.28 + band * .22) + Math.sin(time * .55 + band * 1.7) * 24;
+        const grad = c.createLinearGradient(0, ay - 45, w, ay + 45);
+        const col = band === 0 ? '75,222,244' : band === 1 ? '245,83,136' : '255,227,135';
+        grad.addColorStop(0, `rgba(${col},0)`);
+        grad.addColorStop(.5, `rgba(${col},${(hFade * .075).toFixed(3)})`);
+        grad.addColorStop(1, `rgba(${col},0)`);
+        c.fillStyle = grad;
+        c.fillRect(0, ay - 50, w, 100);
+      }
+      // Swirling Golden Krillion constellation
+      const cx = w * .5 + Math.sin(time * .35) * (w * .18);
+      const cy = h * .52 + Math.cos(time * .28) * (h * .12);
+      for (const k of this.krillSwarm) {
+        const ang = k.angle + time * k.speed;
+        const kx = cx + Math.cos(ang) * (k.radius * 1.45);
+        const ky = cy + Math.sin(ang * 1.2) * (k.radius * .75);
+        if (ky < surface + 20) continue;
+        const glow = .4 + .6 * Math.sin(time * 3.4 + k.phase);
+        c.globalAlpha = hFade * glow * .76;
+        c.fillStyle = '#ffe387';
+        c.beginPath();
+        c.ellipse(kx, ky, k.size * 1.4, k.size * .6, ang, 0, Math.PI * 2);
+        c.fill();
+      }
+      c.restore();
+    }
+
+    // Majestic zone gliders (turtle, manta, hammerhead, whale, oarfish, giant squid, anglerfish, dumbo, leviathan)
     if (!this.lowPower) {
       for (const g of this.gliders) {
         if (this.depth < g.minD - 120 || this.depth > g.maxD + 220) continue;
@@ -501,6 +644,18 @@ export class OceanScene {
       c.moveTo(5, -7); c.quadraticCurveTo(10, -21 + stroke, -2, -13);
       c.moveTo(5, 7); c.quadraticCurveTo(10, 21 - stroke, -2, 13);
       c.fill();
+    } else if (g.kind === 'hammerhead') {
+      const sway = Math.sin(time * 2.6) * 4;
+      c.beginPath();
+      c.moveTo(28, 0);
+      c.quadraticCurveTo(10, -7, -26, -2 + sway * .3);
+      c.lineTo(-38, -11 + sway);
+      c.lineTo(-33, 0);
+      c.lineTo(-38, 10 + sway);
+      c.lineTo(-26, 2 + sway * .3);
+      c.quadraticCurveTo(10, 7, 28, 0);
+      c.moveTo(4, -5); c.lineTo(-4, -17); c.lineTo(-9, -5);
+      c.fill();
     } else if (g.kind === 'whale') {
       c.fillStyle = `rgba(3,17,29,${clamp(fade * .22, 0, .22).toFixed(3)})`;
       c.beginPath();
@@ -512,6 +667,24 @@ export class OceanScene {
       c.lineTo(-28, 10);
       c.quadraticCurveTo(32, 18, 64, 2);
       c.fill();
+    } else if (g.kind === 'oarfish') {
+      // Ribbon-like sinusoidal giant oarfish (พญานาคทะเล) with glowing crimson-pink crest
+      c.strokeStyle = `rgba(122,243,216,${clamp(fade * .24, 0, .24).toFixed(3)})`;
+      c.lineWidth = 3.2;
+      c.beginPath();
+      for (let seg = 0; seg <= 14; seg++) {
+        const sx = 32 - seg * 5.2;
+        const sy = Math.sin(time * 3.1 - seg * .55) * (2.5 + seg * .35);
+        if (seg === 0) c.moveTo(sx, sy);
+        else c.lineTo(sx, sy);
+      }
+      c.stroke();
+      c.strokeStyle = `rgba(245,83,136,${clamp(fade * .34, 0, .34).toFixed(3)})`;
+      c.lineWidth = 1.6;
+      c.beginPath();
+      c.moveTo(32, -2); c.lineTo(39, -11 + Math.sin(time * 3.1) * 2);
+      c.moveTo(30, -2); c.lineTo(35, -13 + Math.cos(time * 3.1) * 2);
+      c.stroke();
     } else if (g.kind === 'squid') {
       c.fillStyle = `rgba(75,222,244,${clamp(fade * .14, 0, .14).toFixed(3)})`;
       c.beginPath();
@@ -540,6 +713,34 @@ export class OceanScene {
       const pulse = .35 + .25 * Math.sin(time * 3.1);
       c.fillStyle = `rgba(255,227,135,${clamp(fade * pulse, 0, .6).toFixed(3)})`;
       c.beginPath(); c.arc(26, -6 + Math.sin(time * 2.5) * 2, 2.8, 0, Math.PI * 2); c.fill();
+    } else if (g.kind === 'dumbo') {
+      // Deep-sea Dumbo octopus with ear-like fins and soft magenta-violet glow
+      const ear = Math.sin(time * 2.9) * 3.5;
+      c.fillStyle = `rgba(245,181,255,${clamp(fade * .18, 0, .18).toFixed(3)})`;
+      c.beginPath();
+      c.ellipse(0, 0, 9, 11, 0, Math.PI, Math.PI * 2);
+      c.arc(0, 2, 9, 0, Math.PI);
+      c.moveTo(-7, -6); c.quadraticCurveTo(-15, -12 + ear, -8, -2);
+      c.moveTo(7, -6); c.quadraticCurveTo(15, -12 - ear, 8, -2);
+      c.fill();
+    } else if (g.kind === 'leviathan') {
+      // Hadal bioluminescent dragonfish / gulper leviathan with glowing lateral photophores
+      c.strokeStyle = `rgba(75,222,244,${clamp(fade * .22, 0, .22).toFixed(3)})`;
+      c.lineWidth = 3.6;
+      c.beginPath();
+      for (let seg = 0; seg <= 16; seg++) {
+        const sx = 38 - seg * 5.5;
+        const sy = Math.sin(time * 2.4 - seg * .48) * (3 + seg * .3);
+        if (seg === 0) c.moveTo(sx, sy);
+        else c.lineTo(sx, sy);
+      }
+      c.stroke();
+      c.fillStyle = `rgba(255,227,135,${clamp(fade * .55, 0, .55).toFixed(3)})`;
+      for (let seg = 1; seg <= 12; seg += 2) {
+        const sx = 38 - seg * 5.5;
+        const sy = Math.sin(time * 2.4 - seg * .48) * (3 + seg * .3);
+        c.fillRect(sx - 1, sy - 1, 2, 2);
+      }
     }
     c.restore();
   }

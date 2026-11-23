@@ -313,6 +313,16 @@ button{color:inherit}
 .low-power #boat,.low-power .friend{animation:none}
 .low-power #world:before{display:none}
 .low-power .overlay{backdrop-filter:none}
+.share-studio{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+.share-canvas-wrap{background:rgba(3,10,20,.85);border:1px solid rgba(122,220,255,.24);border-radius:14px;padding:8px;display:flex;justify-content:center;max-height:52svh;overflow:hidden}
+.share-canvas-wrap canvas{width:auto;max-width:100%;max-height:calc(52svh - 16px);height:auto;border-radius:10px;box-shadow:0 10px 28px rgba(0,0,0,.45)}
+.share-spoiler-toggle{display:flex;align-items:center;gap:8px;font:14px/1.4 Sarabun,sans-serif;color:#d6eefb;cursor:pointer;background:rgba(10,32,52,.65);padding:8px 12px;border-radius:10px;border:1px solid rgba(122,220,255,.16)}
+.share-spoiler-toggle small{color:#8eb4cc}
+.share-studio-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.share-studio-actions .primary-button{font-size:17px;padding:10px 8px;letter-spacing:1px}
+.share-studio-actions .is-gold-btn{background:linear-gradient(180deg,#ffe387,#f2b84b);color:#061829;border-color:#ffe387;font-weight:700}
+.share-text-details{font:13px/1.5 Sarabun,sans-serif;color:#9eb8cc}
+.share-text-details summary{cursor:pointer;margin-bottom:6px}
 @keyframes boat{0%,100%{transform:translateY(1px) rotate(-1deg)}50%{transform:translateY(-2px) rotate(2deg)}}
 @keyframes friend{0%,100%{margin-top:0}50%{margin-top:-9px}}
 @keyframes blink{50%{opacity:.45}}

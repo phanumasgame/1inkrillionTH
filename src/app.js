@@ -8,7 +8,7 @@ import { OceanScene } from './scene.js';
 import { descentDuration, PIXELS_PER_METER, METERS_PER_POINT } from './descent.js';
 import { focusAnswer } from './input.js';
 
-const APP_VERSION = '1.0.12';
+const APP_VERSION = '1.0.13';
 const app = document.getElementById('app');
 const modalRoot = document.getElementById('modal-root');
 let bank, audio, scene;
@@ -251,7 +251,7 @@ function resultsView() {
     '<div class="results-graph" aria-label="Score for each of seven prompts">' + session.results.map((r, i) =>
       '<div class="graph-column" style="--tier:' + (r.tier ? tierColor(r.tier) : '#40526a') + '"><i style="height:' +
       r.points + '%"></i><span>' + (i + 1) + '</span></div>').join('') + '</div>' +
-    '<div class="results-actions"><button class="primary-button" data-action="share">COPY RESULT ↗</button>' +
+    '<div class="results-actions"><button class="primary-button" data-action="share">SHARE / SAVE IMAGE ↗</button>' +
     '<button class="primary-button" data-action="new-endless">DIVE AGAIN ∞</button></div>' +
     '<div class="survey-cta-wrap"><button class="survey-trigger" data-action="survey">+ เสนอคำตอบที่ควรมีเพิ่มในคลัง (SURVEY)' +
     (totalRejected ? '<span class="survey-badge">' + totalRejected + ' MISSED</span>' : '') + '</button></div>' +
@@ -648,14 +648,54 @@ function sendTelemetryIfNeeded(doneSession) {
 function getPatchHistory(totalAnswers, megaCount) {
   return [
     {
-      version: '1.0.12',
+      version: '1.0.13',
       badge: 'ล่าสุด',
+      headline: 'มีอะไรใหม่ในอัปเดต v1.0.13',
+      subtitle: 'เพิ่มโจทย์ใหม่อีก 100 ข้อ ขยายหมวดเดิมขึ้นหลักพันรวม 154 หมวด แชร์ผลเป็นรูปการ์ดสวยงาม และเพิ่มฉากใต้ทะเลลึกตามระดับความลึก',
+      stats: [
+        { value: number(bank.questions.length), label: 'โจทย์ไทย & ทั่วไป (118/118)' },
+        { value: number(totalAnswers), label: 'คำตอบทั้งหมดในคลัง' },
+        { value: number(megaCount), label: 'หมวดใหญ่ 1,000+ คำ' },
+      ],
+      cards: [
+        {
+          tag: 'CONSOLIDATED',
+          tagClass: 'is-new',
+          title: 'เพิ่มโจทย์ใหม่อีก 100 ข้อ (50 โจทย์ไทย + 50 โจทย์ทั่วไป)',
+          bullets: [
+            'เพิ่มโจทย์ไทยใหม่ 50 ข้อ และโจทย์ทั่วไปใหม่ 50 ข้อ ตามแนวทางการออกแบบโจทย์ของเกมต้นแบบ รักษาสัดส่วนโจทย์ไทย–ทั่วไปให้สมดุล (รวม <strong>236 โจทย์ 118/118</strong>)',
+            'โจทย์ใหม่ทั้งหมดมาพร้อมคลังคำตอบระดับ <strong>1,000+ รายการต่อข้อ</strong> ครอบคลุมหลากหลายหมวดหมู่พร้อมจัดลำดับความคุ้นเคยอย่างสมดุล',
+          ],
+        },
+        {
+          tag: 'EXPANDED',
+          tagClass: 'is-gold',
+          title: 'อัปเกรดหมวดเดิมจากหลักร้อยขึ้นสู่ระดับ 1,000+ คำตอบ รวม 154 หมวด',
+          bullets: [
+            'ขยายคลังคำตอบของโจทย์เดิมที่เคยมีคำตอบระดับ 100–900 รายการ ให้ทะลุ <strong>1,000+ คำตอบต่อข้อเพิ่มขึ้นอีกกว่า 24 หมวด</strong>',
+            'รวมทั้งคลังมีหมวดใหญ่ระดับ <strong>1,000+ คำตอบถึง 154 หมวด</strong> (และระดับ <strong>10,000+ คำตอบ 16 หมวด</strong>) รวมคำตอบทั้งคลังเกือบสี่แสนรายการ',
+          ],
+        },
+        {
+          tag: 'SHARE CARD & VISUALS',
+          tagClass: '',
+          title: 'บันทึกและคัดลอกผลเป็นรูปการ์ด PNG & ดำลึกยิ่งเจอสิ่งมีชีวิตใต้ทะเลมากขึ้น',
+          bullets: [
+            'อัปเกรดปุ่มแชร์ผลหลังจบเกมเป็น <strong>Share Card Studio</strong> สร้างการ์ดรูปภาพสรุปผลความละเอียดสูง บันทึกเป็นไฟล์ <strong>.PNG</strong> หรือกดคัดลอกรูปภาพไปวางแชร์ได้ทันที (เลือกเปิด/ปิดการแสดงคำตอบเพื่อกันสปอยล์ได้)',
+            'เพิ่มฉากและสิ่งมีชีวิตใต้ทะเลตามระดับความลึก ยิ่งดำดิ่งลึกยิ่งพบสิ่งใหม่ ทั้งแนวสาหร่าย ฝูงปลาเรืองแสง พญานาคทะเล หมึกดัมโบ ซากเรือจม ปล่องน้ำร้อนใต้สมุทร และออโรราฝูงเคยทองคำในร่องลึก',
+          ],
+        },
+      ],
+    },
+    {
+      version: '1.0.12',
+      badge: '',
       headline: 'มีอะไรใหม่ในอัปเดต v1.0.12',
       subtitle: 'กด Enter เพื่อไปข้อถัดไปได้ทันที อัปเกรดระบบ Auto-Correct ให้ฉลาดขึ้น และเติมคำตอบพร้อมชื่อเรียกอื่นในคลัง',
       stats: [
-        { value: number(bank.questions.length), label: 'โจทย์ไทย & ทั่วไป (68/68)' },
-        { value: number(totalAnswers), label: 'คำตอบทั้งหมดในคลัง' },
-        { value: number(megaCount), label: 'หมวดใหญ่ 1,000+ คำ' },
+        { value: '136', label: 'โจทย์ไทย & ทั่วไป (68/68)' },
+        { value: '233,738', label: 'คำตอบทั้งหมดในคลัง' },
+        { value: '30', label: 'หมวดใหญ่ 1,000+ คำ' },
       ],
       cards: [
         {
@@ -1215,10 +1255,309 @@ function surveyDialog(initialIndex = null) {
     }
   });
 }
+function depthZoneLabel(depth) {
+  if (depth >= 5200) return 'HADAL KRILLION TRENCH';
+  if (depth >= 3000) return 'THE ABYSSAL ZONE';
+  if (depth >= 1000) return 'THE MIDNIGHT ZONE';
+  if (depth >= 200) return 'THE TWILIGHT ZONE';
+  return 'THE SUNLIGHT ZONE';
+}
+
+function drawRoundedRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+async function renderShareCardCanvas(canvas, targetSession, showAnswers = false) {
+  if (!canvas || !targetSession) return;
+  const W = 960, H = 1220;
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // 1. Deep Ocean Gradient Background
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#134e6f');
+  bg.addColorStop(0.28, '#0b2d48');
+  bg.addColorStop(0.65, '#06182c');
+  bg.addColorStop(1, '#030a14');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // 2. Top Sunlight Caustic Beams
+  for (let i = 0; i < 5; i++) {
+    ctx.save();
+    ctx.translate(110 + i * 195, -20);
+    ctx.rotate(-0.18 + i * 0.05);
+    const ray = ctx.createLinearGradient(-70, 0, 70, 520);
+    ray.addColorStop(0, 'rgba(155,235,250,0.16)');
+    ray.addColorStop(0.6, 'rgba(75,222,244,0.04)');
+    ray.addColorStop(1, 'rgba(75,222,244,0)');
+    ctx.fillStyle = ray;
+    ctx.fillRect(-70, 0, 140, 520);
+    ctx.restore();
+  }
+
+  // 3. Bioluminescent Radial Aura & Spores
+  const gems = targetSession.results.filter(r => r.tier === 'krillion').length;
+  const aura = ctx.createRadialGradient(W * 0.5, 310, 20, W * 0.5, 310, 440);
+  aura.addColorStop(0, gems > 0 ? 'rgba(255,227,135,0.20)' : 'rgba(75,222,244,0.18)');
+  aura.addColorStop(0.55, 'rgba(245,83,136,0.07)');
+  aura.addColorStop(1, 'rgba(6,24,44,0)');
+  ctx.fillStyle = aura;
+  ctx.fillRect(0, 0, W, H);
+
+  const sporeColors = ['#4bdef4', '#7af3d8', '#f55388', '#ffe387'];
+  for (let i = 0; i < 64; i++) {
+    const sx = ((i * 173 + 47) % (W - 60)) + 30;
+    const sy = ((i * 229 + 83) % (H - 60)) + 30;
+    const sr = (i % 4 === 0) ? 2.6 : 1.6;
+    ctx.fillStyle = sporeColors[i % sporeColors.length];
+    ctx.globalAlpha = 0.18 + (i % 5) * 0.08;
+    ctx.beginPath();
+    ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // Sonar rings around hero depth
+  for (let r = 1; r <= 3; r++) {
+    ctx.strokeStyle = gems > 0 ? `rgba(255,227,135,${0.14 - r * 0.03})` : `rgba(75,222,244,${0.14 - r * 0.03})`;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(W * 0.5, 285, 85 + r * 58, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  // Outer Frame Border
+  ctx.strokeStyle = 'rgba(122,220,255,0.22)';
+  ctx.lineWidth = 2;
+  drawRoundedRect(ctx, 24, 24, W - 48, H - 48, 22);
+  ctx.stroke();
+
+  // 4. Header & Dive Subtitle
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#8ecae6';
+  ctx.font = '600 22px VT323, monospace';
+  const modeLabel = targetSession.mode === 'daily'
+    ? `KRILLION TH · DAILY DIVE · ${targetSession.date}`
+    : `KRILLION TH · ENDLESS DIVE #${targetSession.run} · ${targetSession.date}`;
+  ctx.fillText(modeLabel, W * 0.5, 76);
+
+  const title = targetSession.score === 700
+    ? 'THE PERFECT DIVE'
+    : targetSession.score >= 450
+      ? 'INTO THE ABYSS'
+      : targetSession.score >= 250
+        ? 'A DEEPER KIND OF KNOWLEDGE'
+        : 'BACK AT THE SURFACE';
+  ctx.fillStyle = '#e8f7ff';
+  ctx.font = '700 54px VT323, monospace';
+  ctx.fillText(title, W * 0.5, 132);
+
+  // Depth Zone Pill
+  const zoneText = depthZoneLabel(targetSession.depth);
+  ctx.font = '600 20px VT323, monospace';
+  const zW = Math.max(240, ctx.measureText(zoneText).width + 44);
+  ctx.fillStyle = 'rgba(12,48,74,0.85)';
+  ctx.strokeStyle = 'rgba(75,222,244,0.45)';
+  ctx.lineWidth = 1.5;
+  drawRoundedRect(ctx, (W - zW) * 0.5, 152, zW, 34, 17);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#6cdcff';
+  ctx.fillText(zoneText, W * 0.5, 176);
+
+  // 5. Giant Depth Number & Score Summary
+  ctx.fillStyle = gems > 0 ? '#ffe387' : '#7af3d8';
+  ctx.font = '700 132px VT323, monospace';
+  ctx.fillText(`${number(targetSession.depth)}m`, W * 0.5, 298);
+
+  ctx.fillStyle = '#c5e4f3';
+  ctx.font = '600 28px VT323, monospace';
+  ctx.fillText(`${targetSession.score} / 700 POINTS  ·  ${gems} KRILLION${gems === 1 ? '' : 'S'} 🌟`, W * 0.5, 345);
+
+  // Draw Buddy Sprite if available
+  try {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    await new Promise(resolve => {
+      img.onload = resolve;
+      img.onerror = resolve;
+      img.src = sprite(save.character || 'krillion');
+    });
+    if (img.complete && img.naturalWidth > 0) {
+      ctx.save();
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(img, W * 0.5 + 215, 205, 84, 84);
+      ctx.restore();
+    }
+  } catch {}
+
+  // 6. 7-Column Visual Score Bar Graph
+  const graphTop = 382, graphH = 148, colW = 74, gap = 22;
+  const totalGraphW = 7 * colW + 6 * gap;
+  const startX = (W - totalGraphW) * 0.5;
+
+  drawRoundedRect(ctx, 56, graphTop - 16, W - 112, graphH + 68, 16);
+  ctx.fillStyle = 'rgba(5,20,36,0.72)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(122,220,255,0.16)';
+  ctx.stroke();
+
+  targetSession.results.forEach((r, i) => {
+    const x = startX + i * (colW + gap);
+    const colColor = r.tier ? tierColor(r.tier) : '#3b4e63';
+    // Track background
+    drawRoundedRect(ctx, x, graphTop + 22, colW, graphH - 18, 10);
+    ctx.fillStyle = 'rgba(18,45,68,0.65)';
+    ctx.fill();
+
+    // Filled bar proportional to points (min 12px)
+    const barH = Math.max(12, Math.round(((r.points || 4) / 100) * (graphH - 18)));
+    const barY = graphTop + 22 + (graphH - 18 - barH);
+    drawRoundedRect(ctx, x, barY, colW, barH, 10);
+    ctx.fillStyle = colColor;
+    ctx.fill();
+
+    // Points label above bar
+    ctx.fillStyle = colColor;
+    ctx.font = '700 22px VT323, monospace';
+    ctx.fillText(r.points ? `+${r.points}` : 'MISS', x + colW * 0.5, graphTop + 14);
+
+    // Round index below bar
+    ctx.fillStyle = '#9bbbd0';
+    ctx.font = '600 20px VT323, monospace';
+    ctx.fillText(`#${i + 1}`, x + colW * 0.5, graphTop + graphH + 28);
+  });
+
+  // 7. 7-Round Breakdown List (Spoiler-Free by default, or with answers when toggled)
+  const listTop = 586, rowH = 74, rowGap = 10;
+  targetSession.results.forEach((r, i) => {
+    const ry = listTop + i * (rowH + rowGap);
+    const colColor = r.tier ? tierColor(r.tier) : '#60788e';
+    const tierName = r.tier ? TIERS[r.tier].name.toUpperCase() : (r.reason === 'timeout' ? 'OUT OF TIME' : 'SKIPPED');
+    const emoji = r.tier ? TIERS[r.tier].emoji : '⬛';
+
+    drawRoundedRect(ctx, 56, ry, W - 112, rowH, 13);
+    ctx.fillStyle = 'rgba(8,28,48,0.82)';
+    ctx.fill();
+    ctx.strokeStyle = r.tier === 'krillion' ? 'rgba(255,227,135,0.45)' : 'rgba(122,220,255,0.14)';
+    ctx.lineWidth = 1.3;
+    ctx.stroke();
+
+    // Left accent bar
+    drawRoundedRect(ctx, 56, ry, 8, rowH, 4);
+    ctx.fillStyle = colColor;
+    ctx.fill();
+
+    // Round number & prompt
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#7fa6c0';
+    ctx.font = '600 17px Sarabun, sans-serif';
+    const promptStr = String(r.prompt || '').length > 54 ? String(r.prompt).slice(0, 52) + '…' : String(r.prompt || '');
+    ctx.fillText(`${i + 1}. ${promptStr}`, 82, ry + 28);
+
+    // Answer or Spoiler-Free Tier description
+    ctx.fillStyle = '#eaf7ff';
+    ctx.font = '700 21px Sarabun, sans-serif';
+    const mainLine = showAnswers
+      ? (r.label ? `“${r.label}”` : (r.reason === 'timeout' ? 'หมดเวลา' : 'ข้ามข้อ'))
+      : `${emoji} ${tierName} · จมลึก +${number((r.points || 0) * 10)}m`;
+    ctx.fillText(mainLine, 82, ry + 57);
+
+    // Right score badge
+    ctx.textAlign = 'right';
+    ctx.fillStyle = colColor;
+    ctx.font = '700 32px VT323, monospace';
+    ctx.fillText(`${r.points} PTS`, W - 78, ry + 38);
+    ctx.font = '600 17px VT323, monospace';
+    ctx.fillText(tierName, W - 78, ry + 59);
+  });
+
+  // 8. Footer Branding
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#739ab4';
+  ctx.font = '600 21px VT323, monospace';
+  ctx.fillText(`1 IN A KRILLION TH  ·  1inkrillionth.vercel.app  ·  v${APP_VERSION}`, W * 0.5, H - 38);
+}
+
 async function copyResult() {
-  const text = shareText(session,save.settings.shareLink,location.origin);
-  try { await navigator.clipboard.writeText(text); toast('คัดลอกผลการดำน้ำแล้ว'); audio.play('spare'); }
-  catch { openModal('share','Share your dive','<pre class="share-text">' + esc(text) + '</pre><p class="body-copy">เลือกข้อความแล้วคัดลอกเพื่อแชร์ผลได้เลย</p>'); }
+  if (!session) return;
+  const text = shareText(session, save.settings.shareLink, location.origin);
+  openModal(
+    'share',
+    'Share your dive',
+    '<div class="share-studio">' +
+      '<div class="share-canvas-wrap"><canvas id="share-card-canvas" width="960" height="1220"></canvas></div>' +
+      '<label class="share-spoiler-toggle"><input type="checkbox" id="share-show-answers"> ' +
+        '<span>แสดงคำตอบของฉันบนรูปภาพ <small>(ปิดไว้หากไม่อยากสปอยล์เพื่อน)</small></span></label>' +
+      '<div class="share-studio-actions">' +
+        '<button type="button" class="primary-button is-gold-btn" id="btn-save-image">⬇ SAVE IMAGE (.PNG)</button>' +
+        '<button type="button" class="primary-button" id="btn-copy-image">⧉ COPY IMAGE</button>' +
+        '<button type="button" class="primary-button" id="btn-copy-text">↗ COPY TEXT</button>' +
+      '</div>' +
+      '<details class="share-text-details"><summary>ดูข้อความสำหรับแชร์</summary><pre class="share-text">' + esc(text) + '</pre></details>' +
+    '</div>'
+  );
+
+  const canvas = document.getElementById('share-card-canvas');
+  const toggle = document.getElementById('share-show-answers');
+  const btnSave = document.getElementById('btn-save-image');
+  const btnCopyImg = document.getElementById('btn-copy-image');
+  const btnCopyTxt = document.getElementById('btn-copy-text');
+
+  await document.fonts?.ready;
+  await renderShareCardCanvas(canvas, session, false);
+
+  toggle?.addEventListener('change', () => {
+    renderShareCardCanvas(canvas, session, Boolean(toggle.checked));
+  });
+
+  const toBlob = () => new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+
+  btnSave?.addEventListener('click', async () => {
+    const blob = await toBlob();
+    if (!blob) return;
+    const filename = `krillion-th-${session.mode}-${session.date}.png`;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
+    toast('บันทึกรูปภาพผลการดำน้ำแล้ว');
+    audio?.play('spare');
+  });
+
+  btnCopyImg?.addEventListener('click', async () => {
+    try {
+      const blob = await toBlob();
+      if (!blob || typeof ClipboardItem === 'undefined') throw new Error('ClipboardItem unsupported');
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      toast('คัดลอกรูปภาพลงคลิปบอร์ดแล้ว กดวาง (Ctrl+V) ได้เลย!');
+      audio?.play('spare');
+    } catch {
+      btnSave?.click();
+    }
+  });
+
+  btnCopyTxt?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast('คัดลอกข้อความผลการดำน้ำแล้ว');
+      audio?.play('spare');
+    } catch {
+      toast('เลือกข้อความด้านล่างเพื่อคัดลอกได้เลย');
+    }
+  });
 }
 document.addEventListener('click', async event => {
   const character = event.target.closest('[data-character]');
